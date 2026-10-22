@@ -25,6 +25,12 @@ $currentPage = $currentPage ?? '';
             <span>Dashboard</span>
           </a>
         </li>
+        <li class="sidebar-menu-item">
+          <a href="home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+            <i class="bi bi-grid-fill"></i>
+            <span>Home</span>
+          </a>
+        </li>
       </ul>
     </div>
 
