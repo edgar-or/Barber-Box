@@ -1,5 +1,5 @@
 <?php 
-  $currentPage = 'login'; 
+  $currentPage = 'clientes'; 
 ?>
 
 <!DOCTYPE html>
@@ -17,13 +17,15 @@
     <link rel="icon" type="image/png" href="assets/images/favicon.ico">
     
     <!-- Local Third-Party Libraries (100% Offline Compatible) -->
-    <link rel="stylesheet" href="assets/libs/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/libs/bootstrap-icons/bootstrap-icons.css">
     
     <!-- Main Design System & Custom Stylesheet -->
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body>
+      <?php include './menu/menuLateral.php'; ?>
+            <?php include './menu/menu-header.php'; ?>
 
     <div class="login-wrapper">
 
@@ -38,7 +40,7 @@
 
                     <!-- Brand Identity -->
                     <div class="text-center mb-3">
-                        <a href="index.php" class="login-brand text-decoration-none">
+                        <a href="../index.php" class="login-brand text-decoration-none">
                             <i class="bi bi-asterisk"></i>
                             <span>Barber-Box</span>
                         </a>
@@ -163,11 +165,18 @@
     </div>
 
     <!-- Local Bootstrap bundle -->
-    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="assets/js/JSRegistrarCliente.js"></script>
+    <script src="../assets/js/JSRegistrarCliente.js"></script>
+
+     <!-- Local Third-Party Libraries Script dependencies -->
+  <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+  <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>
+
+  <!-- Local dashboard interactions controller -->
+  <script src="../assets/js/dashboard.js"></script>
     
     <!-- Custom Authentication interactions script -->
-    <script src="assets/js/auth.js"></script>
+    <script src="../assets/js/auth.js"></script>
 </body>
 </html>

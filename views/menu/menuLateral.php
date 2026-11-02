@@ -26,9 +26,15 @@ $currentPage = $currentPage ?? '';
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="../home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Home</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="../views/tabla-clientes.php" class="sidebar-menu-link <?= ($currentPage === 'clientes') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+            <i class="bi bi-grid-fill"></i>
+            <span>Clientes</span>
           </a>
         </li>
       </ul>
@@ -39,19 +45,19 @@ $currentPage = $currentPage ?? '';
       <div class="sidebar-menu-title">Components</div>
       <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
-          <a href="tables-basic.php" class="sidebar-menu-link <?= ($currentPage === 'tables') ? 'active' : ''; ?>" id="menu-basictables" title="Basic Tables">
+          <a href="../tables-basic.php" class="sidebar-menu-link <?= ($currentPage === 'tables') ? 'active' : ''; ?>" id="menu-basictables" title="Basic Tables">
             <i class="bi bi-table"></i>
             <span>Basic Tables</span>
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="ui-forms.php" class="sidebar-menu-link <?= ($currentPage === 'forms') ? 'active' : ''; ?>" id="menu-uiforms" title="Forms and Input">
+          <a href="../ui-forms.php" class="sidebar-menu-link <?= ($currentPage === 'forms') ? 'active' : ''; ?>" id="menu-uiforms" title="Forms and Input">
             <i class="bi bi-input-cursor-text"></i>
             <span>Forms & Input</span>
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="ui-buttons.php" class="sidebar-menu-link <?= ($currentPage === 'buttons') ? 'active' : ''; ?>" id="menu-uibuttons" title="Buttons">
+          <a href="../ui-buttons.php" class="sidebar-menu-link <?= ($currentPage === 'buttons') ? 'active' : ''; ?>" id="menu-uibuttons" title="Buttons">
             <i class="bi bi-menu-button-wide-fill"></i>
             <span>Buttons & Alerts</span>
           </a>
@@ -76,7 +82,7 @@ $currentPage = $currentPage ?? '';
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="page-404.php" class="sidebar-menu-link <?= ($currentPage === '404') ? 'active' : ''; ?>" id="menu-404" title="404 Page">
+          <a href="../page-404.php" class="sidebar-menu-link <?= ($currentPage === '404') ? 'active' : ''; ?>" id="menu-404" title="404 Page">
             <i class="bi bi-slash-circle"></i>
             <span>Error 404</span>
           </a>

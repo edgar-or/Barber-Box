@@ -138,32 +138,30 @@ if ($opcion == "consultar") {
     require_once "../config/conexion.php";
 
     try {
-        $sql = "SELECT idempleado, dui, nombre, apellido, telefono, concat(nombre,' ',apellido) as nombreCompleto
-                FROM empleado
-                ORDER BY apellido, nombre";
+        $sql = "SELECT id_cliente, nombre, apellido, telefono, concat(nombre,' ',apellido) as nombreCompleto
+                FROM cliente
+                ORDER BY nombre;";
 
         $resultado = $conexion->query($sql);
 
         if (!$resultado) {
-            throw new Exception("Error al consultar los empleados");
+            throw new Exception("Error al consultar los clientes");
         }
 
-        $empleados = [];
+        $clientes = [];
 
         while ($fila = $resultado->fetch_assoc()) {
-            $empleados[] = [
-                'idempleado' => $fila['idempleado'],
-                'dui' => $fila['dui'],
+            $clientes[] = [
+                'id_cliente' => $fila['id_cliente'],
                 'nombre' => $fila['nombre'],
                 'apellido' => $fila['apellido'],
                 'telefono' => $fila['telefono'],
-                'nombreCompleto' => $fila['nombreCompleto'],
-                'tamanio' => strlen($fila['nombre']) * strlen($fila['apellido'])
+                'nombreCompleto' => $fila['nombreCompleto']
             ];
         }
 
         echo json_encode(
-            $empleados,
+            $clientes,
             JSON_UNESCAPED_UNICODE
         );
 

@@ -86,7 +86,7 @@ if (formulario) {
                 btnGuardar.disabled = true;
                 btnGuardar.textContent = "Procesando...";
 
-                const respuesta = await fetch("DAO/DAOCliente.php", {
+                const respuesta = await fetch("../DAO/DAOCliente.php", {
                     method: "POST",
                     body: datos
                 });
