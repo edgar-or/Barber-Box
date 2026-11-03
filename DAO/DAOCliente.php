@@ -138,7 +138,7 @@ if ($opcion == "consultar") {
     require_once "../config/conexion.php";
 
     try {
-        $sql = "SELECT id_cliente, nombre, apellido, telefono, concat(nombre,' ',apellido) as nombreCompleto
+        $sql = "SELECT id_cliente, nombre, apellido, telefono, correo, concat(nombre,' ',apellido) as nombreCompleto
                 FROM cliente
                 ORDER BY nombre;";
 
@@ -156,6 +156,7 @@ if ($opcion == "consultar") {
                 'nombre' => $fila['nombre'],
                 'apellido' => $fila['apellido'],
                 'telefono' => $fila['telefono'],
+                'correo' => $fila['correo'],
                 'nombreCompleto' => $fila['nombreCompleto']
             ];
         }
