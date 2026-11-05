@@ -37,6 +37,15 @@ $currentPage = $currentPage ?? '';
             <span>Clientes</span>
           </a>
         </li>
+
+
+         <li class="sidebar-menu-item">
+          <a href="../views/tabla-empleados.php" class="sidebar-menu-link <?= ($currentPage === 'empleados') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+            <i class="bi bi-grid-fill"></i>
+            <span>Empleados</span>
+          </a>
+        </li>
+
       </ul>
     </div>
 
