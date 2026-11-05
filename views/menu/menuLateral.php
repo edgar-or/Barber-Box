@@ -20,7 +20,7 @@ $currentPage = $currentPage ?? '';
       <div class="sidebar-menu-title">Menu</div>
       <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
-          <a href="index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="../index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Dashboard</span>
           </a>

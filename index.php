@@ -34,11 +34,11 @@
          Highly polished, dark-green sticky navigation
          ========================================== -->
  <!-- Inclusion del componente menuLaterak -->
-    <?php include 'menuLateral.php'; ?>
+    <?php include 'views/menu/menuLateral.php'; ?>
   <!-- ==========================================
          END: Sidebar Component
          ========================================== -->
-    <?php include 'menu-header.php'; ?>
+    <?php include 'views/menu/menu-header.php'; ?>
 
 
   

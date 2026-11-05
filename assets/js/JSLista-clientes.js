@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             { title: "Nombre", field: "nombre", visible: false },
             { title: "Apellido", field: "apellido", visible: false },
             { title: "Teléfono", field: "telefono" },
+            { title: "Correo", field: "correo" },
             { 
                 title: "Acciones", 
                 headerHozAlign: "center", 
