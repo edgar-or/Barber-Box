@@ -40,10 +40,10 @@
         </ul>
 
         <div class="d-flex gap-2">
-          <a href="page-login.php" class="btn btn-outline-light px-4">
+          <a href="/barberBox/page-login.php" class="btn btn-outline-light px-4">
             <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
           </a>
-          <a href="form-registrar-cliente.php" class="btn btn-danger px-4">
+          <a href="/barberBox/views/form-registrar-cliente.php" class="btn btn-danger px-4">
             <i class="bi bi-person-plus me-1"></i> Registrarse
           </a>
         </div>

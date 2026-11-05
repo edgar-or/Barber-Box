@@ -20,19 +20,19 @@ $currentPage = $currentPage ?? '';
       <div class="sidebar-menu-title">Menu</div>
       <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
-          <a href="../index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="../index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-dash" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Dashboard</span>
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="../home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="/barberBox/home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-home" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Home</span>
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="../views/tabla-clientes.php" class="sidebar-menu-link <?= ($currentPage === 'clientes') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="/barberBox/views/tabla-clientes.php" class="sidebar-menu-link <?= ($currentPage === 'clientes') ? 'active' : ''; ?>" id="menu-clientes" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Clientes</span>
           </a>
@@ -40,7 +40,7 @@ $currentPage = $currentPage ?? '';
 
 
          <li class="sidebar-menu-item">
-          <a href="../views/tabla-empleados.php" class="sidebar-menu-link <?= ($currentPage === 'empleados') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="/barberBox/views/tabla-empleados.php" class="sidebar-menu-link <?= ($currentPage === 'empleados') ? 'active' : ''; ?>" id="menu-empleados" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Empleados</span>
           </a>

@@ -69,20 +69,16 @@ if ($opcion == "guardar") {
 if ($opcion == "modificar") {
     require_once "../config/conexion.php";
 
-    $sql = "UPDATE empleado SET dui=?, nombre=?, apellido=?, telefono=?, isss=?, afp=?, nup=?, renta=?, sueldo=?, idcargo=?, idcanton=?, estado=?, fecha_ingreso=? WHERE idempleado=?";
+    $idcliente = $_POST['idcliente'] ?? 0;
+
+    $sql = "UPDATE cliente SET nombre=?, apellido=?, telefono=? WHERE id_cliente=?";
     $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("ssssssssssssii", $dui, $nombre, $apellido, $telefono, $isss, $afp, $nup, $renta, $sueldo, $cargo, $canton, $estado, $fechaIngreso, $idempleado);
+    $stmt->bind_param("sssi", $nombre, $apellido, $telefono, $idcliente);
     
     if ($stmt->execute()) {
-        echo json_encode([
-            "estado" => true,
-            "mensaje" => "Datos Modificados Correctamente"
-        ]);
+        echo json_encode(["estado" => true, "mensaje" => "Datos Modificados Correctamente"]);
     } else {
-        echo json_encode([
-            "estado" => false,
-            "mensaje" => "Error al modificar: " . $stmt->error
-        ]);
+        echo json_encode(["estado" => false, "mensaje" => "Error al modificar: " . $stmt->error]);
     }
     $stmt->close();
     $conexion->close();
@@ -91,22 +87,56 @@ if ($opcion == "modificar") {
 if ($opcion == "eliminar") {
     require_once "../config/conexion.php";
 
-    $sql = "DELETE FROM empleado WHERE idempleado=?";
-    $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("i", $idempleado);
-    if ($stmt->execute()) {
-        echo json_encode([
-            "estado" => true,
-            "mensaje" => "Datos Eliminados Correctamente"
-        ]);
-    } else {
-        echo json_encode([
-            "estado" => false,
-            "mensaje" => "Error al eliminar los datos"
-        ]);
+    $idcliente = $_POST['idcliente'] ?? 0;
+
+    if (!is_numeric($idcliente) || $idcliente <= 0) {
+        echo json_encode(["estado" => false, "mensaje" => "ID de cliente no válido"]);
+        exit;
     }
-    $stmt->close();
-    $conexion->close();
+
+    $conexion->begin_transaction();
+
+    try {
+        // 1. Primero buscamos si tiene un usuario asignado
+        $sqlBuscar = "SELECT id_usuario FROM cliente WHERE id_cliente = ?";
+        $stmtBuscar = $conexion->prepare($sqlBuscar);
+        $stmtBuscar->bind_param("i", $idcliente);
+        $stmtBuscar->execute();
+        $resultadoBuscar = $stmtBuscar->get_result();
+        
+        $id_usuario = null;
+        if ($fila = $resultadoBuscar->fetch_assoc()) {
+            $id_usuario = $fila['id_usuario'];
+        }
+        $stmtBuscar->close();
+
+        $sqlCliente = "DELETE FROM cliente WHERE id_cliente=?";
+        $stmtClient = $conexion->prepare($sqlCliente);
+        $stmtClient->bind_param("i", $idcliente);
+        if (!$stmtClient->execute()) {
+            throw new Exception("Error al eliminar cliente: " . $stmtClient->error);
+        }
+        $stmtClient->close();
+
+        if ($id_usuario) {
+            $sqlUsuario = "DELETE FROM usuario WHERE id_usuario=?";
+            $stmtUser = $conexion->prepare($sqlUsuario);
+            $stmtUser->bind_param("i", $id_usuario);
+            if (!$stmtUser->execute()) {
+                throw new Exception("Error al eliminar usuario: " . $stmtUser->error);
+            }
+            $stmtUser->close();
+        }
+
+        $conexion->commit();
+        echo json_encode(["estado" => true, "mensaje" => "Cliente eliminado correctamente"]);
+
+    } catch (Throwable $e) {
+        $conexion->rollback();
+        echo json_encode(["estado" => false, "mensaje" => $e->getMessage()]);
+    } finally {
+        $conexion->close();
+    }
 }
 
 if ($opcion == "consultarDUI") {
@@ -178,13 +208,13 @@ if ($opcion == "consultar") {
 if ($opcion == "consultarIndividual") {
     require_once "../config/conexion.php";
 
-    $sql = "SELECT idempleado, dui, nombre, apellido, telefono, isss, afp, nup, renta, sueldo, idcargo, idcanton, estado, fecha_ingreso
-            FROM empleado WHERE idempleado=?";
+    $idcliente = $_POST['idcliente'] ?? 0; 
+
+    $sql = "SELECT id_cliente, nombre, apellido, telefono, correo FROM cliente WHERE id_cliente=?";
     $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("i", $idempleado);
+    $stmt->bind_param("i", $idcliente);
 
     $stmt->execute();
-
     $resultado = $stmt->get_result();
 
     if ($resultado->num_rows > 0) {
@@ -192,27 +222,15 @@ if ($opcion == "consultarIndividual") {
         echo json_encode([
             "estado" => true,
             "datos" => [
-                "idempleado" => $datos["idempleado"],
-                "dui" => $datos["dui"],
+                "idcliente" => $datos["id_cliente"], 
                 "nombre" => $datos["nombre"],
                 "apellido" => $datos["apellido"],
                 "telefono" => $datos["telefono"],
-                "isss" => $datos["isss"],
-                "afp" => $datos["afp"],
-                "nup" => $datos["nup"],
-                "renta" => $datos["renta"],
-                "sueldo" => $datos["sueldo"],
-                "cargo" => $datos["idcargo"], 
-                "canton" => $datos["idcanton"],
-                "estado" => $datos["estado"],
-                "fecha_ingreso" => $datos["fecha_ingreso"]
+                "correo" => $datos["correo"] 
             ]
         ]);
     } else {
-        echo json_encode([
-            "estado" => false,
-            "datos" => "No Existe"
-        ]);
+        echo json_encode(["estado" => false, "datos" => "No Existe"]);
     }
 
     $stmt->close();
