@@ -52,7 +52,7 @@
                     <label for="email" class="login-form-label">Usuario</label>
                     <div class="login-input-group">
                         <i class="bi bi-envelope input-icon"></i>
-                        <input type="text" id="usuario"  name="usuario" class="login-input form-control" placeholder="name@company.com" required>
+                        <input type="text" id="usuario"  name="usuario" class="login-input form-control" placeholder="Juan" required>
                     </div>
                 </div>
                 
