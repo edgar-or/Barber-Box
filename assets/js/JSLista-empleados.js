@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             }
         },
-        data: [], 
+        data: [],
         layout: "fitColumns",
         responsiveLayout: "hide",
         pagination: true,
@@ -45,10 +45,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         movableColumns: true,
         columns: [
             { title: "ID", field: "id_empleado", width: 70, headerHozAlign: "center", hozAlign: "center" },
-            { 
-                title: "Empleado", 
-                field: "nombreCompleto", 
-                formatter: function(cell) {
+            {
+                title: "Empleado",
+                field: "nombreCompleto",
+                formatter: function (cell) {
                     const row = cell.getRow().getData();
                     return `
                         <div class="table-user-cell">
@@ -64,33 +64,38 @@ document.addEventListener("DOMContentLoaded", async () => {
             { title: "Nombre", field: "nombre", visible: false },
             { title: "Apellido", field: "apellido", visible: false },
             { title: "Teléfono", field: "telefono" },
-            { 
-                title: "Acciones", 
-                headerHozAlign: "center", 
+            {
+                title: "Acciones",
+                headerHozAlign: "center",
                 hozAlign: "center",
-                formatter: function(cell) {
+                formatter: function (cell) {
                     const row = cell.getRow().getData();
                     return `
                         <div class="d-flex justify-content-center gap-1">
-                            <button class="table-btn-action btn-editar" data-id="${row.id_empleado}" title="Editar empleado">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="table-btn-action delete btn-eliminar" data-id="${row.id_empleado}" title="Eliminar empleado">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                      <button class="table-btn-action btn-editar" data-id="${row.id_empleado}" title="Editar empleado">
+                     <i class="bi bi-pencil"></i>
+                     </button>
+                     <button class="table-btn-action delete btn-eliminar" data-id="${row.id_empleado}" title="Eliminar empleado">
+                      <i class="bi bi-trash"></i>
+                     </button>
+                      <button class="table-btn-action btn-horario" data-id="${row.id_empleado}" title="Gestionar Horario">
+                       <i class="bi bi-clock"></i>
+                        </button>
                         </div>
                     `;
                 },
-                cellClick: function(e, cell) {
+                cellClick: function (e, cell) {
                     const target = e.target.closest("button");
                     if (!target) return;
 
                     const idEmpleado = target.getAttribute("data-id");
-                    
+
                     if (target.classList.contains("btn-editar")) {
                         editarEmpleado(idEmpleado);
                     } else if (target.classList.contains("btn-eliminar")) {
-                        eliminarEmpleado(idEmpleado, tabla); 
+                        eliminarEmpleado(idEmpleado, tabla);
+                    } else if (target.classList.contains("btn-horario")) {
+                        window.location.href = "form-horarios-empleado.php?id=" + idEmpleado;
                     }
                 }
             }
@@ -176,7 +181,7 @@ function eliminarEmpleado(id, tabla) {
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    
+
                     if (tabla) {
                         const fila = tabla.getRows().find(row => row.getData().id_empleado == id);
                         if (fila) fila.delete();

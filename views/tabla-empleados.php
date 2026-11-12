@@ -84,7 +84,7 @@
   <!-- Local dashboard interactions controller -->
   <script src="../assets/js/dashboard.js"></script>
     <script src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
-    <script src="../assets/js/JSLista-empleados.js?v=2"></script>
+    <script src="../assets/js/JSLista-empleados.js?v=5"></script>
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 

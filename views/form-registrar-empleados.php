@@ -45,6 +45,9 @@
                             <span>Barber-Box</span>
                         </a>
                     </div>
+                    <button type="button" class="btn-custom btn-custom-outline-danger" onclick="location.href='tabla-empleados.php'">
+                <i class="bi bi-arrow-left"></i> Volver a Empleados
+            </button>
 
                     <p class="login-subtitle text-center mb-4">Por favor, complete los datos</p>
 
@@ -155,15 +158,21 @@
                                         </div>
                                     </div>
 
+                                    
                                 </div>
+                                
                             </div>
 
                         </div>
+                        
 
                         <!-- Botón centrado debajo de los dos paneles -->
                         <div class="d-flex flex-column align-items-center gap-3 mt-4">
                            <button type="button" class="btn-login w-auto px-5" id="btnRegistrar" name="btnRegistrar">Registrar 
                             <i class="bi bi-person-plus"></i></button>
+                            <button type="button" class="btn-custom btn-custom-outline-danger" onclick="location.href='tabla-empleados.php'">
+                <i class="bi bi-arrow-left"></i> Volver a Empleados
+            </button>
                             <p class="mb-0">¿Ya tienes cuenta? <a href="page-login.php">Inicia sesión</a></p>
                         </div>
 
@@ -174,6 +183,7 @@
         </div>
 
     </div>
+    
 
     <!-- Local Bootstrap bundle -->
     <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>

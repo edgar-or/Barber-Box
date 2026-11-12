@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 nombre.value = resultado.datos.nombre;
                 apellido.value = resultado.datos.apellido;
                 telefono.value = resultado.datos.telefono;
-                
+                correo.value = resultado.datos.correo;
                 if(document.getElementById('isss')) document.getElementById('isss').value = resultado.datos.isss || "";
                 if(document.getElementById('afp')) document.getElementById('afp').value = resultado.datos.afp || "";
                 if(document.getElementById('nup')) document.getElementById('nup').value = resultado.datos.nup || "";
@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if(document.getElementById('fechaIngreso')) document.getElementById('fechaIngreso').value = resultado.datos.fecha_ingreso || "";
 
                 if (usuario) usuario.closest('.login-form-group').style.display = 'none';
-                if (correo) correo.closest('.login-form-group').style.display = 'none';
+               
                 if (contrasenia) contrasenia.closest('.login-form-group').style.display = 'none';
                 if (contrasenia_confirm) contrasenia_confirm.closest('.login-form-group').style.display = 'none';
 
