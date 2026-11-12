@@ -1,7 +1,12 @@
 <?php
 $currentPage = $currentPage ?? '';
-?>
 
+
+// Determinar el nombre a mostrar: si existe en la sesión usa ese, de lo contrario 'Invitado'
+$nombreUsuario = isset($_SESSION['usuario']) && !empty($_SESSION['usuario']) 
+    ? $_SESSION['usuario'] 
+    : 'Invitado';
+?>
 
 <!-- ==========================================
          START: Main Content Area
@@ -50,10 +55,7 @@ $currentPage = $currentPage ?? '';
 
       <!-- Mid navbar: search pill -->
       <div class="navbar-search-wrapper">
-        <input type="text" class="navbar-search-input" placeholder="Search anything in Spark..." id="main-search">
-        <button class="navbar-search-btn" aria-label="Search">
-          <i class="bi bi-search"></i>
-        </button>
+        
       </div>
 
       <!-- Right actions -->
@@ -116,9 +118,9 @@ $currentPage = $currentPage ?? '';
         <div class="dropdown ms-2">
           <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
             aria-expanded="false" id="profile-dropdown">
-            <img src="../assets/images/avatar.png" alt="Profile Image" class="navbar-profile-img">
-            <span class="navbar-profile-name d-none d-md-inline">Administrator</span>
-            <i class="bi bi-chevron-down navbar-profile-caret"></i>
+            <img src="/barberBox/assets/images/avatar.png" alt="Profile Image" class="navbar-profile-img">
+         <span class="navbar-profile-name d-none d-md-inline"><?= htmlspecialchars($nombreUsuario, ENT_QUOTES, 'UTF-8'); ?></span>  
+          <i class="bi bi-chevron-down navbar-profile-caret"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-profile" aria-labelledby="profile-dropdown">
             <li class="dropdown-header">Bienvenido !</li>
@@ -128,10 +130,18 @@ $currentPage = $currentPage ?? '';
             <li>
               <hr class="dropdown-divider">
             </li>
-            <li><a class="dropdown-item text-danger" href="page-login.html"><i class="bi bi-box-arrow-right"></i>
+            <li><a class="dropdown-item text-danger" id="btn-cerrarSesion" name="btn-cerrarSesion" href="#"><i class="bi bi-box-arrow-right"></i>
                 Cerrar Sesión</a></li>
           </ul>
         </div>
       </div>
+
+          
     </header>
+
+    <body>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/barberBox/assets/js/JSLogin.js"></script>
+    </body>
     <!-- END: Top Navbar Component -->

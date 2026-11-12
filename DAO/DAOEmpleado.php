@@ -16,7 +16,7 @@ if ($opcion == "guardar") {
     try {
         $contrasena_hash = password_hash($contrasenia, PASSWORD_DEFAULT);
 
-        $id_rol = 3;
+        $id_rol = 2;
         $estado_usuario = 'A';
 
         // Insertar en la tabla USUARIO

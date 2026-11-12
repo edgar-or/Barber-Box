@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (target.classList.contains("btn-editar")) {
                         editarCliente(idCliente);
                     } else if (target.classList.contains("btn-eliminar")) {
-                        eliminarCliente(idCliente);
+                        eliminarCliente(idCliente, tabla);
                     }
                 }
             }
@@ -141,9 +141,67 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Declaración de funciones fuera del DOMContentLoaded para evitar ReferenceError
 function editarCliente(id) {
-    console.log("Editar cliente ID:", id);
+    window.location.href = "form-registrar-cliente.php?id=" + id;
 }
 
-function eliminarCliente(id) {
-    console.log("Eliminar cliente ID:", id);
+
+function eliminarCliente(id, tabla) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¡El cliente será eliminado permanentemente!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const datos = new FormData();
+                datos.append("opcion", "eliminar");
+                datos.append("idcliente", id);
+
+                const respuesta = await fetch("../DAO/DAOCliente.php", {
+                    method: "POST",
+                    body: datos
+                });
+
+                const resultado = await respuesta.json();
+
+                if (resultado.estado) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Barber-Box",
+                        text: resultado.mensaje,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    
+                    if (tabla) {
+                        const fila = tabla.getRows().find(row => row.getData().id_cliente == id);
+                        if (fila) fila.delete();
+                    }
+
+                } else {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "Barber-Box",
+                        text: resultado.mensaje,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Barber-Box",
+                    text: "Error al conectar con el servidor."
+                });
+            }
+        }
+    });
 }

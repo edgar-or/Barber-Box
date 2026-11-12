@@ -20,19 +20,19 @@ $currentPage = $currentPage ?? '';
       <div class="sidebar-menu-title">Menu</div>
       <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
-          <a href="../index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="../index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-dash" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Dashboard</span>
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="../home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="/barberBox/home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-home" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Home</span>
           </a>
         </li>
         <li class="sidebar-menu-item">
-          <a href="../views/tabla-clientes.php" class="sidebar-menu-link <?= ($currentPage === 'clientes') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="/barberBox/views/tabla-clientes.php" class="sidebar-menu-link <?= ($currentPage === 'clientes') ? 'active' : ''; ?>" id="menu-clientes" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Clientes</span>
           </a>
@@ -40,9 +40,16 @@ $currentPage = $currentPage ?? '';
 
 
          <li class="sidebar-menu-item">
-          <a href="../views/tabla-empleados.php" class="sidebar-menu-link <?= ($currentPage === 'empleados') ? 'active' : ''; ?>" id="menu-overview" title="Overview">
+          <a href="/barberBox/views/tabla-empleados.php" class="sidebar-menu-link <?= ($currentPage === 'empleados') ? 'active' : ''; ?>" id="menu-empleados" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Empleados</span>
+          </a>
+        </li>
+
+         <li class="sidebar-menu-item">
+          <a href="/barberBox/views/tabla-servicios.php" class="sidebar-menu-link <?= ($currentPage === 'servicios') ? 'active' : ''; ?>" id="menu-servicios" title="Overview">
+            <i class="bi bi-grid-fill"></i>
+            <span>Servicios</span>
           </a>
         </li>
 
@@ -102,7 +109,7 @@ $currentPage = $currentPage ?? '';
 
   <!-- Sidebar Profile Card (Dynamic Footer) -->
   <div class="sidebar-profile">
-    <img src="assets/images/avatar.png" alt="Administrator" class="sidebar-profile-img"
+    <img src="/barberBox/assets/images/avatar.png" alt="Administrator" class="sidebar-profile-img"
       onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop'">
     <div class="sidebar-profile-info">
       <div class="sidebar-profile-name">Administrator</div>

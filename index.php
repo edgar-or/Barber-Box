@@ -1,4 +1,13 @@
-<?php 
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// Si NO existe la sesión, redirigir al login y detener la ejecución
+if (!isset($_SESSION['idusuario']) || empty($_SESSION['idusuario'])) {
+    header("Location: /barberBox/page-login.php");
+    exit();
+}
+
   $currentPage = 'dashboard'; 
 ?>
 

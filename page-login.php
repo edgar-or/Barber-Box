@@ -45,14 +45,14 @@
             <p class="login-subtitle">Porfavor inicie sesion</p>
             
             <!-- Login Form -->
-            <form action="index.html" method="GET" id="loginForm" class="needs-validation" novalidate>
+            <form id="form-login" method="POST" class="needs-validation" novalidate>
                 
                 <!-- Email Input Group -->
                 <div class="login-form-group">
-                    <label for="email" class="login-form-label">Correo Electronico</label>
+                    <label for="email" class="login-form-label">Usuario</label>
                     <div class="login-input-group">
                         <i class="bi bi-envelope input-icon"></i>
-                        <input type="email" id="email" class="login-input" placeholder="name@company.com" required>
+                        <input type="text" id="usuario"  name="usuario" class="login-input form-control" placeholder="Juan" required>
                     </div>
                 </div>
                 
@@ -61,7 +61,7 @@
                     <label for="password" class="login-form-label">Contraseña</label>
                     <div class="login-input-group">
                         <i class="bi bi-shield-lock input-icon"></i>
-                        <input type="password" id="password" class="login-input login-input-password" placeholder="••••••••" required>
+                        <input type="password" id="clave" name="clave" class="login-input login-input-password form-control" placeholder="••••••••" required>
                         <button type="button" class="password-toggle-btn" id="toggle-password" aria-label="Show password">
                             <i class="bi bi-eye"></i>
                         </button>
@@ -78,8 +78,8 @@
                 </div>
                 
                 <!-- Submit Button -->
-                <button type="submit" class="btn-login" id="btn-submit">
-                    <span>Sign In to Dashboard</span>
+                <button type="submit" class="btn-login" id="btn-login">
+                    <span>Iniciar Sesión</span>
                     <i class="bi bi-arrow-right"></i>
                 </button>
                 
@@ -102,8 +102,14 @@
             
             <!-- Footer Link -->
             <p class="login-footer-text">
-                No tienes una cuenta? <a href="form-registrar-cliente.php" id="link-register">Registrate</a>
+                No tienes una cuenta? <a href="/barberBox/views/form-registrar-cliente.php" id="link-register">Registrate</a>
             </p>
+
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <button class="btn-custom btn-custom-light" type="button" onclick="location.href='/barberBox/home.php'">Volver al Inicio</button>
+
+            </div>
+
             
         </div>
     </div>
@@ -111,8 +117,12 @@
 
     <!-- Local Bootstrap bundle -->
     <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     
     <!-- Custom Authentication interactions script -->
-    <script src="assets/js/auth.js"></script>
+    <script src="/barberBox/assets/js/JSLogin.js"></script>
+
 </body>
 </html>

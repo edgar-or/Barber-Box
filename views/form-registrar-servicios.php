@@ -1,0 +1,127 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$currentPage = 'servicios';
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Servicios</title>
+
+    <!-- SEO Optimization -->
+    <meta name="description" content="Login Screen - Spark Admin Premium Bootstrap 5 Admin Dashboard Template">
+    <meta name="author" content="Spark Admin Team">
+
+    <link rel="icon" type="image/png" href="/barberBox/assets/images/favicon.ico">
+
+    <!-- Local Third-Party Libraries (100% Offline Compatible) -->
+    <link rel="stylesheet" href="/barberBox/assets/libs/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/barberBox/assets/libs/bootstrap-icons/bootstrap-icons.css">
+
+    <!-- Main Design System & Custom Stylesheet -->
+    <link rel="stylesheet" href="/barberBox/assets/css/main.css">
+</head>
+
+<body>
+    <?php include './menu/menuLateral.php'; ?>
+    <?php include './menu/menu-header.php'; ?>
+
+    <div class="login-wrapper">
+
+        <!-- Glowing background shapes for modern visual appearance -->
+        <div class="login-bg-shape login-bg-shape-1"></div>
+        <div class="login-bg-shape login-bg-shape-2"></div>
+
+        <!-- Contenedor Bootstrap: centra y limita el ancho. position-relative lo deja sobre las formas de fondo -->
+        <div class="container w-100 position-relative py-4">
+            <div class="row justify-content-center">
+                <!-- Cambiado de col-xl-9 a col-lg-7 col-xl-6 para que al estar centrado no se vea demasiado ancho -->
+                <div class="col-12 col-lg-7 col-xl-6">
+
+                    <!-- Brand Identity -->
+                    <div class="text-center mb-3">
+                        <a href="../index.php" class="login-brand text-decoration-none">
+                            <i class="bi bi-asterisk"></i>
+                            <span>Barber-Box</span>
+                        </a>
+                    </div>
+
+                    <p class="login-subtitle text-center mb-4">Por favor, complete los datos</p>
+
+                    <form action="" method="POST" id="formRegistrarServicio" name="formRegistrarServicio">
+
+                        <div class="login-card w-100 mw-100 m-0">
+
+                            <h2 class="h5 mb-4 text-white"><i class="bi bi-person me-2"></i>Datos De Servicio</h2>
+
+                            <div class="login-form-group">
+                                <label for="nombre" class="login-form-label">Nombre</label>
+                                <div class="login-input-group">
+                                    <i class="bi bi-tag input-icon"></i>
+                                    <input type="text" id="nombre" name="nombre" class="login-input form-control"
+                                        placeholder="Ej. Corte Clásico" maxlength="60" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="login-form-group">
+                                <label for="descripcion" class="login-form-label">Descripción</label>
+                                <div class="login-input-group">
+                                    <i class="bi bi-file-text input-icon"></i>
+                                    <input type="text" id="descripcion" name="descripcion" class="login-input form-control"
+                                        placeholder="Ej. Corte de cabello con tijera y máquina" maxlength="120" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="login-form-group">
+                                <label for="precio" class="login-form-label">Precio</label>
+                                <div class="login-input-group">
+                                    <i class="bi bi-currency-dollar input-icon"></i>
+                                    <input type="number" step="0.01" id="precio" name="precio" class="login-input form-control" placeholder="0.00" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="login-form-group">
+                                <label for="duracion" class="login-form-label">Duración estimada (en minutos)</label>
+                                <div class="login-input-group">
+                                    <i class="bi bi-clock input-icon"></i>
+                                    <input type="number" id="duracion" name="duracion" class="login-input form-control"
+                                        placeholder="Ej. 30" min="1" max="32767" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary" id="btnRegistrar" name="btnRegistrar">Registrar Servicio</button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Local Bootstrap bundle -->
+    <script src="/barberBox/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/barberBox/assets/js/JSRegistrarServicios.js"></script>
+
+    <!-- Local Third-Party Libraries Script dependencies -->
+    <script src="/barberBox/assets/libs/apexcharts/apexcharts.min.js"></script>
+    <script src="/barberBox/assets/libs/flatpickr/flatpickr.min.js"></script>
+
+    <!-- Local dashboard interactions controller -->
+    <script src="/barberBox/assets/js/dashboard.js"></script>
+
+    <!-- Custom Authentication interactions script -->
+    <script src="/barberBox/assets/js/auth.js"></script>
+</body>
+
+</html>

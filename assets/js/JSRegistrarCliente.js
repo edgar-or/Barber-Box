@@ -55,7 +55,11 @@ if (formulario) {
 
     
     btnGuardar.addEventListener("click", async function () {
-     const passCoinciden = contrasenia.value === contrasenia_confirm.value && contrasenia.value.trim() !== "";
+        let passCoinciden = true; // Por defecto true si se está editando
+    
+
+        if (btnGuardar.textContent.trim() == "Registrar") {
+            passCoinciden = contrasenia.value === contrasenia_confirm.value && contrasenia.value.trim() !== "";
 
      if (!passCoinciden) {
         Swal.fire({
@@ -78,7 +82,6 @@ if (formulario) {
             return;
         }
 
-        if (btnGuardar.textContent.trim() == "Registrar") {
             try {
                 const datos = new FormData(formulario);
                 datos.append("opcion", "guardar");
@@ -130,16 +133,16 @@ if (formulario) {
             }
         }
 
-        if (btnGuardar.textContent.trim() == "Modificar") {
+       if (btnGuardar.textContent.trim() == "Modificar") {
             try {
                 const datos = new FormData(formulario);
                 datos.append("opcion", "modificar");
-                datos.append("idempleado", btnGuardar.dataset.id);
+                datos.append("idcliente", btnGuardar.dataset.id);
 
                 btnGuardar.disabled = true;
                 btnGuardar.textContent = "Procesando...";
 
-                const respuesta = await fetch("DAO/DAOEmpleado.php", {
+                const respuesta = await fetch("../DAO/DAOCliente.php", { 
                     method: "POST",
                     body: datos
                 });
@@ -153,18 +156,18 @@ if (formulario) {
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
-                        title: "Poseidón",
+                        title: "Barber-Box", 
                         text: resultado.mensaje,
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
-                        window.location.href = "empleado.php";
+                        window.location.href = "tabla-clientes.php"; 
                     });
                 } else {
                     Swal.fire({
                         position: "top-end",
                         icon: "error",
-                        title: "Poseidón",
+                        title: "Barber-Box",
                         text: resultado.mensaje,
                         showConfirmButton: false,
                         timer: 1500
@@ -174,7 +177,7 @@ if (formulario) {
                 console.error(error);
                 Swal.fire({
                     icon: "error",
-                    title: "Poseidón",
+                    title: "Barber-Box",
                     text: "No se pudieron modificar los datos."
                 });
             } finally {
@@ -184,6 +187,8 @@ if (formulario) {
         }
     });
 }
+
+
 
 ///////////////////LIMPIAR TODOS LOS CAMPOS///////////
 function limpiarCampos() {
@@ -196,55 +201,20 @@ function limpiarCampos() {
 
 //////////PROCESA AL TERMINAR DE CARGAR LA PAGINA
 document.addEventListener("DOMContentLoaded", async () => {
-    //ALINEAR EL SELECT DEL CARGO
-    try {
-        const datos = new FormData();
-        datos.append("opcion", "consultar");
-
-        const respuesta = await fetch("DAOCargo.php", { method: "POST", body: datos });
-        const resultado = await respuesta.json();
-        const selectCargo = document.getElementById("cargo");
-
-        selectCargo.innerHTML = '<option value="0">[SELECCIONE UN CARGO]</option>';
-        resultado.forEach(cargoItem => {
-            const opcion = document.createElement("option");
-            opcion.value = cargoItem.idcargo;
-            opcion.textContent = cargoItem.nombre;
-            selectCargo.appendChild(opcion);
-        });
-    } catch (error) {
-        console.error("Error al cargar cargos:", error);
-    }
     
-    //ALINEAR EL SELECT DEL CANTON
-    try {
-        const datos = new FormData();
-        datos.append("opcion", "consultar");
-
-        const respuesta = await fetch("DAOCanton.php", { method: "POST", body: datos });
-        const resultado = await respuesta.json();
-        const selectCanton = document.getElementById("canton");
-
-        selectCanton.innerHTML = '<option value="0">[SELECCIONE UN CANTON]</option>';
-        resultado.forEach(cantonItem => {
-            const opcion = document.createElement("option");
-            opcion.value = cantonItem.idcanton;
-            opcion.textContent = cantonItem.nombre;
-            selectCanton.appendChild(opcion);
-        });
-    } catch (error) {
-        console.error("Error al cargar cantones:", error);
-    }
+    
+    
+    
 
     // Obtener el ID de la URL (Modo Edición)
     const parametros = new URLSearchParams(window.location.search);
-    const idempleado = parametros.get("id");
+    const idcliente = parametros.get("id");
 
-    if (idempleado) {
+    if (idcliente) {
         try {
             const datos = new FormData();
             datos.append("opcion", "consultarIndividual");
-            datos.append("idempleado", idempleado);
+            datos.append("idcliente", idcliente);
 
             Swal.fire({
                 title: "Consultando...",
@@ -254,27 +224,24 @@ document.addEventListener("DOMContentLoaded", async () => {
                 didOpen: () => Swal.showLoading()
             });
 
-            const respuesta = await fetch("DAOEmpleado.php", { method: "POST", body: datos });
+            const respuesta = await fetch("../DAO/DAOCliente.php", { method: "POST", body: datos });
             const resultado = await respuesta.json();
             Swal.close();
 
             if (resultado.estado) {
-                dui.value = resultado.datos.dui;
                 nombre.value = resultado.datos.nombre;
                 apellido.value = resultado.datos.apellido;
                 telefono.value = resultado.datos.telefono;
-                isss.value = resultado.datos.isss || "";
-                afp.value = resultado.datos.afp || "";
-                nup.value = resultado.datos.nup || "";
-                renta.value = resultado.datos.renta || "0";
-                sueldo.value = resultado.datos.sueldo || "";
-                cargo.value = resultado.datos.cargo || "0";
-                canton.value = resultado.datos.canton || "0";
-                estado.value = resultado.datos.estado || "0";
-                fechaIngreso.value = resultado.datos.fecha_ingreso || "";
+                correo.value = resultado.datos.correo;
+                
+
+                if (usuario) usuario.closest('.login-form-group').style.display = 'none';
+                
+                if (contrasenia) contrasenia.closest('.login-form-group').style.display = 'none';
+                if (contrasenia_confirm) contrasenia_confirm.closest('.login-form-group').style.display = 'none';
 
                 btnGuardar.textContent = "Modificar";
-                btnGuardar.dataset.id = resultado.datos.idempleado;
+                btnGuardar.dataset.id = resultado.datos.idcliente; 
             }
         } catch (error) {
             Swal.close();
@@ -282,3 +249,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 });
+

@@ -1,4 +1,12 @@
-<?php 
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+// Si NO existe la sesión, redirigir al login y detener la ejecución
+if (!isset($_SESSION['idusuario']) || empty($_SESSION['idusuario'])) {
+    header("Location: /barberBox/page-login.php");
+    exit();
+}
   $currentPage = 'clientes'; 
 ?>
 
@@ -84,6 +92,8 @@
   <script src="../assets/js/dashboard.js"></script>
     <script src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
     <script src="../assets/js/JSLista-clientes.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
 </body>

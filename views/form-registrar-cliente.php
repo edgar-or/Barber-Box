@@ -1,4 +1,7 @@
-<?php 
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
   $currentPage = 'clientes'; 
 ?>
 
@@ -24,8 +27,11 @@
     <link rel="stylesheet" href="../assets/css/main.css">
 </head>
 <body>
-      <?php include './menu/menuLateral.php'; ?>
-            <?php include './menu/menu-header.php'; ?>
+    <!-- menús solo si hay un usuario en sesion -->
+<?php if (isset($_SESSION['idusuario']) && !empty($_SESSION['idusuario'])): ?>
+    <?php include './menu/menuLateral.php'; ?>
+    <?php include './menu/menu-header.php'; ?>
+<?php endif; ?>
 
     <div class="login-wrapper">
 
@@ -153,7 +159,7 @@
                         <div class="d-flex flex-column align-items-center gap-3 mt-4">
                            <button type="button" class="btn-login w-auto px-5" id="btnRegistrar" name="btnRegistrar">Registrar 
                             <i class="bi bi-person-plus"></i></button>
-                            <p class="mb-0">¿Ya tienes cuenta? <a href="page-login.php">Inicia sesión</a></p>
+                            <p class="mb-0">¿Ya tienes cuenta? <a href="/barberBox/page-login.php">Inicia sesión</a></p>
                         </div>
 
                     </form>
