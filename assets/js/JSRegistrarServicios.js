@@ -19,12 +19,13 @@ const nombre = document.getElementById("nombre");
 const descripcion = document.getElementById("descripcion");
 const precio = document.getElementById("precio");
 const duracion = document.getElementById("duracion"); 
+const imagenesServicio = document.getElementById("imagenes_servicio");
+const previewGaleria = document.getElementById("preview-galeria");
 
 const campos = [nombre, descripcion, precio, duracion];
-const todosLosCampos = [...campos];
+const todosLosCampos = [...campos, imagenesServicio];
 
 if (formulario) {
-    //////////////////// VALIDACION DE CAMPOS VACIOS
     campos.forEach(function (campo) {
         if (campo) {
             campo.addEventListener("blur", function () {
@@ -33,7 +34,6 @@ if (formulario) {
         }
     });
 
-    //////////////////// PASAR A MAYÚSCULAS
     const camposMayus = [nombre, descripcion]; 
     camposMayus.forEach(function (campo) {
         if (campo) {
@@ -44,8 +44,9 @@ if (formulario) {
         }
     });
 
-    btnGuardar.addEventListener("click", async function () {
-        // Validar campos visibles
+    btnGuardar.addEventListener("click", async function (e) {
+        e.preventDefault();
+
         const camposVisibles = campos.filter(campo => campo && campo.closest('.login-form-group').style.display !== 'none');
         const camposValidos = camposVisibles.map(validarCampo).every(Boolean);
 
@@ -58,8 +59,7 @@ if (formulario) {
             return;
         }
 
-       
-
+        // ACCIÓN: GUARDAR
         if (btnGuardar.textContent.trim().includes("Registrar") || btnGuardar.textContent.trim() == "Guardar") {
             try {
                 const datos = new FormData(formulario);
@@ -73,13 +73,10 @@ if (formulario) {
                     body: datos
                 });
 
-                if (!respuesta.ok) {
-                    throw new Error("Error HTTP: " + respuesta.status);
-                }
+                if (!respuesta.ok) throw new Error("Error HTTP: " + respuesta.status);
 
                 const resultado = await respuesta.json();
                 
-               
                 if (resultado.estado) {
                     Swal.fire({
                         position: "top-end",
@@ -128,9 +125,7 @@ if (formulario) {
                     body: datos
                 });
 
-                if (!respuesta.ok) {
-                    throw new Error("Error HTTP: " + respuesta.status);
-                }
+                if (!respuesta.ok) throw new Error("Error HTTP: " + respuesta.status);
 
                 const resultado = await respuesta.json();
                 if (resultado.estado) {
@@ -169,7 +164,6 @@ if (formulario) {
     });
 }
 
-/////////////////// LIMPIAR TODOS LOS CAMPOS ///////////
 function limpiarCampos() {
     todosLosCampos.forEach(function (campo) {
         if (campo) {
@@ -178,9 +172,30 @@ function limpiarCampos() {
             campo.classList.remove("is-valid");
         }
     });
+    if (previewGaleria) {
+        previewGaleria.innerHTML = "";
+    }
 }
 
-// CARGA INICIAL (Modo Edición si trae ID en la URL)
+document.getElementById('imagenes_servicio').addEventListener('change', function(e) {
+            const contenedor = document.getElementById('preview-galeria');
+            contenedor.innerHTML = '';
+
+            Array.from(e.target.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = "rounded border border-secondary";
+                    img.style.height = "70px";
+                    img.style.width = "70px";
+                    img.style.objectFit = "cover";
+                    contenedor.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
+        });
+
 document.addEventListener("DOMContentLoaded", async () => {
     const parametros = new URLSearchParams(window.location.search);
     const idservicio = parametros.get("id");
@@ -208,6 +223,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 descripcion.value = resultado.datos.descripcion;
                 precio.value = resultado.datos.precio;
                 duracion.value = resultado.datos.duracion;
+
+                // Mostrar galería existente si la hay al editar
+                if (resultado.datos.imagenes && previewGaleria) {
+                    previewGaleria.innerHTML = "";
+                    resultado.datos.imagenes.forEach(imgObj => {
+                        const img = document.createElement('img');
+                        img.src = "/barberBox/" + imgObj.ruta_imagen;
+                        img.className = "rounded border border-secondary";
+                        img.style.height = "70px";
+                        img.style.width = "70px";
+                        img.style.objectFit = "cover";
+                        previewGaleria.appendChild(img);
+                    });
+                }
 
                 btnGuardar.textContent = "Modificar";
                 btnGuardar.dataset.id = resultado.datos.idservicio; 

@@ -40,7 +40,6 @@ $currentPage = 'servicios';
         <!-- Contenedor Bootstrap: centra y limita el ancho. position-relative lo deja sobre las formas de fondo -->
         <div class="container w-100 position-relative py-4">
             <div class="row justify-content-center">
-                <!-- Cambiado de col-xl-9 a col-lg-7 col-xl-6 para que al estar centrado no se vea demasiado ancho -->
                 <div class="col-12 col-lg-7 col-xl-6">
 
                     <!-- Brand Identity -->
@@ -53,7 +52,8 @@ $currentPage = 'servicios';
 
                     <p class="login-subtitle text-center mb-4">Por favor, complete los datos</p>
 
-                    <form action="" method="POST" id="formRegistrarServicio" name="formRegistrarServicio">
+                    <!-- IMPORTANTE: enctype añadido para permitir subida de archivos múltiples -->
+                    <form action="" method="POST" id="formRegistrarServicio" name="formRegistrarServicio" enctype="multipart/form-data">
 
                         <div class="login-card w-100 mw-100 m-0">
 
@@ -94,6 +94,19 @@ $currentPage = 'servicios';
                                 </div>
                             </div>
 
+                            <!-- MÚLTIPLES IMÁGENES -->
+                            <div class="login-form-group">
+                                <label for="imagenes_servicio" class="login-form-label">Galería de Imágenes del Servicio</label>
+                                <div class="login-input-group">
+                                    <i class="bi bi-images input-icon"></i>
+                                    <input type="file" id="imagenes_servicio" name="imagenes_servicio[]" class="login-input form-control text-white" accept="image/png, image/jpeg, image/webp" multiple>
+                                </div>
+                                <div class="form-text text-muted mt-1" style="font-size: 0.8rem;">Puedes seleccionar varias imágenes a la vez.</div>
+                            </div>
+
+                            <!-- Contenedor para vista previa múltiple -->
+                            <div id="preview-galeria" class="d-flex flex-wrap gap-2 mb-3 justify-content-center"></div>
+
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary" id="btnRegistrar" name="btnRegistrar">Registrar Servicio</button>
                             </div>
@@ -122,6 +135,9 @@ $currentPage = 'servicios';
 
     <!-- Custom Authentication interactions script -->
     <script src="/barberBox/assets/js/auth.js"></script>
+
+    <!-- Script para vista previa de múltiples imágenes -->
+  
 </body>
 
 </html>
