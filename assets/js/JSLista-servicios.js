@@ -31,11 +31,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         paginationSizeSelector: [10, 25, 50, 100],
         movableColumns: true,
         columns: [
-            { title: "ID", field: "id_servicio", width: 70, headerHozAlign: "center", hozAlign: "center" },
+            { title: "ID", field: "id_servicio", width: 90, headerHozAlign: "center", hozAlign: "center" },
             { 
                 title: "Imagen", 
                 field: "imagenes", 
-                width: 90,
+                width: 125,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 formatter: function(cell) {
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             { 
                 title: "Precio", 
                 field: "precio", 
-                width: 110,
+                width: 125,
                 hozAlign: "right",
                 headerHozAlign: "right",
                 formatter: function(cell) {
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             { 
                 title: "Duración", 
                 field: "duracion_estimada", 
-                width: 110,
+                width: 125,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 formatter: function(cell) {
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             { 
                 title: "Estado", 
                 field: "estado_servicio", 
-                width: 100,
+                width: 125,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 formatter: function(cell) {

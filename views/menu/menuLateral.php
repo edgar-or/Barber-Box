@@ -77,6 +77,13 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
           </a>
         </li>
 
+        <li class="sidebar-menu-item">
+          <a href="/barberBox/views/tabla-citas.php" class="sidebar-menu-link <?= ($currentPage === 'citas') ? 'active' : ''; ?>" id="menu-citas">
+            <i class="bi bi-calendar-check"></i>
+            <span><?= ((int)($_SESSION['id_rol'] ?? 0) === ROL_ADMIN) ? 'Historial de citas' : 'Mis citas'; ?></span>
+          </a>
+        </li>
+
       </ul>
     </div>
 
