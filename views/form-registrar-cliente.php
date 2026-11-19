@@ -2,36 +2,38 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-  $currentPage = 'clientes'; 
+$currentPage = 'clientes';
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Cliente</title>
-    
+
     <!-- SEO Optimization -->
     <meta name="description" content="Login Screen - Spark Admin Premium Bootstrap 5 Admin Dashboard Template">
     <meta name="author" content="Spark Admin Team">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/images/favicon.ico">
-    
+
     <!-- Local Third-Party Libraries (100% Offline Compatible) -->
     <link rel="stylesheet" href="../assets/libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/libs/bootstrap-icons/bootstrap-icons.css">
-    
+
     <!-- Main Design System & Custom Stylesheet -->
     <link rel="stylesheet" href="../assets/css/main.css">
 </head>
+
 <body>
     <!-- menús solo si hay un usuario en sesion -->
-<?php if (isset($_SESSION['idusuario']) && !empty($_SESSION['idusuario'])): ?>
-    <?php include './menu/menuLateral.php'; ?>
-    <?php include './menu/menu-header.php'; ?>
-<?php endif; ?>
+    <?php if (isset($_SESSION['idusuario']) && !empty($_SESSION['idusuario'])): ?>
+        <?php include './menu/menuLateral.php'; ?>
+        <?php include './menu/menu-header.php'; ?>
+    <?php endif; ?>
 
     <div class="login-wrapper">
 
@@ -70,7 +72,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <div class="login-input-group">
                                             <i class="bi bi-person input-icon"></i>
                                             <input type="text" id="nombre" name="nombre" class="login-input form-control"
-                                                   placeholder="Edgar" maxlength="60" autocomplete="given-name" required>
+                                                placeholder="Edgar" maxlength="60" autocomplete="given-name" required>
                                         </div>
                                     </div>
 
@@ -79,7 +81,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <div class="login-input-group">
                                             <i class="bi bi-person-badge input-icon"></i>
                                             <input type="text" id="apellido" name="apellido" class="login-input form-control"
-                                                   placeholder="Ayala" maxlength="60" autocomplete="family-name" required>
+                                                placeholder="Ayala" maxlength="60" autocomplete="family-name" required>
                                         </div>
                                     </div>
 
@@ -88,8 +90,8 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <div class="login-input-group">
                                             <i class="bi bi-telephone input-icon"></i>
                                             <input type="tel" id="telefono" name="telefono" class="login-input form-control"
-                                                   placeholder="6776-9876" maxlength="9"
-                                                   title="Ingresa 8 dígitos, por ejemplo 6776-9876" required>
+                                                placeholder="6776-9876" maxlength="9"
+                                                title="Ingresa 8 dígitos, por ejemplo 6776-9876" required>
                                         </div>
                                     </div>
 
@@ -98,7 +100,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <div class="login-input-group">
                                             <i class="bi bi-envelope input-icon"></i>
                                             <input type="email" id="correo" name="correo" class="login-input form-control"
-                                                   placeholder="edgar@gmail.com" maxlength="120" autocomplete="email" required>
+                                                placeholder="edgar@gmail.com" maxlength="120" autocomplete="email" required>
                                         </div>
                                     </div>
 
@@ -116,9 +118,9 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <div class="login-input-group">
                                             <i class="bi bi-at input-icon"></i>
                                             <input type="text" id="usuario" name="usuario" class="login-input form-control"
-                                                   placeholder="edgar.ayala" autocomplete="username"
-                                                   pattern="[A-Za-z0-9_.]{4,30}" minlength="4" maxlength="30"
-                                                   title="De 4 a 30 caracteres: letras, números, punto o guion bajo" required>
+                                                placeholder="edgar.ayala" autocomplete="username"
+                                                pattern="[A-Za-z0-9_.]{4,30}" minlength="4" maxlength="30"
+                                                title="De 4 a 30 caracteres: letras, números, punto o guion bajo" required>
                                         </div>
                                     </div>
 
@@ -127,10 +129,10 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <div class="login-input-group">
                                             <i class="bi bi-shield-lock input-icon"></i>
                                             <input type="password" id="contrasenia" name="contrasenia"
-                                                   class="login-input login-input-password form-control"
-                                                   placeholder="••••••••"  autocomplete="new-password" required>
+                                                class="login-input login-input-password form-control"
+                                                placeholder="••••••••" autocomplete="new-password" required>
                                             <button type="button" class="password-toggle-btn" id="toggle-password"
-                                                    aria-label="Mostrar contraseña">
+                                                aria-label="Mostrar contraseña">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                         </div>
@@ -141,11 +143,29 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <div class="login-input-group">
                                             <i class="bi bi-shield-check input-icon"></i>
                                             <input type="password" id="contrasenia_confirm" name="contrasenia_confirm"
-                                                   class="login-input login-input-password form-control"
-                                                   placeholder="••••••••" autocomplete="new-password" required>
+                                                class="login-input login-input-password form-control"
+                                                placeholder="••••••••" autocomplete="new-password" required>
                                             <button type="button" class="password-toggle-btn" id="toggle-password-confirm"
-                                                    aria-label="Mostrar contraseña">
+                                                aria-label="Mostrar contraseña">
                                                 <i class="bi bi-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="login-form-group">
+                                        <label for="codigoVerificacion" class="login-form-label">Código de validación</label>
+                                        <div class="login-input-group position-relative">
+                                            <i class="bi bi-shield-check input-icon"></i>
+
+                                            <input type="text" id="codigoVerificacion" name="codigoVerificacion"
+                                                class="login-input form-control"
+                                                style="padding-right: 115px;"
+                                                placeholder="#####" autocomplete="off"
+                                                pattern="[A-Za-z0-9_.]{4,30}" minlength="4" maxlength="30" required>
+
+                                            <button type="button" class="btn-send-code" id="btnEnviarCodigo" title="Enviar código al correo">
+                                                <i class="bi bi-send-fill"></i>
+                                                <span>Enviar</span>
                                             </button>
                                         </div>
                                     </div>
@@ -157,8 +177,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
                         <!-- Botón centrado debajo de los dos paneles -->
                         <div class="d-flex flex-column align-items-center gap-3 mt-4">
-                           <button type="button" class="btn-login w-auto px-5" id="btnRegistrar" name="btnRegistrar">Registrar 
-                            <i class="bi bi-person-plus"></i></button>
+                            <button type="button" class="btn-login w-auto px-5" id="btnRegistrar" name="btnRegistrar">Registrar
+                                <i class="bi bi-person-plus"></i></button>
                             <p class="mb-0">¿Ya tienes cuenta? <a href="/barberBox/page-login.php">Inicia sesión</a></p>
                         </div>
 
@@ -175,14 +195,15 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/JSRegistrarCliente.js"></script>
 
-     <!-- Local Third-Party Libraries Script dependencies -->
-  <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
-  <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>
+    <!-- Local Third-Party Libraries Script dependencies -->
+    <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+    <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>
 
-  <!-- Local dashboard interactions controller -->
-  <script src="../assets/js/dashboard.js"></script>
-    
+    <!-- Local dashboard interactions controller -->
+    <script src="../assets/js/dashboard.js"></script>
+
     <!-- Custom Authentication interactions script -->
     <script src="../assets/js/auth.js"></script>
 </body>
+
 </html>

@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 resultado = JSON.parse(texto);
             } catch (e) {
                 console.error("El servidor no devolvió un JSON válido:", texto);
-                Swal.fire("Error del Servidor", "Revisa la consola (F12) para ver qué falló en el PHP.", "error");
+                Swal.fire("Error del Servidor", "Ocurrio un error", "error");
                 return; 
             }
 

@@ -1,4 +1,28 @@
 <?php
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $correo          = $_POST['email'] ?? '';
+    $codigoIngresado = trim($_POST['codigoVerificacion'] ?? '');
+
+    // Validar que el código y el correo coincidan con los de la sesión
+    if (!isset($_SESSION['codigo_verificacion']) || $codigoIngresado !== (string)$_SESSION['codigo_verificacion'] || $correo !== $_SESSION['correo_verificacion']) {
+        // Redirigir de vuelta con un mensaje de error
+        header("Location: page-login.php?error=codigo_invalido");
+        exit;
+    }
+
+    // Código válido: limpiar sesión y guardar en la base de datos
+    unset($_SESSION['codigo_verificacion']);
+    unset($_SESSION['correo_verificacion']);
+
+    // Aquí va tu código SQL / DAO para insertar al cliente...
+    header("Location: page-login.php?registro=exitoso");
+    exit;
+}
+?>
+
+<?php
 
 
 $telefono = $_POST['telefono'] ?? '';

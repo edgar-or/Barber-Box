@@ -55,6 +55,39 @@
    Estilos de Barbería para Pantalla de Login
    ========================================== */
 
+
+   /* Botón integrado dentro del input de código */
+.btn-send-code {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--barber-red, #d90429);
+  color: var(--barber-white, #ffffff);
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  z-index: 5;
+}
+
+.btn-send-code:hover {
+  background-color: var(--barber-blue-light, #0077b6); /* Cambia a azul al pasar el mouse */
+  color: #ffffff;
+}
+
+.btn-send-code:disabled {
+  background-color: #4a4a4a;
+  color: #a0a0a0;
+  cursor: not-allowed;
+}
+
 /* Fondo general de la página de Login */
 .login-wrapper {
   background-color: var(--barber-black) !important;

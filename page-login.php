@@ -42,7 +42,7 @@
                 <span>Barber-Box</span>
             </a>
             
-            <p class="login-subtitle">Porfavor inicie sesion</p>
+            <p class="login-subtitle">Por favor inicie sesion</p>
             
             <!-- Login Form -->
             <form id="form-login" method="POST" class="needs-validation" novalidate>

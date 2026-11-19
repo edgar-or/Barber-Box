@@ -201,11 +201,6 @@ function limpiarCampos() {
 
 //////////PROCESA AL TERMINAR DE CARGAR LA PAGINA
 document.addEventListener("DOMContentLoaded", async () => {
-    
-    
-    
-    
-
     // Obtener el ID de la URL (Modo Edición)
     const parametros = new URLSearchParams(window.location.search);
     const idcliente = parametros.get("id");
@@ -248,5 +243,49 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.error(error);
         }
     }
+});
+
+
+document.getElementById('btnEnviarCodigo').addEventListener('click', function() {
+    const btn = this;
+    const emailInput = document.getElementById('email').value;
+
+    if (!emailInput) {
+        alert('Por favor, escribe primero tu correo electrónico.');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span>Enviando...</span>';
+
+    const formData = new FormData();
+    formData.append('email', emailInput);
+
+    fetch('enviarCodigo.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            btn.innerHTML = '<i class="bi bi-check-lg"></i> <span>Enviado</span>';
+            alert(data.mensaje);
+            
+            // Reactivar botón después de 30 segundos
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-send-fill"></i> <span>Reenviar</span>';
+            }, 30000);
+        } else {
+            alert(data.mensaje);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-send-fill"></i> <span>Enviar</span>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-send-fill"></i> <span>Enviar</span>';
+    });
 });
 

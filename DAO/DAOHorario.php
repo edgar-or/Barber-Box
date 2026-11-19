@@ -38,8 +38,11 @@ if ($opcion == "guardar_uno") {
     $check->close();
  
     // dia_semana es texto: "isss" (int, string, string, string)
-    $stmt = $conexion->prepare("INSERT INTO horario_empleado (id_empleado, dia_semana, hora_entrada, hora_salida) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("isss", $id_empleado, $dia, $entrada, $salida);
+
+    //$stmt = $conexion->prepare("INSERT INTO horario_empleado (id_empleado, dia_semana, hora_entrada, hora_salida) VALUES (?, ?, ?, ?)");
+ $stmt = $conexion->prepare("INSERT INTO horario_empleado (dia_semana, hora_entrada, hora_salida, id_empleado) VALUES (?, ?, ?, ?)");
+
+    $stmt->bind_param("sssi",  $dia, $entrada, $salida, $id_empleado);
  
     if ($stmt->execute()) {
         echo json_encode(["estado" => true, "mensaje" => "Guardado"]);
