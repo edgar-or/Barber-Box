@@ -53,3 +53,13 @@ function requerirEmpleadoJson(): void {
         exit;
     }
 }
+
+/** Endpoints JSON del cliente: corta con 403 si no es cliente. */
+function requerirClienteJson(): void {
+    if (!esCliente()) {
+        http_response_code(403);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(["estado" => false, "mensaje" => "Acceso solo para clientes."]);
+        exit;
+    }
+}

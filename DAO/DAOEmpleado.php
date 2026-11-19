@@ -175,9 +175,7 @@ if ($opcion == "eliminar") {
         $conexion->close();
     }
 }
-if ($opcion == "consultarDUI") {
-    echo json_encode(["estado" => false, "mensaje" => "La tabla no tiene campo DUI"]);
-}
+
 
 if ($opcion == "consultar") {
     require_once "../config/conexion.php";
