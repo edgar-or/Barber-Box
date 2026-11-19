@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . "/../config/auth.php";
 
 // Limpiar cualquier HTML o espacios previos antes de enviar el JSON
 if (ob_get_length()) ob_clean();
@@ -14,7 +14,7 @@ if ($opcion === "iniciar_sesion") {
         $usuario = trim($_POST['usuario'] ?? '');
         $clave = trim($_POST['clave'] ?? '');
 
-        $sql = "SELECT id_usuario, usuario, contrasena_hash, estado_usuario
+        $sql = "SELECT id_usuario, usuario, contrasena_hash, estado_usuario, id_rol
                 FROM usuario
                 WHERE usuario = ? LIMIT 1;";
 
@@ -28,9 +28,8 @@ if ($opcion === "iniciar_sesion") {
         $resultado = $stmt->get_result();
 
         if ($row = $resultado->fetch_assoc()) {
-            
-            // Verificar si el usuario está activo (opcional)
-            if (isset($row['estado']) && $row['estado'] == 0) {
+
+            if ($row['estado_usuario'] !== 'A') {
                 echo json_encode([
                     "estado" => false,
                     "mensaje" => "El usuario se encuentra inactivo."
@@ -42,15 +41,22 @@ if ($opcion === "iniciar_sesion") {
             $passwordValida = password_verify($clave, $row['contrasena_hash']) || ($clave === $row['contrasena_hash']);
 
             if ($passwordValida) {
-                // Guardar variables en la sesión del servidor
+                session_regenerate_id(true);
+                $idRol = (int)$row['id_rol'];
+
                 $_SESSION['idusuario'] = $row['id_usuario'];
                 $_SESSION['usuario'] = $row['usuario'];
+                $_SESSION['id_rol'] = $idRol;
                 $_SESSION['login_time'] = time();
+
+                // Empleados (admin / barbero) -> panel completo. Clientes -> su panel de citas.
+                $esEmpleado = in_array($idRol, [ROL_ADMIN, ROL_BARBERO], true);
+                $_SESSION['rol_nombre'] = $esEmpleado ? ($idRol === ROL_ADMIN ? 'Administrador' : 'Barbero') : 'Cliente';
 
                 echo json_encode([
                     "estado" => true,
                     "mensaje" => "¡Bienvenido/a " . $row['usuario'] . "!",
-                    "redirect" => "/barberBox/index.php"
+                    "redirect" => $esEmpleado ? "/barberBox/index.php" : "/barberBox/views/cliente-panel.php"
                 ], JSON_UNESCAPED_UNICODE);
             } else {
                 echo json_encode([

@@ -1,16 +1,60 @@
 <?php
+require_once __DIR__ . "/../config/verificacion.php";
+
+// Toda la gestión de empleados es solo para personal autorizado
+requerirEmpleadoJson();
 
 $telefono = $_POST['telefono'] ?? '';
 $nombre = $_POST['nombre'] ?? '';
 $apellido = $_POST['apellido'] ?? '';
-$correo = $_POST['correo'] ?? '';
+$correo = trim($_POST['correo'] ?? '');
 $nickUsuario = $_POST['usuario'] ?? '';
 $contrasenia = $_POST['contrasenia'] ?? '';
 $dui = $_POST['dui'] ?? '';
 $opcion = isset($_REQUEST["opcion"]) ? $_REQUEST["opcion"] : "";
 
-if ($opcion == "guardar") {
+if ($opcion == "enviarCodigo") {
+    header('Content-Type: application/json; charset=utf-8');
+
     require_once "../config/conexion.php";
+    $stmt = $conexion->prepare("SELECT 1 FROM empleado WHERE correo = ? LIMIT 1");
+    $stmt->bind_param("s", $correo);
+    $stmt->execute();
+    $existe = $stmt->get_result()->num_rows > 0;
+    $stmt->close();
+    $conexion->close();
+
+    if ($existe) {
+        echo json_encode(["estado" => false, "mensaje" => "Este correo ya está registrado."]);
+        exit;
+    }
+
+    [$ok, $mensaje] = enviarCodigoVerificacion($correo);
+    echo json_encode(["estado" => $ok, "mensaje" => $mensaje]);
+    exit;
+}
+
+if ($opcion == "guardar") {
+    header('Content-Type: application/json; charset=utf-8');
+
+    // El registro solo procede si el código enviado al correo es válido
+    $errorCodigo = validarCodigoVerificacion($correo, $_POST['codigoVerificacion'] ?? '');
+    if ($errorCodigo !== null) {
+        echo json_encode(["estado" => false, "mensaje" => $errorCodigo]);
+        exit;
+    }
+
+    require_once "../config/conexion.php";
+
+    $stmtDup = $conexion->prepare("SELECT 1 FROM usuario WHERE usuario = ? LIMIT 1");
+    $stmtDup->bind_param("s", $nickUsuario);
+    $stmtDup->execute();
+    if ($stmtDup->get_result()->num_rows > 0) {
+        echo json_encode(["estado" => false, "mensaje" => "El nombre de usuario ya existe."]);
+        exit;
+    }
+    $stmtDup->close();
+
     $conexion->begin_transaction();
 
     try {
@@ -31,9 +75,9 @@ if ($opcion == "guardar") {
         $id_usuario_generado = $conexion->insert_id;
         $stmtUser->close();
 
-        $sqlEmpleado = "INSERT INTO empleado (nombre, apellido, telefono, id_usuario, dui) VALUES (?, ?, ?, ?, ?)";
+        $sqlEmpleado = "INSERT INTO empleado (nombre, apellido, telefono, correo, id_usuario, dui) VALUES (?, ?, ?, ?, ?, ?)";
         $stmtEmp = $conexion->prepare($sqlEmpleado);
-        $stmtEmp->bind_param("sssis", $nombre, $apellido, $telefono, $id_usuario_generado, $dui);
+        $stmtEmp->bind_param("ssssis", $nombre, $apellido, $telefono, $correo, $id_usuario_generado, $dui);
 
         if (!$stmtEmp->execute()) {
             throw new Exception("Error al guardar datos del Empleado: " . $stmtEmp->error);
@@ -41,6 +85,7 @@ if ($opcion == "guardar") {
         $stmtEmp->close();
 
         $conexion->commit();
+        consumirCodigoVerificacion();
 
         echo json_encode([
             "estado" => true,
@@ -138,7 +183,7 @@ if ($opcion == "consultar") {
     require_once "../config/conexion.php";
 
     try {
-        $sql = "SELECT id_empleado, nombre, apellido, telefono, dui, concat(nombre,' ',apellido) as nombreCompleto
+        $sql = "SELECT id_empleado, nombre, apellido, telefono, correo, dui, concat(nombre,' ',apellido) as nombreCompleto
                 FROM empleado
                 ORDER BY nombre;";
 
@@ -156,6 +201,7 @@ if ($opcion == "consultar") {
                 'nombre' => $fila['nombre'],
                 'apellido' => $fila['apellido'],
                 'telefono' => $fila['telefono'],
+                'correo' => $fila['correo'],
                 'nombreCompleto' => $fila['nombreCompleto'],
                 'dui' => $fila['dui']
             ];
@@ -175,7 +221,7 @@ if ($opcion == "consultarIndividual") {
 
     $idempleado = $_POST['idempleado'] ?? 0; 
 
-    $sql = "SELECT id_empleado, nombre, apellido, telefono, dui FROM empleado WHERE id_empleado=?";
+    $sql = "SELECT id_empleado, nombre, apellido, telefono, correo, dui FROM empleado WHERE id_empleado=?";
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $idempleado);
 
@@ -191,6 +237,7 @@ if ($opcion == "consultarIndividual") {
                 "nombre" => $datos["nombre"],
                 "apellido" => $datos["apellido"],
                 "telefono" => $datos["telefono"],
+                "correo" => $datos["correo"],
                 "dui" => $datos["dui"] 
             ]
         ]);

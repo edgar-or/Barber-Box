@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../config/auth.php";
+requerirEmpleadoJson();
 
 $nombre_servicio   = $_POST['nombre'] ?? '';
 $descripcion       = $_POST['descripcion'] ?? '';

@@ -1,5 +1,9 @@
 <?php
-$currentPage = $currentPage ?? '';
+require_once __DIR__ . "/../../config/auth.php";
+$currentPage = $currentPage ?? "";
+$esCliente = esCliente();
+$nombreSidebar = $_SESSION["usuario"] ?? "Invitado";
+$rolSidebar = $_SESSION["rol_nombre"] ?? "";
 ?>
 
 <!-- ==========================================
@@ -8,19 +12,39 @@ $currentPage = $currentPage ?? '';
      ========================================== -->
 <div class="sidebar-wrapper" id="sidebar">
   <!-- Brand Logo / Identity -->
-  <a href="index.php" class="sidebar-brand">
+  <a href="<?= $esCliente ? "/barberBox/views/cliente-panel.php" : "/barberBox/index.php"; ?>" class="sidebar-brand">
     <i class="bi bi-asterisk"></i>
     <span>BARBER-BOX</span>
   </a>
 
   <!-- Navigation Menu -->
   <div class="flex-grow-1 overflow-y-auto">
+    <?php if ($esCliente): ?>
+    <!-- Menú del cliente: agendar y ver historial -->
+    <div class="sidebar-menu-section">
+      <div class="sidebar-menu-title">Mi cuenta</div>
+      <ul class="sidebar-menu-list">
+        <li class="sidebar-menu-item">
+          <a href="/barberBox/views/cliente-panel.php#agendar" class="sidebar-menu-link <?= ($currentPage === 'cliente-panel') ? 'active' : ''; ?>" data-tab="agendar">
+            <i class="bi bi-calendar-plus"></i>
+            <span>Agendar cita</span>
+          </a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="/barberBox/views/cliente-panel.php#historial" class="sidebar-menu-link" data-tab="historial">
+            <i class="bi bi-clock-history"></i>
+            <span>Mi historial</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <?php else: ?>
     <!-- Group: Menu -->
     <div class="sidebar-menu-section">
       <div class="sidebar-menu-title">Menu</div>
       <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
-          <a href="../index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-dash" title="Overview">
+          <a href="/barberBox/index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-dash" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Dashboard</span>
           </a>
@@ -105,6 +129,7 @@ $currentPage = $currentPage ?? '';
         </li>
       </ul>
     </div>
+    <?php endif; ?>
   </div>
 
   <!-- Sidebar Profile Card (Dynamic Footer) -->
@@ -112,8 +137,8 @@ $currentPage = $currentPage ?? '';
     <img src="/barberBox/assets/images/avatar.png" alt="Administrator" class="sidebar-profile-img"
       onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop'">
     <div class="sidebar-profile-info">
-      <div class="sidebar-profile-name">Administrator</div>
-      <div class="sidebar-profile-email">admin@email.com</div>
+      <div class="sidebar-profile-name"><?= htmlspecialchars($nombreSidebar); ?></div>
+      <div class="sidebar-profile-email"><?= htmlspecialchars($rolSidebar); ?></div>
     </div>
   </div>
 </div>

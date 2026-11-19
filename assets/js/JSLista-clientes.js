@@ -64,7 +64,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             { title: "Nombre", field: "nombre", visible: false },
             { title: "Apellido", field: "apellido", visible: false },
             { title: "Teléfono", field: "telefono" },
-            { title: "Correo", field: "correo" },
+            {
+                title: "Correo",
+                field: "correo",
+                formatter: function (cell) {
+                    const v = cell.getValue();
+                    return v ? `<span class="celda-correo"><i class="bi bi-envelope"></i>${v}</span>` : '<span class="text-muted">—</span>';
+                }
+            },
             { 
                 title: "Acciones", 
                 headerHozAlign: "center", 

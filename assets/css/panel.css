@@ -1,0 +1,110 @@
+/* Panel del cliente: agendar cita e historial */
+
+.panel-tabs { gap: .5rem; }
+.panel-tabs .nav-link {
+  color: var(--brand-forest-medium, #072F1F);
+  background: #fff;
+  border-radius: 12px;
+  font-weight: 700;
+  padding: .7rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(11, 19, 15, .05);
+}
+.panel-tabs .nav-link.active {
+  background: var(--brand-forest-medium, #072F1F);
+  color: var(--brand-lime, #B4F105);
+}
+
+.panel-step,
+.panel-resumen,
+.panel-historial {
+  border: 0;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(11, 19, 15, .06);
+}
+.panel-historial { padding: 0; overflow: hidden; }
+.panel-historial th {
+  background: #F8FAF9;
+  color: var(--text-muted-green, #6C7E75);
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 1rem 1.25rem;
+}
+.panel-historial td { padding: 1rem 1.25rem; }
+
+.panel-step-title {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  font-weight: 800;
+  margin-bottom: 1.1rem;
+}
+.step-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-lime, #B4F105);
+  color: var(--brand-forest-dark, #051C12);
+  font-size: .85rem;
+}
+
+/* Tarjetas de servicio seleccionables */
+.servicio-opcion { cursor: pointer; margin: 0; }
+.servicio-opcion-body {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 100%;
+  padding: 1rem 2.5rem 1rem 1rem;
+  border: 2px solid #E9EFEF;
+  border-radius: 14px;
+  transition: all .2s ease;
+}
+.servicio-opcion:hover .servicio-opcion-body { border-color: var(--brand-forest-light, #1A3E30); }
+.servicio-opcion input:checked + .servicio-opcion-body {
+  border-color: var(--brand-forest-medium, #072F1F);
+  background: rgba(180, 241, 5, .12);
+}
+.servicio-precio { font-weight: 800; color: var(--brand-forest-medium, #072F1F); }
+.servicio-check {
+  position: absolute;
+  top: .6rem;
+  right: .7rem;
+  font-size: 1.15rem;
+  color: var(--brand-forest-medium, #072F1F);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+.servicio-opcion input:checked + .servicio-opcion-body .servicio-check { opacity: 1; }
+
+/* Horarios */
+.btn-hora {
+  border: 2px solid #E9EFEF;
+  background: #fff;
+  border-radius: 10px;
+  padding: .5rem 1rem;
+  font-weight: 700;
+  transition: all .2s ease;
+}
+.btn-hora:hover { border-color: var(--brand-forest-light, #1A3E30); }
+.btn-hora.activo {
+  background: var(--brand-forest-medium, #072F1F);
+  border-color: var(--brand-forest-medium, #072F1F);
+  color: var(--brand-lime, #B4F105);
+}
+
+/* Resumen */
+.panel-resumen { top: 100px; }
+.resumen-linea {
+  display: flex;
+  justify-content: space-between;
+  padding: .55rem 0;
+  border-top: 1px dashed #E9EFEF;
+  font-size: .9rem;
+}
+.resumen-linea.total { font-size: 1.15rem; border-top: 2px solid #E9EFEF; }

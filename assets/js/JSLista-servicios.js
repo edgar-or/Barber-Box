@@ -41,9 +41,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 formatter: function(cell) {
                     const imgs = cell.getValue();
                     if (Array.isArray(imgs) && imgs.length > 0) {
-                        return `<img src="/barberBox/${imgs[0].ruta_imagen}" alt="Servicio" style="width: 35px; height: 35px; object-fit: cover; border-radius: 50%;">`;
+                        return `<img src="/barberBox/${imgs[0].ruta_imagen}" alt="Servicio" class="table-user-avatar">`;
                     }
-                    return `<span class="text-muted" style="font-size: 0.75rem;">Sin foto</span>`;
+                    return `<span class="table-user-avatar sin-foto"><i class="bi bi-image"></i></span>`;
                 }
             },
             { title: "Servicio", field: "nombre_servicio", width: 180 },
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 headerHozAlign: "right",
                 formatter: function(cell) {
                     const valor = parseFloat(cell.getValue()) || 0;
-                    return `$${valor.toFixed(2)}`;
+                    return `<strong class="celda-precio">$${valor.toFixed(2)}</strong>`;
                 }
             },
             { 
@@ -78,8 +78,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 formatter: function(cell) {
                     const estado = cell.getValue();
                     return estado === 'A' 
-                        ? '<span class="badge bg-success">Activo</span>' 
-                        : '<span class="badge bg-danger">Inactivo</span>';
+                        ? '<span class="badge-table success">Activo</span>'
+                        : '<span class="badge-table failed">Inactivo</span>';
                 }
             },
             { 

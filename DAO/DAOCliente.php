@@ -1,42 +1,63 @@
 <?php
-session_start();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $correo          = $_POST['email'] ?? '';
-    $codigoIngresado = trim($_POST['codigoVerificacion'] ?? '');
-
-    // Validar que el código y el correo coincidan con los de la sesión
-    if (!isset($_SESSION['codigo_verificacion']) || $codigoIngresado !== (string)$_SESSION['codigo_verificacion'] || $correo !== $_SESSION['correo_verificacion']) {
-        // Redirigir de vuelta con un mensaje de error
-        header("Location: page-login.php?error=codigo_invalido");
-        exit;
-    }
-
-    // Código válido: limpiar sesión y guardar en la base de datos
-    unset($_SESSION['codigo_verificacion']);
-    unset($_SESSION['correo_verificacion']);
-
-    // Aquí va tu código SQL / DAO para insertar al cliente...
-    header("Location: page-login.php?registro=exitoso");
-    exit;
-}
-?>
-
-<?php
-
+require_once __DIR__ . "/../config/verificacion.php";
 
 $telefono = $_POST['telefono'] ?? '';
 $nombre = $_POST['nombre'] ?? '';
 $apellido = $_POST['apellido'] ?? '';
-$correo = $_POST['correo'] ?? '';
+$correo = trim($_POST['correo'] ?? '');
 $nickUsuario = $_POST['usuario'] ?? '';
 $contrasenia = $_POST['contrasenia'] ?? '';
 
-
 $opcion = isset($_REQUEST["opcion"]) ? $_REQUEST["opcion"] : "";
 
-if ($opcion == "guardar") {
+// El autoregistro es público; todo lo demás (administrar clientes) es solo para empleados
+if (!in_array($opcion, ["enviarCodigo", "guardar"], true)) {
+    requerirEmpleadoJson();
+}
+
+if ($opcion == "enviarCodigo") {
+    header('Content-Type: application/json; charset=utf-8');
+
     require_once "../config/conexion.php";
+    $stmt = $conexion->prepare("SELECT 1 FROM cliente WHERE correo = ? LIMIT 1");
+    $stmt->bind_param("s", $correo);
+    $stmt->execute();
+    $existe = $stmt->get_result()->num_rows > 0;
+    $stmt->close();
+    $conexion->close();
+
+    if ($existe) {
+        echo json_encode(["estado" => false, "mensaje" => "Este correo ya está registrado."]);
+        exit;
+    }
+
+    [$ok, $mensaje] = enviarCodigoVerificacion($correo);
+    echo json_encode(["estado" => $ok, "mensaje" => $mensaje]);
+    exit;
+}
+
+if ($opcion == "guardar") {
+    header('Content-Type: application/json; charset=utf-8');
+
+    // El registro solo procede si el código enviado al correo es válido
+    $errorCodigo = validarCodigoVerificacion($correo, $_POST['codigoVerificacion'] ?? '');
+    if ($errorCodigo !== null) {
+        echo json_encode(["estado" => false, "mensaje" => $errorCodigo]);
+        exit;
+    }
+
+    require_once "../config/conexion.php";
+
+    // Usuario duplicado
+    $stmtDup = $conexion->prepare("SELECT 1 FROM usuario WHERE usuario = ? LIMIT 1");
+    $stmtDup->bind_param("s", $nickUsuario);
+    $stmtDup->execute();
+    if ($stmtDup->get_result()->num_rows > 0) {
+        echo json_encode(["estado" => false, "mensaje" => "El nombre de usuario ya existe."]);
+        exit;
+    }
+    $stmtDup->close();
+
     $conexion->begin_transaction();
 
     try {
@@ -71,6 +92,10 @@ if ($opcion == "guardar") {
 
         // Confirmar ambas operaciones en la base de datos
         $conexion->commit();
+
+        // Código consumido
+        unset($_SESSION['codigo_verificacion'], $_SESSION['correo_verificacion'],
+              $_SESSION['codigo_expira'], $_SESSION['codigo_intentos'], $_SESSION['codigo_enviado_en']);
 
         echo json_encode([
             "estado" => true,

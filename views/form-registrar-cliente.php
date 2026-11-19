@@ -26,6 +26,7 @@ $currentPage = 'clientes';
 
     <!-- Main Design System & Custom Stylesheet -->
     <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/registro.css">
 </head>
 
 <body>
@@ -54,6 +55,7 @@ $currentPage = 'clientes';
                         </a>
                     </div>
 
+                    <h1 class="h3 register-title text-center mb-1">Crea tu cuenta</h1>
                     <p class="login-subtitle text-center mb-4">Por favor, complete los datos</p>
 
                     <!-- UN solo formulario que envuelve ambos paneles -->
@@ -63,9 +65,9 @@ $currentPage = 'clientes';
 
                             <!-- ===== Panel izquierdo: datos personales ===== -->
                             <div class="col-12 col-md-6">
-                                <div class="login-card w-100 mw-100 m-0 h-100">
+                                <div class="login-card register-card w-100 mw-100 m-0 h-100">
 
-                                    <h2 class="h5 mb-4 text-white"><i class="bi bi-person me-2"></i>Datos personales</h2>
+                                    <h2 class="h5 mb-4 register-card-title"><span class="icon-badge"><i class="bi bi-person"></i></span>Datos personales</h2>
 
                                     <div class="login-form-group">
                                         <label for="nombre" class="login-form-label">Nombre</label>
@@ -109,9 +111,9 @@ $currentPage = 'clientes';
 
                             <!-- ===== Panel derecho: usuario y contraseña ===== -->
                             <div class="col-12 col-md-6">
-                                <div class="login-card w-100 mw-100 m-0 h-100">
+                                <div class="login-card register-card w-100 mw-100 m-0 h-100">
 
-                                    <h2 class="h5 mb-4 text-white"><i class="bi bi-shield-lock me-2"></i>Datos de la cuenta</h2>
+                                    <h2 class="h5 mb-4 register-card-title"><span class="icon-badge"><i class="bi bi-shield-lock"></i></span>Datos de la cuenta</h2>
 
                                     <div class="login-form-group">
                                         <label for="usuario" class="login-form-label">Usuario</label>
@@ -168,6 +170,7 @@ $currentPage = 'clientes';
                                                 <span>Enviar</span>
                                             </button>
                                         </div>
+                                        <div class="register-hint"><i class="bi bi-info-circle me-1"></i>Presiona "Enviar" para recibir un código en tu correo. Vence en 10 minutos.</div>
                                     </div>
 
                                 </div>
@@ -177,7 +180,7 @@ $currentPage = 'clientes';
 
                         <!-- Botón centrado debajo de los dos paneles -->
                         <div class="d-flex flex-column align-items-center gap-3 mt-4">
-                            <button type="button" class="btn-login w-auto px-5" id="btnRegistrar" name="btnRegistrar">Registrar
+                            <button type="button" class="btn-login btn-register w-auto px-5" id="btnRegistrar" name="btnRegistrar">Registrar
                                 <i class="bi bi-person-plus"></i></button>
                             <p class="mb-0">¿Ya tienes cuenta? <a href="/barberBox/page-login.php">Inicia sesión</a></p>
                         </div>

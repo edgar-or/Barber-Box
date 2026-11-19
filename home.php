@@ -1,4 +1,28 @@
-<!DOCTYPE html>
+<?php
+require_once __DIR__ . '/config/conexion.php';
+
+// Servicios activos desde la BD
+$servicios = [];
+$res = $conexion->query(
+    "SELECT id_servicio, nombre_servicio, descripcion, precio, duracion_estimada
+     FROM servicio WHERE estado_servicio = 'A' ORDER BY nombre_servicio"
+);
+if ($res) {
+    while ($f = $res->fetch_assoc()) { $f['imagen'] = null; $servicios[$f['id_servicio']] = $f; }
+    $res->free();
+}
+
+// Primera imagen de cada servicio (la tabla puede no existir aún)
+try {
+    $resImg = $conexion->query("SELECT id_servicio, MIN(ruta_imagen) AS ruta FROM servicio_imagen GROUP BY id_servicio");
+    if ($resImg) {
+        while ($i = $resImg->fetch_assoc()) {
+            if (isset($servicios[$i['id_servicio']])) { $servicios[$i['id_servicio']]['imagen'] = $i['ruta']; }
+        }
+    }
+} catch (Throwable $e) { /* sin imágenes */ }
+$conexion->close();
+?><!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -15,6 +39,7 @@
 
   <!-- Estilos personalizados -->
   <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/registro.css">
 </head>
 
 <body class="bg-dark text-white">
@@ -54,81 +79,74 @@
   <!-- ==========================================
        Hero Section (Bienvenida)
        ========================================== -->
-<section class="py-5 text-center position-relative border-bottom border-secondary bg-black" style="background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('assets/images/barber1.jpg') center/cover no-repeat;">
-        <div class="container py-5">
+  <section class="home-hero text-center position-relative border-bottom border-secondary">
+    <div class="container py-5">
       <span class="badge bg-danger text-uppercase px-3 py-2 mb-3">La experiencia que mereces</span>
-      <h1 class="display-3 fw-bold mb-3 text-white">CORTE & ESTILO CLÁSICO</h1>
-      <p class="lead text-light mx-auto mb-4" style="max-width: 600px;">
+      <h1 class="display-3 mb-3 text-white">CORTE &amp; <span>ESTILO</span> CLÁSICO</h1>
+      <p class="lead text-light mx-auto mb-4" style="max-width: 620px;">
         Reserva tu cita en línea en segundos, elige a tu barbero preferido y disfruta de una atención de primera clase.
       </p>
-      <div class="d-flex justify-content-center gap-3">
+      <div class="d-flex flex-wrap justify-content-center gap-3 mb-5">
         <a href="page-login.php" class="btn btn-danger btn-lg px-4 fw-bold">
           <i class="bi bi-calendar-check me-2"></i>Agendar Cita Ahora
         </a>
-        <a href="#servicios" class="btn btn-outline-primary btn-lg px-4 fw-bold">
-          Ver Servicios
-        </a>
+        <a href="#servicios" class="btn btn-outline-light btn-lg px-4 fw-bold">Ver Servicios</a>
+      </div>
+      <div class="home-stats row g-3 justify-content-center">
+        <div class="col-6 col-md-3"><div class="stat"><strong class="text-danger"><?= count($servicios); ?></strong><small class="text-white-50">Servicios</small></div></div>
+        <div class="col-6 col-md-3"><div class="stat"><strong class="text-danger">100%</strong><small class="text-white-50">Reserva en línea</small></div></div>
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       Nuestros Servicios
+       Nuestros Servicios (dinámicos desde la BD)
        ========================================== -->
   <section id="servicios" class="py-5 border-bottom border-secondary">
     <div class="container py-4">
       <div class="text-center mb-5">
-        <h2 class="fw-bold text-white"><i class="bi bi-scissors text-danger me-2"></i>Nuestros Servicios</h2>
-        <p class="text-muted">Servicios profesionales para mantener tu estilo al día.</p>
+        <h2 class="section-title text-white"><i class="bi bi-scissors text-danger me-2"></i>Nuestros Servicios</h2>
+        <p class="text-white-50 mt-3">Servicios profesionales para mantener tu estilo al día.</p>
       </div>
 
-      <div class="row g-4">
-        <div class="col-12 col-md-4">
-          <div class="card bg-black text-white border-secondary h-100 p-4 text-center">
-            <div class="p-3 bg-danger bg-opacity-20 text-danger rounded-circle mx-auto mb-3" style="width: 60px; height: 60px;">
-              <i class="bi bi-scissors fs-3"></i>
-            </div>
-            <h4 class="fw-bold text-light mb-2">Corte Tradicional</h4>
-            <p class="text-white-50 small">Corte a tijera o máquina, incluye lavado con masaje capilar y peinado con fijación.</p>
-            <h5 class="text-primary fw-bold mt-auto">$15.00</h5>
+      <div class="row g-4 justify-content-center">
+        <?php if (empty($servicios)): ?>
+          <div class="col-12 text-center text-white-50">
+            <i class="bi bi-info-circle fs-3 d-block mb-2"></i>Pronto publicaremos nuestros servicios.
           </div>
-        </div>
+        <?php endif; ?>
 
-        <div class="col-12 col-md-4">
-          <div class="card bg-black text-white border-secondary h-100 p-4 text-center">
-            <div class="p-3 bg-primary bg-opacity-20 text-primary rounded-circle mx-auto mb-3" style="width: 60px; height: 60px;">
-              <i class="bi bi-slash-circle fs-3"></i>
+        <?php foreach ($servicios as $s): ?>
+          <div class="col-12 col-sm-6 col-lg-4">
+            <div class="service-card h-100 d-flex flex-column">
+              <div class="service-media">
+                <?php if (!empty($s['imagen'])): ?>
+                  <img src="<?= htmlspecialchars($s['imagen']); ?>" alt="<?= htmlspecialchars($s['nombre_servicio']); ?>" loading="lazy">
+                <?php else: ?>
+                  <i class="bi bi-scissors"></i>
+                <?php endif; ?>
+              </div>
+              <div class="p-4 d-flex flex-column flex-grow-1 text-center">
+                <h4 class="fw-bold text-light mb-2"><?= htmlspecialchars($s['nombre_servicio']); ?></h4>
+                <p class="text-white-50 small flex-grow-1"><?= htmlspecialchars($s['descripcion'] ?? ''); ?></p>
+                <div class="service-meta mb-2"><i class="bi bi-clock me-1"></i><?= (int)$s['duracion_estimada']; ?> min</div>
+                <div class="service-price">$<?= number_format((float)$s['precio'], 2); ?></div>
+              </div>
             </div>
-            <h4 class="fw-bold text-light mb-2">Afeitado / Barba</h4>
-            <p class="text-white-50 small">Ritual de toalla caliente, perfilado con navaja y bálsamo hidratante.</p>
-            <h5 class="text-primary fw-bold mt-auto">$12.00</h5>
           </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-          <div class="card bg-black text-white border-secondary h-100 p-4 text-center">
-            <div class="p-3 bg-danger bg-opacity-20 text-danger rounded-circle mx-auto mb-3" style="width: 60px; height: 60px;">
-              <i class="bi bi-star-fill fs-3"></i>
-            </div>
-            <h4 class="fw-bold text-light mb-2">Combo BarberShop</h4>
-            <p class="text-white-50 small">Corte completo + Servicio de Barba completo + Bebida de cortesía.</p>
-            <h5 class="text-primary fw-bold mt-auto">$25.00</h5>
-          </div>
-        </div>
+        <?php endforeach; ?>
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       Llamado a la Acción (Call To Action)
+       Llamado a la Acción
        ========================================== -->
-  <section class="py-5 bg-black border-bottom border-secondary text-center">
+  <section class="cta-section py-5 border-bottom border-secondary text-center">
     <div class="container py-4">
       <h2 class="fw-bold text-white mb-3">¿Listo para renovar tu look?</h2>
-      <p class="text-muted mb-4">Crea una cuenta o inicia sesión para gestionar tus reservas y ver tus citas anteriores.</p>
-      <a href="page-login.php" class="btn btn-primary btn-lg px-5 fw-bold">
-        Acceder al Portal del Cliente
-      </a>
+      <p class="text-white-50 mb-4">Crea una cuenta o inicia sesión para gestionar tus reservas y ver tus citas anteriores.</p>
+      <a href="page-login.php" class="btn btn-danger btn-lg px-5 fw-bold">Acceder al Portal del Cliente</a>
     </div>
   </section>
 

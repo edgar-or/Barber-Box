@@ -23,7 +23,11 @@ const usuario = document.getElementById("usuario");
 const contrasenia = document.getElementById("contrasenia");
 const contrasenia_confirm = document.getElementById("contrasenia_confirm");
 
-const campos = [nombre, apellido, telefono, correo, usuario, contrasenia, contrasenia_confirm];
+const codigoVerificacion = document.getElementById("codigoVerificacion");
+const btnEnviarCodigo = document.getElementById("btnEnviarCodigo");
+const HTML_BTN_REGISTRAR = 'Registrar <i class="bi bi-person-plus"></i>';
+
+const campos = [nombre, apellido, telefono, correo, usuario, contrasenia, contrasenia_confirm, codigoVerificacion];
 const todosLosCampos = [...campos];
 
 if (formulario) {
@@ -110,6 +114,7 @@ if (formulario) {
                         timer: 1500
                     });
                     limpiarCampos();
+                    setTimeout(() => { window.location.href = "../page-login.php"; }, 1600);
                 } else {
                     Swal.fire({
                         position: "top-end",
@@ -129,7 +134,7 @@ if (formulario) {
                 });
             } finally {
                 btnGuardar.disabled = false;
-                btnGuardar.textContent = "Guardar";
+                btnGuardar.innerHTML = HTML_BTN_REGISTRAR;
             }
         }
 
@@ -230,6 +235,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 correo.value = resultado.datos.correo;
                 
 
+                if (codigoVerificacion) {
+                    codigoVerificacion.required = false;
+                    codigoVerificacion.closest('.login-form-group').style.display = 'none';
+                    campos.splice(campos.indexOf(codigoVerificacion), 1);
+                }
                 if (usuario) usuario.closest('.login-form-group').style.display = 'none';
                 
                 if (contrasenia) contrasenia.closest('.login-form-group').style.display = 'none';
@@ -246,46 +256,70 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-document.getElementById('btnEnviarCodigo').addEventListener('click', function() {
-    const btn = this;
-    const emailInput = document.getElementById('email').value;
 
-    if (!emailInput) {
-        alert('Por favor, escribe primero tu correo electrónico.');
-        return;
-    }
-
-    btn.disabled = true;
-    btn.innerHTML = '<span>Enviando...</span>';
-
-    const formData = new FormData();
-    formData.append('email', emailInput);
-
-    fetch('enviarCodigo.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            btn.innerHTML = '<i class="bi bi-check-lg"></i> <span>Enviado</span>';
-            alert(data.mensaje);
-            
-            // Reactivar botón después de 30 segundos
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-send-fill"></i> <span>Reenviar</span>';
-            }, 30000);
-        } else {
-            alert(data.mensaje);
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-send-fill"></i> <span>Enviar</span>';
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-send-fill"></i> <span>Enviar</span>';
+/////////////// MOSTRAR / OCULTAR CONTRASEÑA
+[["toggle-password", contrasenia], ["toggle-password-confirm", contrasenia_confirm]].forEach(([idBtn, input]) => {
+    const btn = document.getElementById(idBtn);
+    if (!btn || !input) return;
+    btn.addEventListener("click", function () {
+        const mostrar = input.type === "password";
+        input.type = mostrar ? "text" : "password";
+        const icono = this.querySelector("i");
+        icono.classList.toggle("bi-eye", !mostrar);
+        icono.classList.toggle("bi-eye-slash", mostrar);
+        this.setAttribute("aria-label", mostrar ? "Ocultar contraseña" : "Mostrar contraseña");
     });
 });
 
+/////////////// ENVIAR CÓDIGO DE VERIFICACIÓN AL CORREO
+const HTML_BTN_ENVIAR = '<i class="bi bi-send-fill"></i> <span>Enviar</span>';
+
+if (btnEnviarCodigo) {
+    btnEnviarCodigo.addEventListener("click", async function () {
+        if (!validarCampo(correo)) {
+            Swal.fire({ icon: "warning", title: "Atención", text: "Escribe primero un correo electrónico válido." });
+            return;
+        }
+
+        btnEnviarCodigo.disabled = true;
+        btnEnviarCodigo.innerHTML = "<span>Enviando...</span>";
+
+        let enviado = false;
+        try {
+            const datos = new FormData();
+            datos.append("opcion", "enviarCodigo");
+            datos.append("correo", correo.value.trim());
+
+            const respuesta = await fetch("../DAO/DAOCliente.php", { method: "POST", body: datos });
+            const resultado = await respuesta.json();
+            enviado = resultado.estado;
+
+            Swal.fire({
+                icon: enviado ? "success" : "error",
+                title: "Barber-Box",
+                text: resultado.mensaje
+            });
+            if (enviado) codigoVerificacion.focus();
+        } catch (error) {
+            console.error(error);
+            Swal.fire({ icon: "error", title: "Barber-Box", text: "Error al conectar con el servidor." });
+        }
+
+        if (enviado) {
+            let resto = 30;
+            btnEnviarCodigo.innerHTML = "<span>30s</span>";
+            const timer = setInterval(() => {
+                resto--;
+                btnEnviarCodigo.innerHTML = `<span>${resto}s</span>`;
+                if (resto <= 0) {
+                    clearInterval(timer);
+                    btnEnviarCodigo.disabled = false;
+                    btnEnviarCodigo.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span>Reenviar</span>';
+                }
+            }, 1000);
+        } else {
+            btnEnviarCodigo.disabled = false;
+            btnEnviarCodigo.innerHTML = HTML_BTN_ENVIAR;
+        }
+    });
+}

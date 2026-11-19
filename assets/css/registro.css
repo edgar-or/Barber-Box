@@ -1,0 +1,152 @@
+/* Mejoras visuales del formulario de registro de cliente */
+.register-title {
+  font-weight: 800;
+  letter-spacing: .5px;
+  background: linear-gradient(90deg, #fff, #ff5c7a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.register-card {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.register-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, #d90429, #0077b6);
+}
+.register-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .9) !important;
+}
+
+.register-card-title {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  color: #fff;
+}
+.register-card-title .icon-badge {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(217, 4, 41, .18);
+  color: #ff4d6d;
+  font-size: 1.15rem;
+}
+
+.register-card .login-input:focus {
+  box-shadow: 0 0 0 .2rem rgba(217, 4, 41, .25);
+  border-color: #d90429;
+}
+
+.register-hint {
+  font-size: .78rem;
+  color: #8d8d8d;
+  margin-top: .35rem;
+}
+
+.btn-login.btn-register {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.btn-login.btn-register:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(217, 4, 41, .45);
+}
+
+/* ===== Home ===== */
+.home-hero {
+  min-height: 78vh;
+  display: flex;
+  align-items: center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(217, 4, 41, .28), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(2, 62, 138, .35), transparent 45%),
+    linear-gradient(rgba(0, 0, 0, .82), rgba(0, 0, 0, .9)),
+    url('../images/barber1.jpg') center/cover no-repeat;
+}
+.home-hero h1 {
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.home-hero h1 span { color: #ff4d6d; }
+
+.home-stats .stat {
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, .04);
+}
+.home-stats .stat strong { display: block; font-size: 1.6rem; }
+
+.section-title {
+  font-weight: 800;
+  position: relative;
+  display: inline-block;
+  padding-bottom: .6rem;
+}
+.section-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 60px;
+  height: 3px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  background: linear-gradient(90deg, #d90429, #0077b6);
+}
+
+.service-card {
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  border-color: #d90429;
+  box-shadow: 0 14px 34px rgba(217, 4, 41, .22);
+}
+.service-card .service-media {
+  height: 190px;
+  background: linear-gradient(135deg, #1b1b1b, #0a0a0a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.service-card .service-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+.service-card:hover .service-media img { transform: scale(1.08); }
+.service-card .service-media i { font-size: 3.5rem; color: #d90429; }
+.service-price {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ff4d6d;
+}
+.service-meta { font-size: .82rem; color: #9a9a9a; }
+
+.cta-section {
+  background:
+    radial-gradient(circle at 50% 0, rgba(217, 4, 41, .25), transparent 60%),
+    #000;
+}
+
+@media (max-width: 576px) {
+  .home-hero { min-height: auto; padding: 3rem 0; }
+}

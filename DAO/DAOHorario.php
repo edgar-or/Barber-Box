@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../config/auth.php";
+requerirEmpleadoJson();
  
 $opcion = $_REQUEST['opcion'] ?? '';
 $id_empleado = (int)($_POST['id_empleado'] ?? 0);

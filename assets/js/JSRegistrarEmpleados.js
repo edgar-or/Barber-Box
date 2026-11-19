@@ -24,7 +24,11 @@ const usuario = document.getElementById("usuario");
 const contrasenia = document.getElementById("contrasenia");
 const contrasenia_confirm = document.getElementById("contrasenia_confirm");
 
-const campos = [dui, nombre, apellido, telefono, correo, usuario, contrasenia, contrasenia_confirm];
+const codigoVerificacion = document.getElementById("codigoVerificacion");
+const btnEnviarCodigo = document.getElementById("btnEnviarCodigo");
+const HTML_BTN_REGISTRAR = 'Registrar <i class="bi bi-person-plus"></i>';
+
+const campos = [dui, nombre, apellido, telefono, correo, usuario, contrasenia, contrasenia_confirm, codigoVerificacion];
 const todosLosCampos = [...campos];
 
 if (formulario) {
@@ -141,7 +145,7 @@ if (formulario) {
                 });
             } finally {
                 btnGuardar.disabled = false;
-                btnGuardar.textContent = "Registrar"; 
+                btnGuardar.innerHTML = HTML_BTN_REGISTRAR;
             }
         }
 
@@ -292,6 +296,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if(document.getElementById('estado')) document.getElementById('estado').value = resultado.datos.estado || "0";
                 if(document.getElementById('fechaIngreso')) document.getElementById('fechaIngreso').value = resultado.datos.fecha_ingreso || "";
 
+                if (codigoVerificacion) {
+                    codigoVerificacion.required = false;
+                    codigoVerificacion.closest('.login-form-group').style.display = 'none';
+                }
+                // Cambiar el correo requeriría una nueva verificación: se deja de solo lectura
+                if (correo) correo.readOnly = true;
                 if (usuario) usuario.closest('.login-form-group').style.display = 'none';
                
                 if (contrasenia) contrasenia.closest('.login-form-group').style.display = 'none';
@@ -306,3 +316,69 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 });
+/////////////// MOSTRAR / OCULTAR CONTRASEÑA
+[["toggle-password", contrasenia], ["toggle-password-confirm", contrasenia_confirm]].forEach(([idBtn, input]) => {
+    const btn = document.getElementById(idBtn);
+    if (!btn || !input) return;
+    btn.addEventListener("click", function () {
+        const mostrar = input.type === "password";
+        input.type = mostrar ? "text" : "password";
+        const icono = this.querySelector("i");
+        icono.classList.toggle("bi-eye", !mostrar);
+        icono.classList.toggle("bi-eye-slash", mostrar);
+        this.setAttribute("aria-label", mostrar ? "Ocultar contraseña" : "Mostrar contraseña");
+    });
+});
+
+/////////////// ENVIAR CÓDIGO DE VERIFICACIÓN AL CORREO
+const HTML_BTN_ENVIAR = '<i class="bi bi-send-fill"></i> <span>Enviar</span>';
+
+if (btnEnviarCodigo) {
+    btnEnviarCodigo.addEventListener("click", async function () {
+        if (!validarCampo(correo)) {
+            Swal.fire({ icon: "warning", title: "Atención", text: "Escribe primero un correo electrónico válido." });
+            return;
+        }
+
+        btnEnviarCodigo.disabled = true;
+        btnEnviarCodigo.innerHTML = "<span>Enviando...</span>";
+
+        let enviado = false;
+        try {
+            const datos = new FormData();
+            datos.append("opcion", "enviarCodigo");
+            datos.append("correo", correo.value.trim());
+
+            const respuesta = await fetch("../DAO/DAOEmpleado.php", { method: "POST", body: datos });
+            const resultado = await respuesta.json();
+            enviado = resultado.estado;
+
+            Swal.fire({
+                icon: enviado ? "success" : "error",
+                title: "Barber-Box",
+                text: resultado.mensaje
+            });
+            if (enviado) codigoVerificacion.focus();
+        } catch (error) {
+            console.error(error);
+            Swal.fire({ icon: "error", title: "Barber-Box", text: "Error al conectar con el servidor." });
+        }
+
+        if (enviado) {
+            let resto = 30;
+            btnEnviarCodigo.innerHTML = "<span>30s</span>";
+            const timer = setInterval(() => {
+                resto--;
+                btnEnviarCodigo.innerHTML = `<span>${resto}s</span>`;
+                if (resto <= 0) {
+                    clearInterval(timer);
+                    btnEnviarCodigo.disabled = false;
+                    btnEnviarCodigo.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span>Reenviar</span>';
+                }
+            }, 1000);
+        } else {
+            btnEnviarCodigo.disabled = false;
+            btnEnviarCodigo.innerHTML = HTML_BTN_ENVIAR;
+        }
+    });
+}

@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../config/auth.php";
+requerirEmpleadoPagina();
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -25,6 +27,7 @@ if (session_status() === PHP_SESSION_NONE) {
     
     <!-- Main Design System & Custom Stylesheet -->
     <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/registro.css">
 </head>
 <body>
       <?php include './menu/menuLateral.php'; ?>
@@ -52,6 +55,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <i class="bi bi-arrow-left"></i> Volver a Empleados
             </button>
 
+                    <h1 class="h3 register-title text-center mb-1">Registrar empleado</h1>
                     <p class="login-subtitle text-center mb-4">Por favor, complete los datos</p>
 
                     <!-- UN solo formulario que envuelve ambos paneles -->
@@ -61,9 +65,9 @@ if (session_status() === PHP_SESSION_NONE) {
 
                             <!-- ===== Panel izquierdo: datos personales ===== -->
                             <div class="col-12 col-md-6">
-                                <div class="login-card w-100 mw-100 m-0 h-100">
+                                <div class="login-card register-card w-100 mw-100 m-0 h-100">
 
-                                    <h2 class="h5 mb-4 text-white"><i class="bi bi-person me-2"></i>Datos personales</h2>
+                                    <h2 class="h5 mb-4 register-card-title"><span class="icon-badge"><i class="bi bi-person"></i></span>Datos personales</h2>
                                     
                                     <div class="login-form-group">
                                     <label for="dui" class="login-form-label">Dui</label>
@@ -118,9 +122,9 @@ if (session_status() === PHP_SESSION_NONE) {
 
                             <!-- ===== Panel derecho: usuario y contraseña ===== -->
                             <div class="col-12 col-md-6">
-                                <div class="login-card w-100 mw-100 m-0 h-100">
+                                <div class="login-card register-card w-100 mw-100 m-0 h-100">
 
-                                    <h2 class="h5 mb-4 text-white"><i class="bi bi-shield-lock me-2"></i>Datos de la cuenta</h2>
+                                    <h2 class="h5 mb-4 register-card-title"><span class="icon-badge"><i class="bi bi-shield-lock"></i></span>Datos de la cuenta</h2>
 
                                     <div class="login-form-group">
                                         <label for="usuario" class="login-form-label">Usuario</label>
@@ -161,6 +165,22 @@ if (session_status() === PHP_SESSION_NONE) {
                                         </div>
                                     </div>
 
+                                    <div class="login-form-group">
+                                        <label for="codigoVerificacion" class="login-form-label">Código de validación</label>
+                                        <div class="login-input-group position-relative">
+                                            <i class="bi bi-shield-check input-icon"></i>
+                                            <input type="text" id="codigoVerificacion" name="codigoVerificacion"
+                                                class="login-input form-control" style="padding-right: 115px;"
+                                                placeholder="######" autocomplete="off"
+                                                pattern="[0-9]{6}" minlength="6" maxlength="6" inputmode="numeric" required>
+                                            <button type="button" class="btn-send-code" id="btnEnviarCodigo" title="Enviar código al correo">
+                                                <i class="bi bi-send-fill"></i>
+                                                <span>Enviar</span>
+                                            </button>
+                                        </div>
+                                        <div class="register-hint"><i class="bi bi-info-circle me-1"></i>Presiona "Enviar" para mandar un código al correo del empleado. Vence en 10 minutos.</div>
+                                    </div>
+
                                     
                                 </div>
                                 
@@ -171,12 +191,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
                         <!-- Botón centrado debajo de los dos paneles -->
                         <div class="d-flex flex-column align-items-center gap-3 mt-4">
-                           <button type="button" class="btn-login w-auto px-5" id="btnRegistrar" name="btnRegistrar">Registrar 
+                           <button type="button" class="btn-login btn-register w-auto px-5" id="btnRegistrar" name="btnRegistrar">Registrar 
                             <i class="bi bi-person-plus"></i></button>
                             <button type="button" class="btn-custom btn-custom-outline-danger" onclick="location.href='tabla-empleados.php'">
                 <i class="bi bi-arrow-left"></i> Volver a Empleados
             </button>
-                            <p class="mb-0">¿Ya tienes cuenta? <a href="page-login.php">Inicia sesión</a></p>
                         </div>
 
                     </form>
