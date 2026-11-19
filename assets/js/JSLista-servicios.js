@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!contenedor) return;
 
-    // 1. Inicializar la tabla PRIMERO (con arreglo vacío)
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
         langs: {
@@ -14,25 +13,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "pagination": {
                     "page_size": "Registros por página",
                     "first": "Primera",
-                    "first_title": "Primera página",
                     "last": "Última",
-                    "last_title": "Última página",
                     "prev": "Anterior",
-                    "prev_title": "Página anterior",
                     "next": "Siguiente",
-                    "next_title": "Página siguiente",
                     "all": "Todos",
-                    "counter": {
-                        "showing": "Mostrando",
-                        "of": "de",
-                        "rows": "registros",
-                        "pages": "páginas"
-                    }
+                    "counter": { "showing": "Mostrando", "of": "de", "rows": "registros", "pages": "páginas" }
                 },
-                "data": {
-                    "loading": "Cargando...",
-                    "error": "Error al cargar los datos"
-                }
+                "data": { "loading": "Cargando...", "error": "Error al cargar los datos" }
             }
         },
         data: [], 
@@ -45,7 +32,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         movableColumns: true,
         columns: [
             { title: "ID", field: "id_servicio", width: 70, headerHozAlign: "center", hozAlign: "center" },
-            { title: "Servicio", field: "nombre_servicio", width: 200 },
+            { 
+                title: "Imagen", 
+                field: "imagenes", 
+                width: 90,
+                hozAlign: "center",
+                headerHozAlign: "center",
+                formatter: function(cell) {
+                    const imgs = cell.getValue();
+                    if (Array.isArray(imgs) && imgs.length > 0) {
+                        return `<img src="/barberBox/${imgs[0].ruta_imagen}" alt="Servicio" style="width: 35px; height: 35px; object-fit: cover; border-radius: 50%;">`;
+                    }
+                    return `<span class="text-muted" style="font-size: 0.75rem;">Sin foto</span>`;
+                }
+            },
+            { title: "Servicio", field: "nombre_servicio", width: 180 },
             { title: "Descripción", field: "descripcion" },
             { 
                 title: "Precio", 
@@ -61,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             { 
                 title: "Duración", 
                 field: "duracion_estimada", 
-                width: 120,
+                width: 110,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 formatter: function(cell) {
@@ -115,7 +116,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         ]
     });
 
-    // 2. Hacer la petición FETCH al DAO de Servicios
     try {
         const formData = new FormData();
         formData.append("opcion", "consultar");
@@ -128,22 +128,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
 
         const datosServicios = await respuesta.json();
-        console.log("Respuesta obtenida del DAO:", datosServicios);
 
         if (Array.isArray(datosServicios)) {
             await tabla.setData(datosServicios);
             if (contador) {
                 contador.textContent = tabla.getDataCount();
             }
-        } else {
-            console.warn("El DAO no devolvió un arreglo válido:", datosServicios);
         }
-
     } catch (error) {
         console.error("Error al cargar servicios:", error);
     }
 
-    // 3. Filtro en tiempo real si existe el input
     if (filtro) {
         filtro.addEventListener("keyup", function () {
             tabla.setFilter([
@@ -156,7 +151,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Funciones globales para Editar y Eliminar
 function editarServicio(id) {
     window.location.href = "form-registrar-servicios.php?id=" + id;
 }
