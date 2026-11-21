@@ -1,12 +1,13 @@
 <?php
 require_once __DIR__ . "/../config/verificacion.php";
 
-$telefono = $_POST['telefono'] ?? '';
-$nombre = $_POST['nombre'] ?? '';
-$apellido = $_POST['apellido'] ?? '';
-$correo = trim($_POST['correo'] ?? '');
-$nickUsuario = $_POST['usuario'] ?? '';
-$contrasenia = $_POST['contrasenia'] ?? '';
+$telefono     = $_POST['telefono'] ?? '';
+$nombre       = $_POST['nombre'] ?? '';
+$apellido     = $_POST['apellido'] ?? '';
+$correo       = trim($_POST['correo'] ?? '');
+$nickUsuario  = $_POST['usuario'] ?? '';
+$contrasenia  = $_POST['contrasenia'] ?? '';
+$idcliente    = $_POST['idcliente'] ?? 0;
 
 $opcion = isset($_REQUEST["opcion"]) ? $_REQUEST["opcion"] : "";
 
@@ -19,6 +20,7 @@ if ($opcion == "enviarCodigo") {
     header('Content-Type: application/json; charset=utf-8');
 
     require_once "../config/conexion.php";
+
     $stmt = $conexion->prepare("SELECT 1 FROM cliente WHERE correo = ? LIMIT 1");
     $stmt->bind_param("s", $correo);
     $stmt->execute();
@@ -54,6 +56,8 @@ if ($opcion == "guardar") {
     $stmtDup->execute();
     if ($stmtDup->get_result()->num_rows > 0) {
         echo json_encode(["estado" => false, "mensaje" => "El nombre de usuario ya existe."]);
+        $stmtDup->close();
+        $conexion->close();
         exit;
     }
     $stmtDup->close();
@@ -61,23 +65,18 @@ if ($opcion == "guardar") {
     $conexion->begin_transaction();
 
     try {
-        // Encriptar la contraseñs
         $contrasena_hash = password_hash($contrasenia, PASSWORD_DEFAULT);
-        
-    
-        $id_rol = 3; 
+        $id_rol = 3;
         $estado_usuario = 'A';
 
-        //Insertar en la tabla USUARIO
         $sqlUsuario = "INSERT INTO usuario (usuario, contrasena_hash, estado_usuario, id_rol) VALUES (?, ?, ?, ?)";
         $stmtUser = $conexion->prepare($sqlUsuario);
         $stmtUser->bind_param("sssi", $nickUsuario, $contrasena_hash, $estado_usuario, $id_rol);
-        
+
         if (!$stmtUser->execute()) {
             throw new Exception("Error al crear usuario: " . $stmtUser->error);
         }
 
-        // Obtener el ID generado automáticamente para este usuario
         $id_usuario_generado = $conexion->insert_id;
         $stmtUser->close();
 
@@ -90,24 +89,24 @@ if ($opcion == "guardar") {
         }
         $stmtEmp->close();
 
-        // Confirmar ambas operaciones en la base de datos
         $conexion->commit();
 
-        // Código consumido
-        unset($_SESSION['codigo_verificacion'], $_SESSION['correo_verificacion'],
-              $_SESSION['codigo_expira'], $_SESSION['codigo_intentos'], $_SESSION['codigo_enviado_en']);
+        unset(
+            $_SESSION['codigo_verificacion'],
+            $_SESSION['correo_verificacion'],
+            $_SESSION['codigo_expira'],
+            $_SESSION['codigo_intentos'],
+            $_SESSION['codigo_enviado_en']
+        );
 
         echo json_encode([
-            "estado" => true,
+            "estado"  => true,
             "mensaje" => "Cliente y Usuario registrados correctamente"
         ]);
-
     } catch (Exception $e) {
-        // En caso de cualquier falla, cancela los cambios en ambas tablas
         $conexion->rollback();
-
         echo json_encode([
-            "estado" => false,
+            "estado"  => false,
             "mensaje" => $e->getMessage()
         ]);
     } finally {
@@ -118,16 +117,20 @@ if ($opcion == "guardar") {
 if ($opcion == "modificar") {
     require_once "../config/conexion.php";
 
-    $idcliente = $_POST['idcliente'] ?? 0;
-
     $sql = "UPDATE cliente SET nombre=?, apellido=?, telefono=? WHERE id_cliente=?";
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("sssi", $nombre, $apellido, $telefono, $idcliente);
-    
+
     if ($stmt->execute()) {
-        echo json_encode(["estado" => true, "mensaje" => "Datos Modificados Correctamente"]);
+        echo json_encode([
+            "estado"  => true,
+            "mensaje" => "Datos Modificados Correctamente"
+        ]);
     } else {
-        echo json_encode(["estado" => false, "mensaje" => "Error al modificar: " . $stmt->error]);
+        echo json_encode([
+            "estado"  => false,
+            "mensaje" => "Error al modificar: " . $stmt->error
+        ]);
     }
     $stmt->close();
     $conexion->close();
@@ -135,8 +138,6 @@ if ($opcion == "modificar") {
 
 if ($opcion == "eliminar") {
     require_once "../config/conexion.php";
-
-    $idcliente = $_POST['idcliente'] ?? 0;
 
     if (!is_numeric($idcliente) || $idcliente <= 0) {
         echo json_encode(["estado" => false, "mensaje" => "ID de cliente no válido"]);
@@ -152,7 +153,7 @@ if ($opcion == "eliminar") {
         $stmtBuscar->bind_param("i", $idcliente);
         $stmtBuscar->execute();
         $resultadoBuscar = $stmtBuscar->get_result();
-        
+
         $id_usuario = null;
         if ($fila = $resultadoBuscar->fetch_assoc()) {
             $id_usuario = $fila['id_usuario'];
@@ -178,48 +179,29 @@ if ($opcion == "eliminar") {
         }
 
         $conexion->commit();
-        echo json_encode(["estado" => true, "mensaje" => "Cliente eliminado correctamente"]);
-
+        echo json_encode([
+            "estado"  => true,
+            "mensaje" => "Cliente eliminado correctamente"
+        ]);
     } catch (Throwable $e) {
         $conexion->rollback();
-        echo json_encode(["estado" => false, "mensaje" => $e->getMessage()]);
+        echo json_encode([
+            "estado"  => false,
+            "mensaje" => $e->getMessage()
+        ]);
     } finally {
         $conexion->close();
     }
-}
-
-if ($opcion == "consultarDUI") {
-    require_once "../config/conexion.php";
-
-    $sql = "SELECT dui FROM empleado WHERE dui=?";
-    $stmt = $conexion->prepare($sql);
-    $stmt->bind_param("s", $dui);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-
-    if ($resultado->num_rows > 0) {
-        echo json_encode([
-            "estado" => true,
-            "mensaje" => "Este Dui ya existe"
-        ]);
-    } else {
-        echo json_encode([
-            "estado" => false,
-            "mensaje" => "a"
-        ]);
-    }
-
-    $stmt->close();
-    $conexion->close();
 }
 
 if ($opcion == "consultar") {
     require_once "../config/conexion.php";
 
     try {
-        $sql = "SELECT id_cliente, nombre, apellido, telefono, correo, concat(nombre,' ',apellido) as nombreCompleto
+        $sql = "SELECT id_cliente, nombre, apellido, telefono, correo,
+                       CONCAT(nombre,' ',apellido) AS nombreCompleto
                 FROM cliente
-                ORDER BY nombre;";
+                ORDER BY nombre";
 
         $resultado = $conexion->query($sql);
 
@@ -227,39 +209,39 @@ if ($opcion == "consultar") {
             throw new Exception("Error al consultar los clientes");
         }
 
-        $clientes = [];
+        $registros = [];
+        $correlativo = 0;
 
         while ($fila = $resultado->fetch_assoc()) {
-            $clientes[] = [
-                'id_cliente' => $fila['id_cliente'],
-                'nombre' => $fila['nombre'],
-                'apellido' => $fila['apellido'],
-                'telefono' => $fila['telefono'],
-                'correo' => $fila['correo'],
-                'nombreCompleto' => $fila['nombreCompleto']
+            $registros[] = [
+                'id_cliente'     => $fila['id_cliente'],
+                'nombre'         => $fila['nombre'],
+                'apellido'       => $fila['apellido'],
+                'telefono'       => $fila['telefono'],
+                'correo'         => $fila['correo'],
+                'nombreCompleto' => $fila['nombreCompleto'],
+                'correlativo'    => $correlativo++
             ];
         }
 
-        echo json_encode(
-            $clientes,
-            JSON_UNESCAPED_UNICODE
-        );
+        echo json_encode($registros, JSON_UNESCAPED_UNICODE);
 
         $resultado->free();
         $conexion->close();
     } catch (Throwable $e) {
-        echo json_encode([
-            "mensaje" => "No se pudieron obtener los registros"
-        ], JSON_UNESCAPED_UNICODE);
+        echo json_encode(
+            ["mensaje" => "No se pudieron obtener los registros"],
+            JSON_UNESCAPED_UNICODE
+        );
     }
 }
 
 if ($opcion == "consultarIndividual") {
     require_once "../config/conexion.php";
 
-    $idcliente = $_POST['idcliente'] ?? 0; 
-
-    $sql = "SELECT id_cliente, nombre, apellido, telefono, correo FROM cliente WHERE id_cliente=?";
+    $sql = "SELECT id_cliente, nombre, apellido, telefono, correo
+            FROM cliente
+            WHERE id_cliente = ?";
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $idcliente);
 
@@ -270,40 +252,21 @@ if ($opcion == "consultarIndividual") {
         $datos = $resultado->fetch_assoc();
         echo json_encode([
             "estado" => true,
-            "datos" => [
-                "idcliente" => $datos["id_cliente"], 
-                "nombre" => $datos["nombre"],
-                "apellido" => $datos["apellido"],
-                "telefono" => $datos["telefono"],
-                "correo" => $datos["correo"] 
+            "datos"  => [
+                "idcliente" => $datos["id_cliente"],
+                "nombre"    => $datos["nombre"],
+                "apellido"  => $datos["apellido"],
+                "telefono"  => $datos["telefono"],
+                "correo"    => $datos["correo"]
             ]
         ]);
     } else {
-        echo json_encode(["estado" => false, "datos" => "No Existe"]);
+        echo json_encode([
+            "estado" => false,
+            "datos"  => "No Existe"
+        ]);
     }
 
     $stmt->close();
     $conexion->close();
 }
-
-if ($opcion == "consultarLectores") {
-    require_once "../config/conexion.php";
-
-    try {
-        $sql = "SELECT idempleado, CONCAT(nombre, ' ', apellido) as nombre 
-                FROM empleado 
-                WHERE idcargo = 1";
-
-        $resultado = $conexion->query($sql);
-        $empleados = [];
-
-        while ($fila = $resultado->fetch_assoc()) {
-            $empleados[] = $fila;
-        }
-
-        echo json_encode($empleados, JSON_UNESCAPED_UNICODE);
-    } catch (Throwable $e) {
-        echo json_encode(["error" => $e->getMessage()]);
-    }
-}
-?>

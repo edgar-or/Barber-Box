@@ -24,7 +24,7 @@ $currentPage = 'cliente-panel';
 
   <div class="page-header">
     <div>
-      <h1 class="page-title">Hola, <?= htmlspecialchars($_SESSION['usuario']); ?> 👋</h1>
+      <h1 class="page-title">Hola, <?= htmlspecialchars($_SESSION['usuario']); ?> </h1>
       <p class="page-subtitle">Agenda tu próxima cita y revisa tu historial.</p>
     </div>
   </div>
@@ -41,6 +41,11 @@ $currentPage = 'cliente-panel';
       </button>
     </li>
   </ul>
+
+  <div id="bannerEdicion" class="alert alert-warning d-none align-items-center justify-content-between" role="alert">
+    <span><i class="bi bi-pencil-square me-2"></i>Estás modificando una cita existente.</span>
+    <button type="button" class="btn btn-sm btn-outline-dark" id="btnCancelarEdicion">Descartar cambios</button>
+  </div>
 
   <div class="tab-content">
 

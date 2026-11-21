@@ -5,8 +5,8 @@ function validarCampo(campo) {
     } else {
         vacio = campo.value.trim() === "";
     }
-    
-    const valido = !vacio && campo.checkValidity(); 
+
+    const valido = !vacio && campo.checkValidity();
     campo.classList.toggle("is-invalid", !valido);
     campo.classList.toggle("is-valid", valido);
 
@@ -22,24 +22,24 @@ const correo = document.getElementById("correo");
 const usuario = document.getElementById("usuario");
 const contrasenia = document.getElementById("contrasenia");
 const contrasenia_confirm = document.getElementById("contrasenia_confirm");
-
 const codigoVerificacion = document.getElementById("codigoVerificacion");
 const btnEnviarCodigo = document.getElementById("btnEnviarCodigo");
+
 const HTML_BTN_REGISTRAR = 'Registrar <i class="bi bi-person-plus"></i>';
 
 const campos = [nombre, apellido, telefono, correo, usuario, contrasenia, contrasenia_confirm, codigoVerificacion];
 const todosLosCampos = [...campos];
 
 if (formulario) {
-    ////////////////////VALIDACION DE CAMPOS VACIOS
+    //////////////////// VALIDACION DE CAMPOS VACIOS
     campos.forEach(function (campo) {
         campo.addEventListener("blur", function () {
             validarCampo(campo);
         });
     });
 
-    ////////////////////PASAR TODO A MAYUSCULAS
-    const campos1 = [nombre, apellido]; 
+    //////////////////// PASAR TODO A MAYUSCULAS
+    const campos1 = [nombre, apellido];
     campos1.forEach(function (campo) {
         campo.addEventListener("input", function () {
             campo.value = campo.value.toUpperCase();
@@ -47,7 +47,7 @@ if (formulario) {
         });
     });
 
-
+    //////////////////// FORMATO DE TELEFONO
     telefono.addEventListener("input", function () {
         let valor = telefono.value.replace(/\D/g, "");
         valor = valor.substring(0, 8);
@@ -57,38 +57,102 @@ if (formulario) {
         telefono.value = valor;
     });
 
-    
+    //////////////////// BOTON GUARDAR / MODIFICAR
     btnGuardar.addEventListener("click", async function () {
         let passCoinciden = true; // Por defecto true si se está editando
-    
 
         if (btnGuardar.textContent.trim() == "Registrar") {
             passCoinciden = contrasenia.value === contrasenia_confirm.value && contrasenia.value.trim() !== "";
 
-     if (!passCoinciden) {
-        Swal.fire({
-                icon: "warning",
-                title: "Atención",
-                text: "Contraseña de confirmacion no coincide o está vacía. Por favor, verifique."
-            });
-            return;
-    }
+            if (!passCoinciden) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Atención",
+                    text: "Contraseña de confirmacion no coincide o está vacía. Por favor, verifique."
+                });
+                return;
+            }
 
-        // Validar todo el formulario
-        const camposValidos = campos.map(validarCampo).every(Boolean) && passCoinciden;
+            // Validar todo el formulario campo por campo
+            const nombreValido      = validarCampo(nombre);
+            const apellidoValido    = validarCampo(apellido);
+            const telefonoValido    = validarCampo(telefono);
+            const correoValido      = validarCampo(correo);
+            const usuarioValido     = validarCampo(usuario);
+            const passValido        = validarCampo(contrasenia);
+            const passConfirmValido = validarCampo(contrasenia_confirm);
+            const codigoValido      = validarCampo(codigoVerificacion);
 
-        if (!camposValidos) {
-            Swal.fire({
-                icon: "warning",
-                title: "Atención",
-                text: "Por favor, complete todos los campos obligatorios marcados en rojo."
-            });
-            return;
+            if (!nombreValido && !apellidoValido && !telefonoValido && !correoValido &&
+                !usuarioValido && !passValido && !passConfirmValido && !codigoValido) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Atención",
+                    text: "Por favor, complete todos los campos obligatorios marcados en rojo."
+                });
+                return;
+            }
+
+            if (nombreValido && apellidoValido && telefonoValido && correoValido &&
+                usuarioValido && passValido && passConfirmValido && codigoValido && passCoinciden) {
+                try {
+                    const datos = new FormData(formulario);
+                    datos.append("opcion", "guardar");
+
+                    btnGuardar.disabled = true;
+                    btnGuardar.textContent = "Procesando...";
+
+                    const respuesta = await fetch("../DAO/DAOCliente.php", {
+                        method: "POST",
+                        body: datos
+                    });
+
+                    if (!respuesta.ok) {
+                        throw new Error("Error HTTP: " + respuesta.status);
+                    }
+
+                    const resultado = await respuesta.json();
+
+                    if (resultado.estado) {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Poseidón",
+                            text: resultado.mensaje,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        limpiarCampos();
+                        setTimeout(() => { window.location.href = "../page-login.php"; }, 1600);
+                    } else {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "error",
+                            title: "Poseidón",
+                            text: resultado.mensaje,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Poseidón",
+                        text: "Error al conectar con el servidor."
+                    });
+                } finally {
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerHTML = HTML_BTN_REGISTRAR;
+                }
+            }
         }
 
+        if (btnGuardar.textContent.trim() == "Modificar") {
             try {
                 const datos = new FormData(formulario);
-                datos.append("opcion", "guardar");
+                datos.append("opcion", "modificar");
+                datos.append("idcliente", btnGuardar.dataset.id);
 
                 btnGuardar.disabled = true;
                 btnGuardar.textContent = "Procesando...";
@@ -103,76 +167,23 @@ if (formulario) {
                 }
 
                 const resultado = await respuesta.json();
-                
+
                 if (resultado.estado) {
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
-                        title: "Barber-Box",
-                        text: resultado.mensaje,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                    limpiarCampos();
-                    setTimeout(() => { window.location.href = "../page-login.php"; }, 1600);
-                } else {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "error",
-                        title: "Barber-Box",
-                        text: resultado.mensaje,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                }
-            } catch (error) {
-                console.error(error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Barber-Box",
-                    text: "Error al conectar con el servidor."
-                });
-            } finally {
-                btnGuardar.disabled = false;
-                btnGuardar.innerHTML = HTML_BTN_REGISTRAR;
-            }
-        }
-
-       if (btnGuardar.textContent.trim() == "Modificar") {
-            try {
-                const datos = new FormData(formulario);
-                datos.append("opcion", "modificar");
-                datos.append("idcliente", btnGuardar.dataset.id);
-
-                btnGuardar.disabled = true;
-                btnGuardar.textContent = "Procesando...";
-
-                const respuesta = await fetch("../DAO/DAOCliente.php", { 
-                    method: "POST",
-                    body: datos
-                });
-
-                if (!respuesta.ok) {
-                    throw new Error("Error HTTP: " + respuesta.status);
-                }
-
-                const resultado = await respuesta.json();
-                if (resultado.estado) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "success",
-                        title: "Barber-Box", 
+                        title: "Poseidón",
                         text: resultado.mensaje,
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
-                        window.location.href = "tabla-clientes.php"; 
+                        window.location.href = "tabla-clientes.php";
                     });
                 } else {
                     Swal.fire({
                         position: "top-end",
                         icon: "error",
-                        title: "Barber-Box",
+                        title: "Poseidón",
                         text: resultado.mensaje,
                         showConfirmButton: false,
                         timer: 1500
@@ -182,7 +193,7 @@ if (formulario) {
                 console.error(error);
                 Swal.fire({
                     icon: "error",
-                    title: "Barber-Box",
+                    title: "Poseidón",
                     text: "No se pudieron modificar los datos."
                 });
             } finally {
@@ -193,9 +204,7 @@ if (formulario) {
     });
 }
 
-
-
-///////////////////LIMPIAR TODOS LOS CAMPOS///////////
+/////////////////// LIMPIAR TODOS LOS CAMPOS
 function limpiarCampos() {
     todosLosCampos.forEach(function (campo) {
         campo.value = "";
@@ -204,7 +213,7 @@ function limpiarCampos() {
     });
 }
 
-//////////PROCESA AL TERMINAR DE CARGAR LA PAGINA
+////////// PROCESA AL TERMINAR DE CARGAR LA PAGINA
 document.addEventListener("DOMContentLoaded", async () => {
     // Obtener el ID de la URL (Modo Edición)
     const parametros = new URLSearchParams(window.location.search);
@@ -233,7 +242,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 apellido.value = resultado.datos.apellido;
                 telefono.value = resultado.datos.telefono;
                 correo.value = resultado.datos.correo;
-                
 
                 if (codigoVerificacion) {
                     codigoVerificacion.required = false;
@@ -241,12 +249,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     campos.splice(campos.indexOf(codigoVerificacion), 1);
                 }
                 if (usuario) usuario.closest('.login-form-group').style.display = 'none';
-                
                 if (contrasenia) contrasenia.closest('.login-form-group').style.display = 'none';
                 if (contrasenia_confirm) contrasenia_confirm.closest('.login-form-group').style.display = 'none';
 
                 btnGuardar.textContent = "Modificar";
-                btnGuardar.dataset.id = resultado.datos.idcliente; 
+                btnGuardar.dataset.id = resultado.datos.idcliente;
             }
         } catch (error) {
             Swal.close();
@@ -254,8 +261,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 });
-
-
 
 /////////////// MOSTRAR / OCULTAR CONTRASEÑA
 [["toggle-password", contrasenia], ["toggle-password-confirm", contrasenia_confirm]].forEach(([idBtn, input]) => {
