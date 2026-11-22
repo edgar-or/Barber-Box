@@ -50,6 +50,7 @@ $currentPage = 'clientes';
     </div>
 
     <div id="tablaClientes"></div>
+    <div id="table-pagination" class="d-flex flex-wrap gap-2 justify-content-end mt-2"></div>
   </div>
 
   <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>

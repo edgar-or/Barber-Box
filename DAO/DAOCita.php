@@ -42,7 +42,7 @@ function obtenerServicios($conexion, $ids) {
 }
 
 // Horas de inicio disponibles ("HH:MM") para un barbero, fecha y duración
-function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion) {
+function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $excluir_cita = 0) {
     $d = DateTime::createFromFormat('Y-m-d', $fecha);
     if (!$d || $d->format('Y-m-d') !== $fecha || $duracion <= 0) return [];
 
@@ -63,11 +63,11 @@ function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion) {
     }
     if (!$horario) return [];
 
-    // Citas pendientes del barbero ese día
+    // Citas pendientes del barbero ese día (se ignora la cita que se está modificando)
     $inicio_dia = $fecha . ' 00:00:00';
     $fin_dia    = $fecha . ' 23:59:59';
-    $stmt = $conexion->prepare("SELECT fecha_hora_inicio, fecha_hora_fin FROM cita WHERE id_empleado = ? AND estado_cita = 'Pendiente' AND fecha_hora_inicio BETWEEN ? AND ?");
-    $stmt->bind_param("iss", $id_empleado, $inicio_dia, $fin_dia);
+    $stmt = $conexion->prepare("SELECT fecha_hora_inicio, fecha_hora_fin FROM cita WHERE id_empleado = ? AND estado_cita = 'Pendiente' AND id_cita <> ? AND fecha_hora_inicio BETWEEN ? AND ?");
+    $stmt->bind_param("iiss", $id_empleado, $excluir_cita, $inicio_dia, $fin_dia);
     $stmt->execute();
     $ocupadas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
@@ -109,7 +109,7 @@ if ($opcion == "disponibilidad") {
     try {
         $servicios = obtenerServicios($conexion, $servicios_ids);
         $duracion  = (int)array_sum(array_column($servicios, 'duracion_estimada'));
-        $horas     = calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion);
+        $horas     = calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $id_cita);
 
         echo json_encode(["estado" => true, "horas" => $horas, "duracion" => $duracion], JSON_UNESCAPED_UNICODE);
     } catch (Throwable $e) {
@@ -178,14 +178,17 @@ if ($opcion == "agendar") {
 
 if ($opcion == "historial") {
     try {
-        $sql = "SELECT c.id_cita, c.fecha_hora_inicio, c.fecha_hora_fin, c.total_cita, c.estado_cita, c.nota,
-                       CONCAT(e.nombre, ' ', e.apellido) AS barbero,
-                       (SELECT GROUP_CONCAT(s.nombre_servicio SEPARATOR ', ')
-                          FROM detalle_cita d JOIN servicio s ON s.id_servicio = d.id_servicio
-                         WHERE d.id_cita = c.id_cita) AS servicios
-                  FROM cita c JOIN empleado e ON e.id_empleado = c.id_empleado
-                 WHERE c.id_cliente = ?
-                 ORDER BY c.fecha_hora_inicio DESC";
+       $sql = "SELECT c.id_cita, c.fecha_hora_inicio, c.fecha_hora_fin, c.total_cita, c.estado_cita, c.nota, c.id_empleado,
+               CONCAT(e.nombre, ' ', e.apellido) AS barbero,
+               (SELECT GROUP_CONCAT(s.nombre_servicio SEPARATOR ', ')
+                  FROM detalle_cita d JOIN servicio s ON s.id_servicio = d.id_servicio
+                 WHERE d.id_cita = c.id_cita) AS servicios,
+               (SELECT GROUP_CONCAT(d.id_servicio)
+                  FROM detalle_cita d
+                 WHERE d.id_cita = c.id_cita) AS servicios_ids
+          FROM cita c JOIN empleado e ON e.id_empleado = c.id_empleado
+         WHERE c.id_cliente = ?
+         ORDER BY c.fecha_hora_inicio DESC";
         $stmt = $conexion->prepare($sql);
         $stmt->bind_param("i", $id_cliente);
         $stmt->execute();
@@ -217,7 +220,81 @@ if ($opcion == "cancelar") {
     }
 }
 
-if (!in_array($opcion, ["catalogo", "disponibilidad", "agendar", "historial", "cancelar"], true)) {
+if ($opcion == "modificar") {
+    $conexion->begin_transaction();
+
+    try {
+        if ($id_cliente <= 0) {
+            throw new Exception("Tu cuenta no tiene un perfil de cliente.");
+        }
+
+        // La cita debe ser propia, pendiente y futura (se bloquea la fila)
+        $stmt = $conexion->prepare("SELECT id_cita FROM cita WHERE id_cita = ? AND id_cliente = ? AND estado_cita = 'Pendiente' AND fecha_hora_inicio > NOW() FOR UPDATE");
+        $stmt->bind_param("ii", $id_cita, $id_cliente);
+        $stmt->execute();
+        $es_modificable = $stmt->get_result()->num_rows > 0;
+        $stmt->close();
+        if (!$es_modificable) {
+            throw new Exception("Esta cita ya no se puede modificar.");
+        }
+
+        $servicios = obtenerServicios($conexion, $servicios_ids);
+        if (!$servicios) {
+            throw new Exception("Selecciona al menos un servicio.");
+        }
+        $duracion = (int)array_sum(array_column($servicios, 'duracion_estimada'));
+        $total    = (float)array_sum(array_column($servicios, 'precio'));
+
+        $stmt = $conexion->prepare("SELECT id_empleado FROM empleado WHERE id_empleado = ? AND atiende_citas = 1 FOR UPDATE");
+        $stmt->bind_param("i", $id_empleado);
+        $stmt->execute();
+        $existe_barbero = $stmt->get_result()->num_rows > 0;
+        $stmt->close();
+        if (!$existe_barbero) {
+            throw new Exception("Selecciona un barbero válido.");
+        }
+
+        // Disponibilidad ignorando la propia cita
+        $disponibles = calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $id_cita);
+        if (!in_array($hora, $disponibles, true)) {
+            throw new Exception("Ese horario ya no está disponible. Elige otro.");
+        }
+
+        $inicio     = strtotime("$fecha $hora");
+        $inicio_sql = date('Y-m-d H:i:s', $inicio);
+        $fin_sql    = date('Y-m-d H:i:s', $inicio + $duracion * 60);
+
+        $stmt = $conexion->prepare("UPDATE cita SET fecha_hora_inicio = ?, fecha_hora_fin = ?, total_cita = ?, nota = ?, id_empleado = ? WHERE id_cita = ? AND id_cliente = ?");
+        $stmt->bind_param("ssdsiii", $inicio_sql, $fin_sql, $total, $nota, $id_empleado, $id_cita, $id_cliente);
+        if (!$stmt->execute()) {
+            throw new Exception("Error al actualizar la cita: " . $stmt->error);
+        }
+        $stmt->close();
+
+        // Se reemplazan los servicios de la cita
+        $stmt = $conexion->prepare("DELETE FROM detalle_cita WHERE id_cita = ?");
+        $stmt->bind_param("i", $id_cita);
+        $stmt->execute();
+        $stmt->close();
+
+        $stmt = $conexion->prepare("INSERT INTO detalle_cita (id_cita, id_servicio, precio_unitario) VALUES (?, ?, ?)");
+        foreach ($servicios as $s) {
+            $id_servicio = (int)$s['id_servicio'];
+            $precio      = (float)$s['precio'];
+            $stmt->bind_param("iid", $id_cita, $id_servicio, $precio);
+            $stmt->execute();
+        }
+        $stmt->close();
+
+        $conexion->commit();
+        echo json_encode(["estado" => true, "mensaje" => "¡Cita actualizada para el " . date('d/m/Y', $inicio) . " a las " . date('H:i', $inicio) . "!"], JSON_UNESCAPED_UNICODE);
+    } catch (Throwable $e) {
+        $conexion->rollback();
+        echo json_encode(["estado" => false, "mensaje" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    }
+}
+
+if (!in_array($opcion, ["catalogo", "disponibilidad", "agendar", "modificar", "historial", "cancelar"], true)) {
     echo json_encode(["estado" => false, "mensaje" => "Opción no válida."], JSON_UNESCAPED_UNICODE);
 }
 

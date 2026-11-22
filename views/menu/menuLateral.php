@@ -62,6 +62,13 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
           </a>
         </li>
 
+         <li class="sidebar-menu-item">
+          <a href="/barberBox/views/panel-agendar-cita-admin.php" class="sidebar-menu-link <?= ($currentPage === 'agendar-admin') ? 'active' : ''; ?>" id="menu-agendar-admin">
+            <i class="bi bi-calendar-plus"></i>
+            <span>Agendar cita</span>
+          </a>
+        </li>
+
 
          <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-empleados.php" class="sidebar-menu-link <?= ($currentPage === 'empleados') ? 'active' : ''; ?>" id="menu-empleados" title="Overview">
