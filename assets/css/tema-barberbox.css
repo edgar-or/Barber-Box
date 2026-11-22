@@ -1,0 +1,238 @@
+/* =====================================================================
+   ESTILOS PERSONALIZADOS: MODO OSCURO BARBERÍA PARA TABULATOR
+   ===================================================================== */
+
+/* 1. Contenedor de la Tarjeta Principal */
+.table-card-custom {
+    background-color: var(--barber-dark-card) !important;
+    border: 1px solid var(--barber-border) !important;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    overflow: hidden;
+}
+
+/* 2. La Barra de Búsqueda (Header Control) */
+.table-header-control {
+    background-color: var(--barber-dark-card) !important;
+    border-bottom: 1px solid var(--barber-border) !important;
+    padding: 1.25rem;
+}
+
+.table-search-box {
+    background-color: var(--barber-black) !important;
+    border: 1px solid var(--barber-border) !important;
+    border-radius: 8px;
+}
+
+.table-search-input {
+    background-color: transparent !important;
+    color: var(--barber-white) !important;
+    border: none !important;
+}
+
+.table-search-input::placeholder {
+    color: var(--barber-gray) !important;
+}
+
+.table-search-icon {
+    color: var(--barber-gray) !important;
+}
+
+/* 3. Tabla Principal (Fondo y Texto) */
+.tabulator {
+    background-color: var(--barber-dark-card) !important;
+    border: none !important;
+    color: var(--barber-white) !important;
+}
+
+/* 4. Cabecera de la Tabla (Títulos de las Columnas) */
+.tabulator .tabulator-header {
+    background-color: var(--barber-black) !important;
+    color: var(--barber-white) !important;
+    border-bottom: 2px solid var(--barber-red) !important; /* Línea roja de barbería */
+}
+
+.tabulator .tabulator-header .tabulator-col {
+    background-color: var(--barber-black) !important;
+    border-right: 1px solid var(--barber-border) !important;
+    color: var(--barber-white) !important;
+}
+
+/* 5. Filas de Datos */
+.tabulator-row {
+    background-color: var(--barber-dark-card) !important;
+    border-bottom: 1px solid var(--barber-border) !important;
+    color: var(--barber-white) !important;
+    transition: background-color 0.2s ease;
+}
+
+/* Filas pares un poco más oscuras para distinguir */
+.tabulator-row.tabulator-row-even {
+    background-color: #161616 !important; 
+}
+
+/* Efecto al pasar el mouse por la fila */
+.tabulator-row:hover {
+    background-color: #2a2a2a !important; 
+}
+
+.tabulator-row .tabulator-cell {
+    border-right: 1px solid var(--barber-border) !important;
+}
+
+/* 6. Paginación Inferior */
+.tabulator .tabulator-footer {
+    background-color: var(--barber-black) !important;
+    color: var(--barber-white) !important;
+    border-top: 1px solid var(--barber-border) !important;
+}
+
+.tabulator .tabulator-footer .tabulator-page {
+    color: var(--barber-white) !important;
+    background-color: transparent !important;
+    border: 1px solid var(--barber-border) !important;
+    border-radius: 4px;
+}
+
+.tabulator .tabulator-footer .tabulator-page.active {
+    background-color: var(--barber-red) !important;
+    color: var(--barber-white) !important;
+    border-color: var(--barber-red) !important;
+}
+
+/* 7. Botones de Acción (Editar, Eliminar, Horario) */
+.table-btn-action {
+    background-color: var(--barber-black) !important;
+    border: 1px solid var(--barber-border) !important;
+    color: var(--barber-gray) !important;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover general de los botones */
+.table-btn-action:hover {
+    background-color: var(--barber-red) !important;
+    color: var(--barber-white) !important;
+    border-color: var(--barber-red) !important;
+}
+
+/* Hover específico para el botón del reloj (Horario) */
+.btn-horario:hover {
+    background-color: var(--barber-blue-light) !important;
+    border-color: var(--barber-blue-light) !important;
+    color: var(--barber-white) !important;
+}
+
+/* 8. Contenedor del Avatar en la tabla */
+.table-user-avatar {
+    border: 2px solid var(--barber-border);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.table-user-name {
+    font-weight: 600;
+    color: var(--barber-white) !important;
+}
+
+.table-user-sub {
+    font-size: 0.75rem;
+    color: var(--barber-gray) !important;
+}
+/* Arreglar el color de los textos secundarios (como el correo) */
+.tabulator-cell .text-muted,
+.tabulator-cell .text-secondary {
+    color: var(--barber-gray) !important;
+}
+/* Forzar que los íconos y correos se vean claros */
+.tabulator-cell .text-muted, 
+.tabulator-cell i.bi-envelope,
+.tabulator-cell .correo-texto {
+    color: #a0a0a0 !important; /* El gris claro de tu paleta */
+    opacity: 1 !important;
+}
+
+/* Si el correo está envuelto en un <span> o <div>, que tome el color claro */
+.tabulator-cell a, 
+.tabulator-cell span {
+    color: var(--barber-white) !important;
+}
+
+/* ==========================================
+   OSCURECER EL FONDO DE LA PÁGINA
+   ========================================== */
+
+/* Fondo oscuro para toda la página y el contenedor principal */
+body, .main-wrapper {
+    background-color: var(--barber-black) !important;
+}
+
+/* Para que el título "Empleados" y el subtítulo se lean bien en fondo oscuro */
+.page-title {
+    color: var(--barber-white) !important;
+}
+
+.page-subtitle {
+    color: var(--barber-gray) !important;
+}
+
+/* Opcional: Si quieres que la barra superior (header) también sea oscura */
+.navbar-custom {
+    background-color: rgba(18, 18, 18, 0.85) !important;
+    border-bottom: 1px solid var(--barber-border) !important;
+}
+/* ==========================================
+   RESALTAR LOS ICONOS DE ACCIÓN EN LA TABLA
+   ========================================== */
+
+/* Estilo base de los botones (Más visibles) */
+.table-btn-action {
+    background-color: #2a2a2a !important; /* Fondo un poco más claro que la tabla */
+    border: 1px solid #444 !important; /* Borde visible */
+    color: var(--barber-white) !important; /* Íconos en blanco por defecto */
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 1. Color específico para el botón de Editar (Lápiz) */
+.table-btn-action.btn-editar {
+    color: #38bdf8 !important; /* Azul cielo */
+}
+.table-btn-action.btn-editar:hover {
+    background-color: #38bdf8 !important;
+    color: #000 !important; /* Texto oscuro al pasar el mouse */
+    border-color: #38bdf8 !important;
+    transform: translateY(-2px); /* Pequeño salto visual */
+}
+
+/* 2. Color específico para el botón de Eliminar (Basura) */
+.table-btn-action.btn-eliminar, 
+.table-btn-action.delete {
+    color: #ef4444 !important; /* Rojo */
+}
+.table-btn-action.btn-eliminar:hover, 
+.table-btn-action.delete:hover {
+    background-color: #ef4444 !important;
+    color: #fff !important;
+    border-color: #ef4444 !important;
+    transform: translateY(-2px);
+}
+
+/* 3. Color específico para el botón de Horario (Reloj) */
+.table-btn-action.btn-horario {
+    color: #a3e635 !important; /* Verde lima (hace juego con el botón "Nuevo empleado") */
+}
+.table-btn-action.btn-horario:hover {
+    background-color: #354ae6 !important;
+    color: #000 !important;
+    border-color: #354ae6 !important;
+    transform: translateY(-2px);
+}
