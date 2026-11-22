@@ -85,6 +85,13 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
         </li>
 
         <li class="sidebar-menu-item">
+          <a href="/barberBox/views/reporte-cortes.php" class="sidebar-menu-link <?= ($currentPage === 'reportes') ? 'active' : ''; ?>" id="menu-reportes" title="Reporte de Cortes">
+            <i class="bi bi-file-earmark-bar-graph-fill"></i>
+            <span>Reporte de Cortes</span>
+          </a>
+        </li>
+
+        <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-citas.php" class="sidebar-menu-link <?= ($currentPage === 'citas') ? 'active' : ''; ?>" id="menu-citas">
             <i class="bi bi-calendar-check"></i>
             <span><?= ((int)($_SESSION['id_rol'] ?? 0) === ROL_ADMIN) ? 'Historial de citas' : 'Mis citas'; ?></span>
