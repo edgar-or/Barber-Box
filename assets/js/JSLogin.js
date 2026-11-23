@@ -20,6 +20,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const txtUsuario = document.getElementById("usuario");
     const txtClave = document.getElementById("clave");
 
+    // Mostrar / ocultar contraseña
+    const btnTogglePassword = document.getElementById("toggle-password");
+    if (btnTogglePassword && txtClave) {
+        btnTogglePassword.addEventListener("click", function (e) {
+            e.preventDefault();
+            const mostrar = txtClave.type === "password";
+            txtClave.type = mostrar ? "text" : "password";
+
+            const icono = this.querySelector("i");
+            if (icono) {
+                icono.classList.toggle("bi-eye", !mostrar);
+                icono.classList.toggle("bi-eye-slash", mostrar);
+            }
+            this.setAttribute("aria-label", mostrar ? "Ocultar contraseña" : "Mostrar contraseña");
+            txtClave.focus();
+        });
+    }
+
 
 
     if(formLogin) {

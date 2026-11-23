@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             try {
+                console.log("Inicio:", JSON.stringify(fechaInicio), "Fin:", JSON.stringify(fechaFin));
                 btnGenerar.disabled = true;
                 btnGenerar.textContent = "Generando...";
 
@@ -28,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 formData.append("fechaInicio", fechaInicio);
                 formData.append("fechaFin", fechaFin);
 
-                const respuesta = await fetch("../DAO/DAOReportes.php", {
+                const respuesta = await fetch("/barberBox/DAO/DAOReportes.php", {
                     method: "POST",
                     body: formData
                 });

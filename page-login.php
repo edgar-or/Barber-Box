@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 
-                <!-- Options (Remember me & Forgot Password) -->
+                <!-- Options (Remember me & Forgot Password)
                 <div class="login-options">
                     <label class="custom-control-label">
                         <input type="checkbox" class="custom-checkbox-input" id="rememberMe">
@@ -76,6 +76,7 @@
                     </label>
                     <a href="#" class="forgot-password-link">Olvide mi contraseña</a>
                 </div>
+                 -->
                 
                 <!-- Submit Button -->
                 <button type="submit" class="btn-login" id="btn-login">

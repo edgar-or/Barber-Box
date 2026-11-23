@@ -1,17 +1,9 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-if (!isset($_SESSION['idusuario']) || !isset($_SESSION['idrol'])) {
-    header("Location: ../index.php"); 
-    exit();
-}
-if ($_SESSION['idrol'] != 1) {
-    header("Location: dashboard.php"); 
-    exit();
-}
+require_once __DIR__ . "/../config/auth.php";
+requerirAdminPagina();
 
-$currentPage = 'reportes'; 
+$currentPage = 'reportes';
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -128,6 +120,8 @@ $currentPage = 'reportes';
             btnGenerar.addEventListener("click", async (e) => {
                 e.preventDefault();
 
+                
+
                 const tipoRep = tipoSelect.value;
                 const formData = new FormData();
                 formData.append("opcion", tipoRep);
@@ -151,6 +145,8 @@ $currentPage = 'reportes';
 
                     formData.append("fechaInicio", fechaInicio);
                     formData.append("fechaFin", fechaFin);
+                    console.log("Inicio:", JSON.stringify(fechaInicio), "Fin:", JSON.stringify(fechaFin));
+
 
                     if (tipoRep === "reporteCortes") {
                         tituloReporte.textContent = `Reporte de Cortes por Barbero (${fechaInicio} al ${fechaFin})`;
@@ -165,7 +161,7 @@ $currentPage = 'reportes';
                     btnGenerar.disabled = true;
                     btnGenerar.textContent = "Generando...";
 
-                    const respuesta = await fetch("../DAO/DAOReportes.php", {
+                    const respuesta = await fetch("/barberBox/DAO/DAOReportes.php", {
                         method: "POST",
                         body: formData
                     });
@@ -173,6 +169,7 @@ $currentPage = 'reportes';
                     if (!respuesta.ok) throw new Error("Error en el servidor");
 
                     const resultado = await respuesta.json();
+                    console.log("RESPUESTA COMPLETA:", resultado);
 
                     if (resultado.estado) {
                         renderizarReporte(resultado.tipo, resultado.datos, contenedor);

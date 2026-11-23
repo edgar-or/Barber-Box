@@ -89,7 +89,7 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
         </li>
 
         <li class="sidebar-menu-item">
-          <a href="/barberBox/views/reporte-cortes.php" class="sidebar-menu-link <?= ($currentPage === 'reportes') ? 'active' : ''; ?>" id="menu-reportes" title="Reporte de Cortes">
+          <a href="/barberBox/views/reportes-cortes.php" class="sidebar-menu-link <?= ($currentPage === 'reportes') ? 'active' : ''; ?>" id="menu-reportes" title="Reporte de Cortes">
             <i class="bi bi-file-earmark-bar-graph-fill"></i>
             <span>Reporte de Cortes</span>
           </a>
