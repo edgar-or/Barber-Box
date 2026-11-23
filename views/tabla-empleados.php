@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . "/../config/auth.php";
-requerirEmpleadoPagina();
+requerirAdminPagina();
 $currentPage = 'empleados';
 ?>
 <!DOCTYPE html>

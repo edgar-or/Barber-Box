@@ -56,7 +56,7 @@ if ($opcion === "iniciar_sesion") {
                 echo json_encode([
                     "estado" => true,
                     "mensaje" => "¡Bienvenido/a " . $row['usuario'] . "!",
-                    "redirect" => $esEmpleado ? "/barberBox/index.php" : "/barberBox/views/cliente-panel.php"
+                    "redirect" => $esEmpleado ? "/barberBox/views/panel-agendar-cita-admin.php" : "/barberBox/views/cliente-panel.php"
                 ], JSON_UNESCAPED_UNICODE);
             } else {
                 echo json_encode([

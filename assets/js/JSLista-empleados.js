@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const formData = new FormData();
         formData.append("opcion", "consultar");
 
-        const respuesta = await fetch("../DAO/DAOEmpleado.php", {
+        const respuesta = await fetch("/barberBox/DAO/DAOEmpleado.php", {
             method: "POST",
             body: formData
         });
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Declaración de funciones fuera del DOMContentLoaded para evitar ReferenceError
 function editarEmpleado(id) {
-    window.location.href = "form-registrar-empleados.php?id=" + id;
+    window.location.href = "/barberBox/views/form-registrar-empleados.php?id=" + id;
 }
 
 function eliminarEmpleado(id, tabla) {
@@ -174,7 +174,7 @@ function eliminarEmpleado(id, tabla) {
                 datos.append("opcion", "eliminar");
                 datos.append("idempleado", id);
 
-                const respuesta = await fetch("../DAO/DAOEmpleado.php", {
+                const respuesta = await fetch("/barberBox/DAO/DAOEmpleado.php", {
                     method: "POST",
                     body: datos
                 });

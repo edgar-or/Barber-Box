@@ -19,6 +19,9 @@ function esEmpleado(): bool {
 function esCliente(): bool {
     return sesionActiva() && (int)($_SESSION['id_rol'] ?? 0) === ROL_CLIENTE;
 }
+function esAdmin(): bool {
+    return sesionActiva() && (int)($_SESSION['id_rol'] ?? 0) === ROL_ADMIN;
+}
 
 /** Páginas del panel administrativo: solo empleados. Los clientes van a su panel. */
 function requerirEmpleadoPagina(): void {
@@ -39,7 +42,18 @@ function requerirClientePagina(): void {
         exit;
     }
     if (!esCliente()) {
-        header("Location: /barberBox/index.php");
+        header("Location: /barberBox/views/panel-agendar-cita-admin.php");
+        exit;
+    }
+}
+
+function requerirAdminPagina(): void {
+    if (!sesionActiva()) {
+        header("Location: /barberBox/page-login.php");
+        exit;
+    }
+    if (!esAdmin()) {
+        header("Location: " . (esCliente() ? "/barberBox/views/cliente-panel.php" : "/barberBox/views/panel-agendar-cita-admin.php"));
         exit;
     }
 }
@@ -60,6 +74,16 @@ function requerirClienteJson(): void {
         http_response_code(403);
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(["estado" => false, "mensaje" => "Acceso solo para clientes."]);
+        exit;
+    }
+}
+
+/** Endpoints JSON solo para el administrador. */
+function requerirAdminJson(): void {
+    if (!esAdmin()) {
+        http_response_code(403);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(["estado" => false, "mensaje" => "Solo el administrador puede realizar esta acción."]);
         exit;
     }
 }

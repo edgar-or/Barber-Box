@@ -12,7 +12,7 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
      ========================================== -->
 <div class="sidebar-wrapper" id="sidebar">
   <!-- Brand Logo / Identity -->
-  <a href="<?= $esCliente ? "/barberBox/views/cliente-panel.php" : "/barberBox/index.php"; ?>" class="sidebar-brand">
+  <a href="<?= $esCliente ? "/barberBox/views/cliente-panel.php" : (esEmpleado() ? "/barberBox/views/panel-agendar-cita-admin.php" : "/barberBox/home.php"); ?>" class="sidebar-brand">
     <i class="bi bi-asterisk"></i>
     <span>BARBER-BOX</span>
   </a>
@@ -24,6 +24,12 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
     <div class="sidebar-menu-section">
       <div class="sidebar-menu-title">Mi cuenta</div>
       <ul class="sidebar-menu-list">
+        <li class="sidebar-menu-item">
+          <a href="/barberBox/home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-home">
+            <i class="bi bi-house"></i>
+            <span>Home</span>
+          </a>
+        </li>
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/cliente-panel.php#agendar" class="sidebar-menu-link <?= ($currentPage === 'cliente-panel') ? 'active' : ''; ?>" data-tab="agendar">
             <i class="bi bi-calendar-plus"></i>
@@ -38,23 +44,19 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
         </li>
       </ul>
     </div>
-    <?php else: ?>
-    <!-- Group: Menu -->
+    <?php elseif (esEmpleado()): ?>
+    <!-- Menú del empleado (administrador / barbero) -->
     <div class="sidebar-menu-section">
       <div class="sidebar-menu-title">Menu</div>
       <ul class="sidebar-menu-list">
+
         <li class="sidebar-menu-item">
-          <a href="/barberBox/index.php" class="sidebar-menu-link <?= ($currentPage === 'dashboard') ? 'active' : ''; ?>" id="menu-dash" title="Overview">
-            <i class="bi bi-grid-fill"></i>
-            <span>Dashboard</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="/barberBox/home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-home" title="Overview">
-            <i class="bi bi-grid-fill"></i>
+          <a href="/barberBox/home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-home">
+            <i class="bi bi-house"></i>
             <span>Home</span>
           </a>
         </li>
+
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-clientes.php" class="sidebar-menu-link <?= ($currentPage === 'clientes') ? 'active' : ''; ?>" id="menu-clientes" title="Overview">
             <i class="bi bi-grid-fill"></i>
@@ -62,22 +64,24 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
           </a>
         </li>
 
-         <li class="sidebar-menu-item">
+        <li class="sidebar-menu-item">
           <a href="/barberBox/views/panel-agendar-cita-admin.php" class="sidebar-menu-link <?= ($currentPage === 'agendar-admin') ? 'active' : ''; ?>" id="menu-agendar-admin">
             <i class="bi bi-calendar-plus"></i>
             <span>Agendar cita</span>
           </a>
         </li>
 
-
-         <li class="sidebar-menu-item">
+        <?php if (esAdmin()): ?>
+        <!-- Solo el administrador gestiona empleados -->
+        <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-empleados.php" class="sidebar-menu-link <?= ($currentPage === 'empleados') ? 'active' : ''; ?>" id="menu-empleados" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Empleados</span>
           </a>
         </li>
+        <?php endif; ?>
 
-         <li class="sidebar-menu-item">
+        <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-servicios.php" class="sidebar-menu-link <?= ($currentPage === 'servicios') ? 'active' : ''; ?>" id="menu-servicios" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Servicios</span>
@@ -87,58 +91,21 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-citas.php" class="sidebar-menu-link <?= ($currentPage === 'citas') ? 'active' : ''; ?>" id="menu-citas">
             <i class="bi bi-calendar-check"></i>
-            <span><?= ((int)($_SESSION['id_rol'] ?? 0) === ROL_ADMIN) ? 'Historial de citas' : 'Mis citas'; ?></span>
+            <span><?= esAdmin() ? 'Historial de citas' : 'Mis citas'; ?></span>
           </a>
         </li>
 
       </ul>
     </div>
-
-    <!-- Group: Components -->
+    <?php else: ?>
+    <!-- Visitante sin sesión: solo Home -->
     <div class="sidebar-menu-section">
-      <div class="sidebar-menu-title">Components</div>
+      <div class="sidebar-menu-title">Menu</div>
       <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
-          <a href="../tables-basic.php" class="sidebar-menu-link <?= ($currentPage === 'tables') ? 'active' : ''; ?>" id="menu-basictables" title="Basic Tables">
-            <i class="bi bi-table"></i>
-            <span>Basic Tables</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="../ui-forms.php" class="sidebar-menu-link <?= ($currentPage === 'forms') ? 'active' : ''; ?>" id="menu-uiforms" title="Forms and Input">
-            <i class="bi bi-input-cursor-text"></i>
-            <span>Forms & Input</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="../ui-buttons.php" class="sidebar-menu-link <?= ($currentPage === 'buttons') ? 'active' : ''; ?>" id="menu-uibuttons" title="Buttons">
-            <i class="bi bi-menu-button-wide-fill"></i>
-            <span>Buttons & Alerts</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Group: Pages -->
-    <div class="sidebar-menu-section">
-      <div class="sidebar-menu-title">Pages</div>
-      <ul class="sidebar-menu-list">
-        <li class="sidebar-menu-item">
-          <a href="page-blank.php" class="sidebar-menu-link <?= ($currentPage === 'blank') ? 'active' : ''; ?>" id="menu-blankpage" title="Blank Page">
-            <i class="bi bi-file-earmark"></i>
-            <span>Blank Page</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="page-login.php" class="sidebar-menu-link <?= ($currentPage === 'login') ? 'active' : ''; ?>" id="menu-loginpage" title="Login Page">
-            <i class="bi bi-box-arrow-in-right"></i>
-            <span>Login Screen</span>
-          </a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="../page-404.php" class="sidebar-menu-link <?= ($currentPage === '404') ? 'active' : ''; ?>" id="menu-404" title="404 Page">
-            <i class="bi bi-slash-circle"></i>
-            <span>Error 404</span>
+          <a href="/barberBox/home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-home">
+            <i class="bi bi-house"></i>
+            <span>Home</span>
           </a>
         </li>
       </ul>

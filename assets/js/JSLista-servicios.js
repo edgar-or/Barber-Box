@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const formData = new FormData();
         formData.append("opcion", "consultar");
 
-        const respuesta = await fetch("../DAO/DAOServicios.php", {
+        const respuesta = await fetch("/barberBox/DAO/DAOServicios.php", {
             method: "POST",
             body: formData
         });
@@ -172,7 +172,7 @@ function eliminarServicio(id, tabla) {
                 datos.append("opcion", "eliminar");
                 datos.append("idservicio", id);
 
-                const respuesta = await fetch("../DAO/DAOServicios.php", {
+                const respuesta = await fetch("/barberBox/DAO/DAOServicios.php", {
                     method: "POST",
                     body: datos
                 });

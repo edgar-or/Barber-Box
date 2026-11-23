@@ -1,7 +1,12 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+require_once __DIR__ . "/../config/auth.php";
+
+// Un cliente con sesión iniciada ya tiene cuenta: no necesita registrarse
+if (esCliente()) {
+    header("Location: /barberBox/views/cliente-panel.php");
+    exit;
 }
+
 $currentPage = 'clientes';
 ?>
 
@@ -18,7 +23,7 @@ $currentPage = 'clientes';
     <meta name="author" content="Spark Admin Team">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/images/favicon.ico">
+    <link rel="icon" type="image/png" href="../assets/images/favicon.ico">
 
     <!-- Local Third-Party Libraries (100% Offline Compatible) -->
     <link rel="stylesheet" href="../assets/libs/bootstrap/css/bootstrap.min.css">
@@ -30,8 +35,8 @@ $currentPage = 'clientes';
 </head>
 
 <body>
-    <!-- menús solo si hay un usuario en sesion -->
-    <?php if (isset($_SESSION['idusuario']) && !empty($_SESSION['idusuario'])): ?>
+    <!-- menús solo para empleados con sesión (los visitantes ven el formulario solo) -->
+    <?php if (esEmpleado()): ?>
         <?php include './menu/menuLateral.php'; ?>
         <?php include './menu/menu-header.php'; ?>
     <?php endif; ?>
@@ -92,7 +97,7 @@ $currentPage = 'clientes';
                                         <div class="login-input-group">
                                             <i class="bi bi-telephone input-icon"></i>
                                             <input type="tel" id="telefono" name="telefono" class="login-input form-control"
-                                                placeholder="6776-9876" maxlength="9"
+                                                placeholder="6776-9876" maxlength="9" pattern="[0-9]{4}-[0-9]{4}"
                                                 title="Ingresa 8 dígitos, por ejemplo 6776-9876" required>
                                         </div>
                                     </div>
@@ -196,7 +201,7 @@ $currentPage = 'clientes';
     <!-- Local Bootstrap bundle -->
     <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../assets/js/JSRegistrarCliente.js"></script>
+    <script src="../assets/js/JSRegistrarCliente.js?v=<?php echo filemtime('../assets/js/JSRegistrarCliente.js'); ?>"></script>
 
     <!-- Local Third-Party Libraries Script dependencies -->
     <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>

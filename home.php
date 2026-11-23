@@ -1,34 +1,23 @@
 <?php
-require_once __DIR__ . '/config/conexion.php';
+require_once __DIR__ . "/config/auth.php";
 
-// Servicios activos desde la BD
-$servicios = [];
-$res = $conexion->query(
-    "SELECT id_servicio, nombre_servicio, descripcion, precio, duracion_estimada
-     FROM servicio WHERE estado_servicio = 'A' ORDER BY nombre_servicio"
-);
-if ($res) {
-    while ($f = $res->fetch_assoc()) { $f['imagen'] = null; $servicios[$f['id_servicio']] = $f; }
-    $res->free();
+// Página pública: cualquiera puede verla. Solo se ajustan los botones según la sesión.
+$currentPage = 'home';
+
+if (esCliente()) {
+  $urlPanel = "/barberBox/views/cliente-panel.php";
+} elseif (esEmpleado()) {
+  $urlPanel = "/barberBox/views/panel-agendar-cita-admin.php";
+} else {
+  $urlPanel = "/barberBox/page-login.php";
 }
-
-// Primera imagen de cada servicio (la tabla puede no existir aún)
-try {
-    $resImg = $conexion->query("SELECT id_servicio, MIN(ruta_imagen) AS ruta FROM servicio_imagen GROUP BY id_servicio");
-    if ($resImg) {
-        while ($i = $resImg->fetch_assoc()) {
-            if (isset($servicios[$i['id_servicio']])) { $servicios[$i['id_servicio']]['imagen'] = $i['ruta']; }
-        }
-    }
-} catch (Throwable $e) { /* sin imágenes */ }
-$conexion->close();
 ?><!DOCTYPE html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BarberShop - Tu Estilo, Tu Ley</title>
+  <title>Barber-Box - Tu Estilo, Tu Ley</title>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/images/favicon.ico">
@@ -65,12 +54,18 @@ $conexion->close();
         </ul>
 
         <div class="d-flex gap-2">
-          <a href="/barberBox/page-login.php" class="btn btn-outline-light px-4">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
-          </a>
-          <a href="/barberBox/views/form-registrar-cliente.php" class="btn btn-danger px-4">
-            <i class="bi bi-person-plus me-1"></i> Registrarse
-          </a>
+          <?php if (sesionActiva()): ?>
+            <a href="<?= $urlPanel; ?>" class="btn btn-danger px-4">
+              <i class="bi bi-person-circle me-1"></i> Ir a mi panel
+            </a>
+          <?php else: ?>
+            <a href="/barberBox/page-login.php" class="btn btn-outline-light px-4">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+            </a>
+            <a href="/barberBox/views/form-registrar-cliente.php" class="btn btn-danger px-4">
+              <i class="bi bi-person-plus me-1"></i> Registrarse
+            </a>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -87,20 +82,20 @@ $conexion->close();
         Reserva tu cita en línea en segundos, elige a tu barbero preferido y disfruta de una atención de primera clase.
       </p>
       <div class="d-flex flex-wrap justify-content-center gap-3 mb-5">
-        <a href="page-login.php" class="btn btn-danger btn-lg px-4 fw-bold">
+        <a href="<?= $urlPanel; ?>" class="btn btn-danger btn-lg px-4 fw-bold">
           <i class="bi bi-calendar-check me-2"></i>Agendar Cita Ahora
         </a>
         <a href="#servicios" class="btn btn-outline-light btn-lg px-4 fw-bold">Ver Servicios</a>
       </div>
       <div class="home-stats row g-3 justify-content-center">
-        <div class="col-6 col-md-3"><div class="stat"><strong class="text-danger"><?= count($servicios); ?></strong><small class="text-white-50">Servicios</small></div></div>
+        <div class="col-6 col-md-3"><div class="stat"><strong class="text-danger" id="totalServicios">0</strong><small class="text-white-50">Servicios</small></div></div>
         <div class="col-6 col-md-3"><div class="stat"><strong class="text-danger">100%</strong><small class="text-white-50">Reserva en línea</small></div></div>
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       Nuestros Servicios (dinámicos desde la BD)
+       Nuestros Servicios (se cargan desde DAOHome.php)
        ========================================== -->
   <section id="servicios" class="py-5 border-bottom border-secondary">
     <div class="container py-4">
@@ -109,39 +104,73 @@ $conexion->close();
         <p class="text-white-50 mt-3">Servicios profesionales para mantener tu estilo al día.</p>
       </div>
 
-      <div class="row g-4 justify-content-center">
-        <?php if (empty($servicios)): ?>
-          <div class="col-12 text-center text-white-50">
-            <i class="bi bi-info-circle fs-3 d-block mb-2"></i>Pronto publicaremos nuestros servicios.
-          </div>
-        <?php endif; ?>
-
-        <?php foreach ($servicios as $s): ?>
-          <div class="col-12 col-sm-6 col-lg-4">
-            <div class="service-card h-100 d-flex flex-column">
-              <div class="service-media">
-                <?php if (!empty($s['imagen'])): ?>
-                  <img src="<?= htmlspecialchars($s['imagen']); ?>" alt="<?= htmlspecialchars($s['nombre_servicio']); ?>" loading="lazy">
-                <?php else: ?>
-                  <i class="bi bi-scissors"></i>
-                <?php endif; ?>
-              </div>
-              <div class="p-4 d-flex flex-column flex-grow-1 text-center">
-                <h4 class="fw-bold text-light mb-2"><?= htmlspecialchars($s['nombre_servicio']); ?></h4>
-                <p class="text-white-50 small flex-grow-1"><?= htmlspecialchars($s['descripcion'] ?? ''); ?></p>
-                <div class="service-meta mb-2"><i class="bi bi-clock me-1"></i><?= (int)$s['duracion_estimada']; ?> min</div>
-                <div class="service-price">$<?= number_format((float)$s['precio'], 2); ?></div>
-              </div>
-            </div>
-          </div>
-        <?php endforeach; ?>
+      <div class="row g-4 justify-content-center" id="listaServicios">
+        <div class="col-12 text-center text-white-50">Cargando servicios...</div>
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       Llamado a la Acción
+       Contacto (datos ficticios)
        ========================================== -->
+  <section id="contacto" class="py-5 border-bottom border-secondary">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="section-title text-white"><i class="bi bi-geo-alt text-danger me-2"></i>Contacto</h2>
+        <p class="text-white-50 mt-3">Escríbenos o visítanos, con gusto te atendemos.</p>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="h-100 p-4 text-center bg-black border border-secondary rounded-4">
+            <i class="bi bi-geo-alt-fill text-danger fs-2 d-block mb-3"></i>
+            <h5 class="fw-bold text-light mb-2">Dirección</h5>
+            <p class="text-white-50 small mb-0">Colonia Escalón, Calle Ejemplo #123<br>San Salvador, El Salvador</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="h-100 p-4 text-center bg-black border border-secondary rounded-4">
+            <i class="bi bi-telephone-fill text-danger fs-2 d-block mb-3"></i>
+            <h5 class="fw-bold text-light mb-2">Teléfono</h5>
+            <p class="text-white-50 small mb-0">
+              <a href="tel:+50322220000" class="text-white-50 text-decoration-none">+503 2222-0000</a><br>
+              <a href="https://wa.me/50370000000" class="text-white-50 text-decoration-none">WhatsApp: 7000-0000</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="h-100 p-4 text-center bg-black border border-secondary rounded-4">
+            <i class="bi bi-envelope-fill text-danger fs-2 d-block mb-3"></i>
+            <h5 class="fw-bold text-light mb-2">Correo</h5>
+            <p class="text-white-50 small mb-0">
+              <a href="mailto:contacto@barberbox.example" class="text-white-50 text-decoration-none">contacto@barberbox.example</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="h-100 p-4 text-center bg-black border border-secondary rounded-4">
+            <i class="bi bi-clock-fill text-danger fs-2 d-block mb-3"></i>
+            <h5 class="fw-bold text-light mb-2">Horario</h5>
+            <p class="text-white-50 small mb-0">Lunes a sábado<br>8:00 a.m. - 5:00 p.m.<br>Domingo: cerrado</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center gap-2 mt-5">
+        <a href="#" class="btn btn-outline-light" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="btn btn-outline-light" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://wa.me/50370000000" class="btn btn-outline-light" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       Llamado a la Acción (solo para quien no ha iniciado sesión)
+       ========================================== -->
+  <?php if (!sesionActiva()): ?>
   <section class="cta-section py-5 border-bottom border-secondary text-center">
     <div class="container py-4">
       <h2 class="fw-bold text-white mb-3">¿Listo para renovar tu look?</h2>
@@ -149,6 +178,7 @@ $conexion->close();
       <a href="page-login.php" class="btn btn-danger btn-lg px-5 fw-bold">Acceder al Portal del Cliente</a>
     </div>
   </section>
+  <?php endif; ?>
 
   <!-- ==========================================
        Footer
@@ -165,6 +195,7 @@ $conexion->close();
 
   <!-- Scripts -->
   <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/JSHome.js?v=<?php echo filemtime('assets/js/JSHome.js'); ?>"></script>
 </body>
 
 </html>
