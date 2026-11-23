@@ -216,4 +216,25 @@ function eliminarEmpleado(id, tabla) {
             }
         }
     });
+
 }
+    const tabla = new Tabulator(contenedor, {
+        locale: "es-es",
+        langs: { /* ... tu configuración de idioma ... */ },
+        data: [], 
+        layout: "fitColumns",
+        responsiveLayout: "hide",
+        pagination: true,
+        paginationElement: paginacion,
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50, 100],
+        movableColumns: true,
+        
+        // ✅ AGREGAR ESTAS DOS LÍNEAS PARA EL MODO OSCURO EN TABULATOR
+        theme: "midnight", // o "dark" si tienes la versión más nueva
+        // ------------------------------------------------
+
+        columns: [
+            // ... tus columnas
+        ]
+    });

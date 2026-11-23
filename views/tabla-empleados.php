@@ -40,18 +40,24 @@ $currentPage = 'empleados';
     </button>
   </div>
 
-  <div class="table-card-custom tabla-moderna">
-    <div class="table-header-control">
-      <div class="table-search-box">
-        <i class="bi bi-search table-search-icon"></i>
-        <input type="text" id="table-filter" class="table-search-input" placeholder="Buscar por nombre o teléfono...">
-      </div>
-      <div class="tabla-total"><i class="bi bi-people"></i> Total: <strong id="total-registros">0</strong></div>
+  <!-- START: Basic Table Card Container -->
+<div class="table-card-custom bg-dark text-white shadow-lg" style="border-radius: 15px; border: 1px solid #333;">
+  
+  <!-- Header Controls -->
+  <div class="table-header-control border-bottom border-secondary pb-3 mb-3 d-flex justify-content-between align-items-center">
+    <!-- Search bar -->
+    <div class="table-search-box bg-secondary bg-opacity-25" style="border-radius: 8px; padding: 5px 15px;">
+        <i class="bi bi-search table-search-icon text-light"></i>
+        <input type="text" id="table-filter" class="table-search-input bg-transparent border-0 text-white" placeholder="Buscar empleados..." style="outline: none;">
     </div>
-
-    <div id="tablaEmpleados"></div>
   </div>
 
+  <!-- Contenedor dinámico de Tabulator -->
+  <div id="tablaEmpleados" class="bg-dark text-white"></div>
+
+</div>
+  <link rel="stylesheet" href="../assets/css/tablas.css">
+<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=6">
   <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
   <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>

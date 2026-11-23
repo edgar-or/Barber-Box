@@ -65,27 +65,60 @@ requerirEmpleadoPagina();
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="id_empleado">
+                     <div class="mb-4">
+        <label class="form-label fw-bold text-secondary">Día de la semana</label>
+        <select class="form-select form-select-lg shadow-sm" id="comboDia">
+            <option value="lunes">Lunes</option>
+            <option value="martes">Martes</option>
+            <option value="miercoles">Miércoles</option>
+            <option value="jueves">Jueves</option>
+            <option value="viernes">Viernes</option>
+            <option value="sabado">Sábado</option>
+            <option value="domingo">Domingo</option>
+        </select>
+    </div>
+
+    <div class="row g-3">
+        <!-- TURNO MAÑANA -->
+        <div class="col-md-6">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body p-3">
+                    <h6 class="fw-bold mb-3 text-danger">
+                        <i class="me-2"></i>Turno Mañana
+                    </h6>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Día de la semana</label>
-                        <select class="form-select" id="comboDia">
-                        <option value="lunes">Lunes</option>
-                        <option value="martes">Martes</option>
-                        <option value="miercoles">Miércoles</option> <!-- Sin tilde por si acaso -->
-                        <option value="jueves">Jueves</option>
-                        <option value="viernes">Viernes</option>
-                        <option value="sabado">Sábado</option>
-                        <option value="domingo">Domingo</option>
-                        </select>
+                        <label class="form-label text-muted small mb-1">Hora de Entrada</label>
+                        <input type="time" class="form-control shadow-sm" id="entrada1" value="" onfocus="this.value = this.value || '08:00';">
+                        
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Hora de Entrada</label>
-                        <input type="time" class="form-control" id="comboEntrada" value="08:00">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Hora de Salida</label>
-                        <input type="time" class="form-control" id="comboSalida" value="17:00">
+                    <div class="mb-0">
+                        <label class="form-label text-muted small mb-1">Hora de Salida</label>
+                        <input type="time" class="form-control shadow-sm" id="salida1" value="" onfocus="this.value = this.value || '12:00';">
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- TURNO TARDE -->
+        <div class="col-md-6">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body p-3">
+                    <h6 class="fw-bold mb-3 text-primary">
+                        <i class=" me-2"></i>Turno Tarde
+                    </h6>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small mb-1">Hora de Entrada</label>
+                        <input type="time" class="form-control shadow-sm" id="entrada2" value="" onfocus="this.value = this.value || '13:00';">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label text-muted small mb-1">Hora de Salida</label>
+                        <input type="time" class="form-control shadow-sm" id="salida2" value="" onfocus="this.value = this.value || '17:00';">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-danger" id="btnGuardarHorarioModal">Guardar Horario</button>
@@ -93,9 +126,10 @@ requerirEmpleadoPagina();
             </div>
         </div>
     </div>
+        <link rel="stylesheet" href="../assets/css/horarios.css"> 
 
     <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../assets/js/JSHorariosEmpleado.js?v=4"></script> 
+    <script src="../assets/js/JSHorariosEmpleado.js?v=18"></script> 
 </body>
 </html>

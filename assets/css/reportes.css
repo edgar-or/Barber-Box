@@ -1,0 +1,65 @@
+/* ==========================================
+   CSS Específico para Impresión del Reporte
+   ========================================== */
+@media print {
+  /* 1. Ocultar la barra superior, menú, selectores y botones */
+  .sidebar-wrapper,
+  .navbar,
+  .page-header,
+  #formFiltroReporte,
+  button,
+  .btn {
+    display: none !important;
+  }
+
+  /* 2. Limpiar márgenes de la página */
+  body, html {
+    background-color: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 3. Ajustar contenedor de resultados arriba del todo */
+  #resultadoReporteContainer {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+  }
+
+  /* 4. Estética de tarjetas y tablas impresas */
+  .card {
+    border: 1px solid #ced4da !important;
+    box-shadow: none !important;
+    margin-bottom: 15px !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .card-header {
+    background-color: #212529 !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .card-header * {
+    color: #ffffff !important;
+  }
+
+  .badge.bg-danger {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .alert-success {
+    background-color: #d1e7dd !important;
+    color: #0f5132 !important;
+    border: 1px solid #badbcc !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
