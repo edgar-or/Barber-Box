@@ -1,10 +1,8 @@
 <?php
-// Gestión de citas para el personal.
-// Administrador: ve el historial de todas las citas. Barbero: solo las citas agendadas con él.
+// Gestión de citas para el personal y catálogo para clientes.
 require_once __DIR__ . "/../config/auth.php";
 require_once __DIR__ . "/../config/conexion.php";
 
-requerirEmpleadoJson();
 header('Content-Type: application/json; charset=utf-8');
 
 function responder(array $datos): void {
@@ -12,12 +10,22 @@ function responder(array $datos): void {
     exit;
 }
 
-$esAdmin = (int)$_SESSION['id_rol'] === ROL_ADMIN;
-$opcion = $_POST['opcion'] ?? '';
+$opcion = $_POST['opcion'] ?? ($_GET['opcion'] ?? '');
+
+// Si la opción es "catalogo", permitimos a cualquier sesión activa; para el resto exigimos empleado
+if ($opcion === "catalogo") {
+    if (!sesionActiva()) {
+        responder(["estado" => false, "mensaje" => "Sesión no iniciada."]);
+    }
+} else {
+    requerirEmpleadoJson();
+}
+
+$esAdmin = isset($_SESSION['id_rol']) && (int)$_SESSION['id_rol'] === ROL_ADMIN;
 
 // Para un barbero: su id_empleado (las consultas se limitan a él)
 $idEmpleadoSesion = 0;
-if (!$esAdmin) {
+if ($opcion !== "catalogo" && !$esAdmin) {
     $stmt = $conexion->prepare("SELECT id_empleado FROM empleado WHERE id_usuario = ? LIMIT 1");
     $stmt->bind_param("i", $_SESSION['idusuario']);
     $stmt->execute();
@@ -30,6 +38,58 @@ if (!$esAdmin) {
 }
 
 try {
+    if ($opcion === "catalogo") {
+        $sqlServicios = "SELECT id_servicio, nombre_servicio, descripcion, precio, duracion_estimada
+                         FROM servicio
+                         WHERE estado_servicio = 'A'
+                         ORDER BY nombre_servicio";
+        $resServicios = $conexion->query($sqlServicios);
+        if (!$resServicios) {
+            responder(["estado" => false, "mensaje" => "Error al obtener servicios."]);
+        }
+
+        $servicios = [];
+        while ($fila = $resServicios->fetch_assoc()) {
+            $idServ = (int)$fila['id_servicio'];
+            $imagenes = [];
+
+            // Obtener todas las imágenes asociadas al servicio (si existe la tabla servicio_imagen)
+            try {
+                $stmtImg = $conexion->prepare("SELECT ruta_imagen FROM servicio_imagen WHERE id_servicio = ? ORDER BY id_servicio ASC");
+                $stmtImg->bind_param("i", $idServ);
+                $stmtImg->execute();
+                $resImg = $stmtImg->get_result();
+                while ($img = $resImg->fetch_assoc()) {
+                    if (!empty($img['ruta_imagen'])) {
+                        $imagenes[] = $img['ruta_imagen'];
+                    }
+                }
+                $stmtImg->close();
+            } catch (Throwable $e) {
+                $imagenes = [];
+            }
+
+            $fila['imagenes'] = $imagenes;
+            $servicios[] = $fila;
+        }
+        $resServicios->free();
+
+        $barberos = [];
+        $resBarberos = $conexion->query("SELECT id_empleado, CONCAT(nombre, ' ', apellido) AS nombre FROM empleado ORDER BY nombre");
+        if ($resBarberos) {
+            while ($b = $resBarberos->fetch_assoc()) {
+                $barberos[] = $b;
+            }
+            $resBarberos->free();
+        }
+
+        responder([
+            "estado" => true,
+            "servicios" => $servicios,
+            "barberos" => $barberos
+        ]);
+    }
+
     if ($opcion === "consultar") {
         $sql = "SELECT c.id_cita, c.fecha_hora_inicio, c.fecha_hora_fin, c.total_cita, c.estado_cita,
                        CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, cl.telefono,

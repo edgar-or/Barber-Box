@@ -75,7 +75,7 @@ if ($opcion == "guardar") {
     }
 }
 
-if ($opcion == "modificar") {
+/*if ($opcion == "modificar") {
     require_once "../config/conexion.php";
     $conexion->begin_transaction();
 
@@ -93,6 +93,56 @@ if ($opcion == "modificar") {
 
         // Si se subieron nuevas imágenes al modificar, las añadimos a la galería
         guardarImagenesGaleria($conexion, $idservicio);
+
+        $conexion->commit();
+        echo json_encode(["estado" => true, "mensaje" => "Servicio modificado correctamente"]);
+    } catch (Throwable $e) {
+        $conexion->rollback();
+        echo json_encode(["estado" => false, "mensaje" => $e->getMessage()]);
+    } finally {
+        $conexion->close();
+    }
+}*/
+
+if ($opcion == "modificar") {
+    require_once "../config/conexion.php";
+    $conexion->begin_transaction();
+
+    try {
+        $idservicio = $_POST['idservicio'] ?? 0;
+
+        $sql = "UPDATE servicio SET nombre_servicio=?, descripcion=?, precio=?, duracion_estimada=? WHERE id_servicio=?";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("ssdii", $nombre_servicio, $descripcion, $precio, $duracion_estimada, $idservicio);
+        
+        if (!$stmt->execute()) {
+            throw new Exception("Error al modificar servicio");
+        }
+        $stmt->close();
+
+        // Verificar se enviaron archivos nuevos válidos
+        $hayArchivosNuevos = false;
+        if (isset($_FILES['imagenes_servicio']) && is_array($_FILES['imagenes_servicio']['name'])) {
+            foreach ($_FILES['imagenes_servicio']['error'] as $err) {
+                if ($err === UPLOAD_ERR_OK) {
+                    $hayArchivosNuevos = true;
+                    break;
+                }
+            }
+        }
+
+        // Si se subieron imágenes nuevas, reemplaza las anteriores para que no se acumulen
+        if ($hayArchivosNuevos) {
+            $sqlDelImg = "DELETE FROM servicio_imagen WHERE id_servicio = ?";
+            $stmtDel = $conexion->prepare($sqlDelImg);
+            $stmtDel->bind_param("i", $idservicio);
+            if (!$stmtDel->execute()) {
+                throw new Exception("Error al limpiar galería anterior");
+            }
+            $stmtDel->close();
+
+            guardarImagenesGaleria($conexion, $idservicio);
+        }
 
         $conexion->commit();
         echo json_encode(["estado" => true, "mensaje" => "Servicio modificado correctamente"]);

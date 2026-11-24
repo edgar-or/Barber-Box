@@ -28,20 +28,25 @@ if ($opcion == "consultarServicios") {
                 'descripcion' => $fila['descripcion'],
                 'precio' => number_format($fila['precio'], 2, '.', ','),
                 'duracion_estimada' => $fila['duracion_estimada'],
-                'imagen' => null
+                'imagen' => null,
+                'imagenes' => []
             ];
         }
         $resultado->free();
 
-        // Primera imagen de cada servicio (la tabla puede no existir aún)
+        // Todas las imágenes de cada servicio (la tabla puede no existir aún)
         try {
-            $sqlImagen = "SELECT id_servicio, MIN(ruta_imagen) AS ruta FROM servicio_imagen GROUP BY id_servicio";
+            $sqlImagen = "SELECT id_servicio, ruta_imagen FROM servicio_imagen ORDER BY id_servicio ASC";
             $resultadoImagen = $conexion->query($sqlImagen);
 
             if ($resultadoImagen) {
                 while ($fila = $resultadoImagen->fetch_assoc()) {
-                    if (isset($servicios[$fila['id_servicio']])) {
-                        $servicios[$fila['id_servicio']]['imagen'] = $fila['ruta'];
+                    $idServ = $fila['id_servicio'];
+                    if (isset($servicios[$idServ])) {
+                        $servicios[$idServ]['imagenes'][] = $fila['ruta_imagen'];
+                        if ($servicios[$idServ]['imagen'] === null) {
+                            $servicios[$idServ]['imagen'] = $fila['ruta_imagen'];
+                        }
                     }
                 }
                 $resultadoImagen->free();
@@ -50,11 +55,7 @@ if ($opcion == "consultarServicios") {
             // Sin imágenes: las tarjetas muestran el ícono por defecto
         }
 
-        $registros = [];
-
-        foreach ($servicios as $servicio) {
-            $registros[] = $servicio;
-        }
+        $registros = array_values($servicios);
 
         echo json_encode($registros, JSON_UNESCAPED_UNICODE);
     } catch (Throwable $e) {
@@ -64,7 +65,6 @@ if ($opcion == "consultarServicios") {
     }
     $conexion->close();
 }
-
 if (!in_array($opcion, ["consultarServicios"])) {
     echo json_encode([
         "estado" => false,
