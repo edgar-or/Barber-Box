@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         paginationSizeSelector: [10, 25, 50, 100],
         movableColumns: true,
         columns: [
-            { title: "ID", field: "id_empleado", width: 90, headerHozAlign: "center", hozAlign: "center" },
             {
                 title: "Empleado",
                 field: "nombreCompleto",

@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 1. Columnas (el barbero solo se muestra al administrador)
     const columnas = [
-        { title: "ID", field: "id_cita", width: 80, headerHozAlign: "center", hozAlign: "center" },
         {
             title: "Fecha",
             field: "fecha_hora_inicio",
