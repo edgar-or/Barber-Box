@@ -49,7 +49,7 @@ $currentPage = 'cliente-panel';
 
   <div class="tab-content">
 
-    <!-- ============ AGENDAR ============ -->
+    <!-- AGENDAR -->
     <div class="tab-pane fade show active" id="pane-agendar" role="tabpanel">
       <div class="row g-4">
         <div class="col-12 col-xl-8">
@@ -105,7 +105,7 @@ $currentPage = 'cliente-panel';
       </div>
     </div>
 
-    <!-- ============ HISTORIAL ============ -->
+    <!--  HISTORIAL -->
     <div class="tab-pane fade" id="pane-historial" role="tabpanel">
       <div class="card panel-historial">
         <div class="table-responsive">

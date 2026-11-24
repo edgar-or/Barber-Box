@@ -45,23 +45,23 @@
             <p class="login-subtitle">Por favor inicie sesion</p>
             
             <!-- Login Form -->
-            <form id="form-login" method="POST" class="needs-validation" novalidate>
+            <form id="form-login" method="POST" class="needs-validation" autocomplete="off" novalidate>
                 
                 <!-- Email Input Group -->
                 <div class="login-form-group">
-                    <label for="email" class="login-form-label">Usuario</label>
+                    <label for="usuario" class="login-form-label">Usuario</label>
                     <div class="login-input-group">
                         <i class="bi bi-envelope input-icon"></i>
-                        <input type="text" id="usuario"  name="usuario" class="login-input form-control" placeholder="Juan" required>
+                        <input type="text" id="usuario" name="usuario" class="login-input form-control" placeholder="Juan" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required>
                     </div>
                 </div>
                 
                 <!-- Password Input Group -->
                 <div class="login-form-group">
-                    <label for="password" class="login-form-label">Contraseña</label>
+                    <label for="clave" class="login-form-label">Contraseña</label>
                     <div class="login-input-group">
                         <i class="bi bi-shield-lock input-icon"></i>
-                        <input type="password" id="clave" name="clave" class="login-input login-input-password form-control" placeholder="••••••••" required>
+                        <input type="password" id="clave" name="clave" class="login-input login-input-password form-control" placeholder="••••••••" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');" required>
                         <button type="button" class="password-toggle-btn" id="toggle-password" aria-label="Show password">
                             <i class="bi bi-eye"></i>
                         </button>
