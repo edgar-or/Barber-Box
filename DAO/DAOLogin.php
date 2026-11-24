@@ -34,43 +34,6 @@ if ($opcion === "iniciar_sesion") {
         );
 
         if (!$passwordValida) {
-            if ($row['estado_usuario'] !== 'A') {
-                echo json_encode([
-                    "estado" => false,
-                    "mensaje" => "El usuario se encuentra inactivo."
-                ], JSON_UNESCAPED_UNICODE);
-                exit;
-            }
-
-            // Verificar contraseña (soporta password_hash o texto plano temporal)
-            $passwordValida = password_verify($clave, $row['contrasena_hash']) || ($clave === $row['contrasena_hash']);
-
-            if ($passwordValida) {
-                session_regenerate_id(true);
-                $idRol = (int)$row['id_rol'];
-
-                $_SESSION['idusuario'] = $row['id_usuario'];
-                $_SESSION['usuario'] = $row['usuario'];
-                $_SESSION['id_rol'] = $idRol;
-                $_SESSION['login_time'] = time();
-
-                // Empleados (admin / barbero) -> panel completo. Clientes -> su panel de citas.
-                $esEmpleado = in_array($idRol, [ROL_ADMIN, ROL_BARBERO], true);
-                $_SESSION['rol_nombre'] = $esEmpleado ? ($idRol === ROL_ADMIN ? 'Administrador' : 'Barbero') : 'Cliente';
-
-                echo json_encode([
-                    "estado" => true,
-                    "mensaje" => "¡Bienvenido/a " . $row['usuario'] . "!",
-                    "redirect" => $esEmpleado ? "/Barber-Box/index.php" : "/Barber-Box/views/cliente-panel.php"
-                ], JSON_UNESCAPED_UNICODE);
-            } else {
-                echo json_encode([
-                    "estado" => false,
-                    "mensaje" => "Error en inicio de sesión"
-                ], JSON_UNESCAPED_UNICODE);
-            }
-
-        } else {
             echo json_encode([
                 "estado" => false,
                 "mensaje" => "Error en inicio de sesión"
@@ -118,7 +81,7 @@ if ($opcion === "cerrar_sesion") {
     session_destroy();
     echo json_encode([
         "estado" => true,
-        "redirect" => "/Barber-Box/page-login.php"
+        "redirect" => "/barberBox/page-login.php"
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }

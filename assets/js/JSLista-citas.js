@@ -95,6 +95,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <button class="table-btn-action btn-completar" data-id="${row.id_cita}" title="Procesar cobro y completar">
                             <i class="bi bi-cash-coin"></i>
                         </button>
+                            <button class="btn btn-sm btn-outline-primary btn-modificar me-1" data-id="  ">Modificar</button>
+
                         <button class="table-btn-action delete btn-cancelar" data-id="${row.id_cita}" title="Cancelar cita">
                             <i class="bi bi-x-circle"></i>
                         </button>` : ""}
@@ -102,10 +104,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `;
             },
             cellClick: function (e, cell) {
+
+
                 const target = e.target.closest("button");
                 if (!target) return;
 
                 const idCita = target.getAttribute("data-id");
+
+                
 
                 if (target.classList.contains("btn-detalle")) {
                     verDetalle(idCita);
