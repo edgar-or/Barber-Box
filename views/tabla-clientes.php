@@ -53,6 +53,8 @@ $currentPage = 'clientes';
     <div id="table-pagination" class="d-flex flex-wrap gap-2 justify-content-end mt-2"></div>
   </div>
 
+    <link rel="stylesheet" href="../assets/css/tablas.css">
+<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=6">
   <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
   <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>

@@ -18,7 +18,7 @@ $currentPage = 'reportes';
   <link rel="stylesheet" href="../assets/css/main.css">
   <link rel="stylesheet" href="../assets/css/reportes.css" media="print">
 </head>
-<body>
+<body class="pagina-reportes">
   <?php include './menu/menuLateral.php'; ?>
   <?php include './menu/menu-header.php'; ?>
 
@@ -363,5 +363,7 @@ $currentPage = 'reportes';
         }
     }
   </script>
+  <link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=5">
+
 </body>
 </html>

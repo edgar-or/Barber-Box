@@ -137,7 +137,7 @@ $currentPage = 'servicios';
 
     <!-- Custom Authentication interactions script -->
     <script src="/barberBox/assets/js/auth.js"></script>
-
+<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=4">
     <!-- Script para vista previa de múltiples imágenes -->
   
 </body>

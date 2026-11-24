@@ -215,7 +215,7 @@ if (session_status() === PHP_SESSION_NONE) {
      <!-- Local Third-Party Libraries Script dependencies -->
   <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
   <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>
-
+<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=5">
   <!-- Local dashboard interactions controller -->
   <script src="../assets/js/dashboard.js"></script>
     

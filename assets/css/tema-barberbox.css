@@ -1,238 +1,1353 @@
 /* =====================================================================
-   ESTILOS PERSONALIZADOS: MODO OSCURO BARBERÍA PARA TABULATOR
+   TEMA BARBER-BOX v3 · mismo estilo de la pantalla "Registrar empleado"
+   Carga este archivo DESPUÉS de main.css y tablas.css.
+   Usa las variables --barber-* que ya existen en main.css.
+   Para desactivarlo: quita el <link> de la página.
    ===================================================================== */
 
-/* 1. Contenedor de la Tarjeta Principal */
+/* ---------------------------------------------------------------------
+   0. COLORES DE LA PLANTILLA
+   main.css pinta todo lo "verde" con estas variables. Al cambiarlas aquí,
+   cualquier pantalla que las use pasa a la paleta de la barbería:
+   - verde lima  -> azul
+   - verde oscuro -> negro / carbón
+   Para volver al verde original, borra este bloque.
+--------------------------------------------------------------------- */
+:root {
+  --barber-blue-hover: #0096c7;
+
+  --brand-lime: var(--barber-blue-light);
+  --brand-lime-hover: var(--barber-blue-hover);
+  --brand-lime-translucent: color-mix(in srgb, var(--barber-blue-light) 15%, transparent);
+
+  --brand-forest-dark: var(--barber-black);
+  --brand-forest-medium: var(--barber-dark-card);
+  --brand-forest-light: var(--barber-border);
+}
+
+/* ---------------------------------------------------------------------
+   1. Fondo: negro con destello rojo arriba a la izquierda y azul abajo a
+   la derecha (igual que las formas de luz de la pantalla de registro).
+   Queda fijo mientras haces scroll.
+--------------------------------------------------------------------- */
+.main-wrapper {
+  background-color: var(--barber-black);
+  background-image: none;
+}
+
+/* ---------------------------------------------------------------------
+   2. Barra superior (navbar) en oscuro
+--------------------------------------------------------------------- */
+.navbar-custom {
+  background-color: rgba(18, 18, 18, 0.88);
+  border-bottom: 1px solid var(--barber-border);
+}
+
+.navbar-action-btn,
+.btn-desktop-toggle,
+.sidebar-toggle-btn {
+  background-color: var(--barber-dark-card);
+  border-color: var(--barber-border);
+  color: var(--barber-white);
+  box-shadow: none;
+}
+
+.navbar-action-btn:hover,
+.btn-desktop-toggle:hover,
+.sidebar-toggle-btn:hover {
+  background-color: #262626;
+  color: var(--barber-white);
+}
+
+.navbar-action-badge {
+  border-color: var(--barber-black);
+}
+
+.navbar-profile-name,
+.navbar-profile-btn:hover .navbar-profile-name,
+.navbar-title-dropdown {
+  color: var(--barber-white);
+}
+
+.navbar-profile-caret,
+.navbar-profile-btn:hover .navbar-profile-caret {
+  color: var(--barber-gray);
+}
+
+.navbar-profile-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.navbar-search-input {
+  background-color: var(--barber-dark-card);
+  border-color: var(--barber-border);
+  color: var(--barber-white);
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------------------------
+   3. Encabezado de página
+--------------------------------------------------------------------- */
+.page-header {
+  padding-bottom: 0;
+  margin-bottom: 1.75rem;
+  align-items: center;
+}
+
+.page-header .page-title {
+  color: var(--barber-white);
+}
+
+.page-header .page-subtitle {
+  color: var(--barber-gray);
+}
+
+.page-header .page-icon {
+  background-color: var(--barber-blue-light) !important;
+  color: var(--barber-white) !important;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--barber-blue-light) 30%, transparent);
+}
+
+.page-header .btn-nuevo {
+  background-color: var(--barber-blue-light) !important;
+  border-color: var(--barber-blue-light) !important;
+  color: var(--barber-white) !important;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--barber-blue-light) 30%, transparent);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.page-header .btn-nuevo:hover {
+  background-color: var(--barber-blue-hover) !important;
+  border-color: var(--barber-blue-hover) !important;
+  color: var(--barber-white) !important;
+  transform: translateY(-1px);
+}
+
+/* ---------------------------------------------------------------------
+   4. Tarjeta de la tabla: oscura, con la franja rojo → azul arriba
+   (igual que las tarjetas de "Registrar empleado")
+--------------------------------------------------------------------- */
 .table-card-custom {
-    background-color: var(--barber-dark-card) !important;
-    border: 1px solid var(--barber-border) !important;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-    overflow: hidden;
+  position: relative;
+  background-color: var(--barber-dark-card) !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
 }
 
-/* 2. La Barra de Búsqueda (Header Control) */
-.table-header-control {
-    background-color: var(--barber-dark-card) !important;
-    border-bottom: 1px solid var(--barber-border) !important;
-    padding: 1.25rem;
+.table-card-custom::before {
+  display: none;
 }
 
-.table-search-box {
-    background-color: var(--barber-black) !important;
-    border: 1px solid var(--barber-border) !important;
-    border-radius: 8px;
+.table-header-control,
+.table-footer-control {
+  background-color: transparent !important;
+  border-color: var(--barber-border) !important;
 }
 
+/* Buscador */
 .table-search-input {
-    background-color: transparent !important;
-    color: var(--barber-white) !important;
-    border: none !important;
+  background-color: var(--barber-black) !important;
+  border: 1px solid var(--barber-border) !important;
+  color: var(--barber-white) !important;
 }
 
 .table-search-input::placeholder {
-    color: var(--barber-gray) !important;
+  color: var(--barber-gray);
+  opacity: 0.8;
+}
+
+.table-search-input:focus {
+  border-color: var(--barber-red) !important;
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18) !important;
 }
 
 .table-search-icon {
-    color: var(--barber-gray) !important;
+  color: var(--barber-gray);
 }
 
-/* 3. Tabla Principal (Fondo y Texto) */
-.tabulator {
-    background-color: var(--barber-dark-card) !important;
-    border: none !important;
-    color: var(--barber-white) !important;
+/* Contador "Total" */
+.tabla-total {
+  background-color: rgba(217, 4, 41, 0.15) !important;
+  color: var(--barber-white) !important;
 }
 
-/* 4. Cabecera de la Tabla (Títulos de las Columnas) */
-.tabulator .tabulator-header {
-    background-color: var(--barber-black) !important;
-    color: var(--barber-white) !important;
-    border-bottom: 2px solid var(--barber-red) !important; /* Línea roja de barbería */
+.tabla-total i,
+.tabla-total strong {
+  color: #ff4d6a !important;
 }
 
+/* ---------------------------------------------------------------------
+   5. Tabla (Tabulator) en oscuro
+--------------------------------------------------------------------- */
+.tabulator,
+.tabulator .tabulator-tableholder,
+.tabulator .tabulator-tableholder .tabulator-table {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* Encabezado de columnas */
+.tabulator .tabulator-header,
 .tabulator .tabulator-header .tabulator-col {
-    background-color: var(--barber-black) !important;
-    border-right: 1px solid var(--barber-border) !important;
-    color: var(--barber-white) !important;
+  background-color: #161616 !important;
+  color: var(--barber-gray) !important;
+  border-color: var(--barber-border) !important;
 }
 
-/* 5. Filas de Datos */
-.tabulator-row {
-    background-color: var(--barber-dark-card) !important;
-    border-bottom: 1px solid var(--barber-border) !important;
-    color: var(--barber-white) !important;
-    transition: background-color 0.2s ease;
+.tabulator .tabulator-header {
+  border-bottom: 1px solid var(--barber-border) !important;
 }
 
-/* Filas pares un poco más oscuras para distinguir */
-.tabulator-row.tabulator-row-even {
-    background-color: #161616 !important; 
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {
+  color: var(--barber-gray) !important;
 }
 
-/* Efecto al pasar el mouse por la fila */
-.tabulator-row:hover {
-    background-color: #2a2a2a !important; 
+.tabulator .tabulator-header .tabulator-col .tabulator-col-sorter .tabulator-arrow {
+  border-bottom-color: #555 !important;
 }
 
-.tabulator-row .tabulator-cell {
-    border-right: 1px solid var(--barber-border) !important;
+/* Filas */
+.tabulator .tabulator-row,
+.tabulator .tabulator-row.tabulator-row-even,
+.tabulator .tabulator-row.tabulator-row-odd {
+  background-color: transparent !important;
+  color: #e8e8e8 !important;
+  border-bottom: 1px solid var(--barber-border) !important;
 }
 
-/* 6. Paginación Inferior */
+.tabulator .tabulator-row .tabulator-cell {
+  color: #e8e8e8;
+  border-right: none !important;
+}
+
+.tabulator .tabulator-row:hover {
+  background-color: rgba(217, 4, 41, 0.08) !important;
+  box-shadow: inset 3px 0 0 var(--barber-red);
+}
+
+.tabulator .tabulator-placeholder .tabulator-placeholder-contents {
+  color: var(--barber-gray) !important;
+}
+
+/* Textos dentro de las celdas (nombre, subtítulo, correo) */
+.table-user-name {
+  color: var(--barber-white) !important;
+}
+
+.table-user-sub,
+.tabulator-cell [class*="sub"],
+.tabulator-cell [class*="muted"] {
+  color: var(--barber-gray) !important;
+}
+
+/* Botones de acciones (editar, eliminar, horarios) */
+.tabulator-cell button,
+.tabulator-cell [class*="btn"] {
+  background-color: #262626 !important;
+  border: 1px solid #333 !important;
+  color: #d8d8d8 !important;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.tabulator-cell button:hover,
+.tabulator-cell [class*="btn"]:hover {
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
+}
+
+/* Pie de la tabla: paginación */
 .tabulator .tabulator-footer {
-    background-color: var(--barber-black) !important;
-    color: var(--barber-white) !important;
-    border-top: 1px solid var(--barber-border) !important;
+  background-color: transparent !important;
+  border-top: 1px solid var(--barber-border) !important;
+  color: #cfcfcf !important;
+}
+
+.tabulator .tabulator-footer .tabulator-page-size {
+  background-color: var(--barber-black) !important;
+  border: 1px solid var(--barber-border) !important;
+  color: var(--barber-white) !important;
 }
 
 .tabulator .tabulator-footer .tabulator-page {
-    color: var(--barber-white) !important;
-    background-color: transparent !important;
-    border: 1px solid var(--barber-border) !important;
-    border-radius: 4px;
+  background-color: var(--barber-black) !important;
+  border: 1px solid var(--barber-border) !important;
+  color: #cfcfcf !important;
+}
+
+.tabulator .tabulator-footer .tabulator-page:not(.disabled):hover {
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
 }
 
 .tabulator .tabulator-footer .tabulator-page.active {
-    background-color: var(--barber-red) !important;
-    color: var(--barber-white) !important;
-    border-color: var(--barber-red) !important;
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
 }
 
-/* 7. Botones de Acción (Editar, Eliminar, Horario) */
-.table-btn-action {
-    background-color: var(--barber-black) !important;
-    border: 1px solid var(--barber-border) !important;
-    color: var(--barber-gray) !important;
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease-in-out;
+.tabulator .tabulator-footer .tabulator-page.disabled {
+  opacity: 0.4;
 }
 
-/* Hover general de los botones */
-.table-btn-action:hover {
-    background-color: var(--barber-red) !important;
-    color: var(--barber-white) !important;
-    border-color: var(--barber-red) !important;
+/* ---------------------------------------------------------------------
+   6. Pie de página
+--------------------------------------------------------------------- */
+.footer-custom {
+  color: var(--barber-gray);
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Hover específico para el botón del reloj (Horario) */
-.btn-horario:hover {
-    background-color: var(--barber-blue-light) !important;
-    border-color: var(--barber-blue-light) !important;
-    color: var(--barber-white) !important;
+.footer-logo {
+  color: var(--barber-white);
 }
 
-/* 8. Contenedor del Avatar en la tabla */
-.table-user-avatar {
-    border: 2px solid var(--barber-border);
-    border-radius: 50%;
-    object-fit: cover;
+.footer-logo i {
+  color: var(--barber-red);
 }
 
-.table-user-name {
-    font-weight: 600;
-    color: var(--barber-white) !important;
+.footer-link {
+  color: var(--barber-gray);
 }
 
-.table-user-sub {
-    font-size: 0.75rem;
-    color: var(--barber-gray) !important;
-}
-/* Arreglar el color de los textos secundarios (como el correo) */
-.tabulator-cell .text-muted,
-.tabulator-cell .text-secondary {
-    color: var(--barber-gray) !important;
-}
-/* Forzar que los íconos y correos se vean claros */
-.tabulator-cell .text-muted, 
-.tabulator-cell i.bi-envelope,
-.tabulator-cell .correo-texto {
-    color: #a0a0a0 !important; /* El gris claro de tu paleta */
-    opacity: 1 !important;
+.footer-link:hover {
+  color: var(--barber-white);
 }
 
-/* Si el correo está envuelto en un <span> o <div>, que tome el color claro */
-.tabulator-cell a, 
-.tabulator-cell span {
-    color: var(--barber-white) !important;
+/* =====================================================================
+   7. PANTALLA "HORARIOS DEL EMPLEADO"
+   Todo va limitado a <body class="pagina-horarios">, así no afecta a
+   otras pantallas. La tabla replica el aspecto de la tabla de Clientes.
+   ===================================================================== */
+
+/* Negro liso en toda la pantalla (se fuerza para ganarle a cualquier otro
+   estilo que esté tiñendo el fondo de azul) */
+body.pagina-horarios {
+  --bs-body-bg: var(--barber-black);
+  --bs-body-color: var(--barber-white);
+  --bs-card-bg: #161616;
+  --bs-border-color: var(--barber-border);
 }
 
-/* ==========================================
-   OSCURECER EL FONDO DE LA PÁGINA
-   ========================================== */
-
-/* Fondo oscuro para toda la página y el contenedor principal */
-body, .main-wrapper {
-    background-color: var(--barber-black) !important;
+body.pagina-horarios,
+body.pagina-horarios .main-wrapper,
+body.pagina-horarios .main-wrapper > .container {
+  background: var(--barber-black) !important;
+  background-image: none !important;
 }
 
-/* Para que el título "Empleados" y el subtítulo se lean bien en fondo oscuro */
-.page-title {
-    color: var(--barber-white) !important;
+/* Título */
+.pagina-horarios .text-dark,
+.pagina-horarios h2 {
+  color: var(--barber-white) !important;
 }
 
-.page-subtitle {
-    color: var(--barber-gray) !important;
+/* Tarjeta contenedora */
+.pagina-horarios .card {
+  background-color: #161616 !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55) !important;
+  color: var(--barber-white);
 }
 
-/* Opcional: Si quieres que la barra superior (header) también sea oscura */
-.navbar-custom {
-    background-color: rgba(18, 18, 18, 0.85) !important;
-    border-bottom: 1px solid var(--barber-border) !important;
-}
-/* ==========================================
-   RESALTAR LOS ICONOS DE ACCIÓN EN LA TABLA
-   ========================================== */
-
-/* Estilo base de los botones (Más visibles) */
-.table-btn-action {
-    background-color: #2a2a2a !important; /* Fondo un poco más claro que la tabla */
-    border: 1px solid #444 !important; /* Borde visible */
-    color: var(--barber-white) !important; /* Íconos en blanco por defecto */
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.2s ease-in-out;
+/* Línea superior de la tarjeta: roja sólida, como el subrayado del logo */
+.pagina-horarios .card::before {
+  content: "";
+  display: block !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--barber-red) !important;
 }
 
-/* 1. Color específico para el botón de Editar (Lápiz) */
-.table-btn-action.btn-editar {
-    color: #38bdf8 !important; /* Azul cielo */
-}
-.table-btn-action.btn-editar:hover {
-    background-color: #38bdf8 !important;
-    color: #000 !important; /* Texto oscuro al pasar el mouse */
-    border-color: #38bdf8 !important;
-    transform: translateY(-2px); /* Pequeño salto visual */
+/* Las tarjetas internas del modal no llevan la línea */
+.pagina-horarios .modal .card::before {
+  display: none !important;
 }
 
-/* 2. Color específico para el botón de Eliminar (Basura) */
-.table-btn-action.btn-eliminar, 
-.table-btn-action.delete {
-    color: #ef4444 !important; /* Rojo */
-}
-.table-btn-action.btn-eliminar:hover, 
-.table-btn-action.delete:hover {
-    background-color: #ef4444 !important;
-    color: #fff !important;
-    border-color: #ef4444 !important;
-    transform: translateY(-2px);
+/* Botón "Asignar Horario" en el rojo del menú */
+.pagina-horarios .btn-danger {
+  --bs-btn-bg: var(--barber-red);
+  --bs-btn-border-color: var(--barber-red);
+  --bs-btn-hover-bg: var(--barber-red-hover, #ef233c);
+  --bs-btn-hover-border-color: var(--barber-red-hover, #ef233c);
+  --bs-btn-active-bg: var(--barber-red-hover, #ef233c);
+  --bs-btn-active-border-color: var(--barber-red-hover, #ef233c);
 }
 
-/* 3. Color específico para el botón de Horario (Reloj) */
-.table-btn-action.btn-horario {
-    color: #a3e635 !important; /* Verde lima (hace juego con el botón "Nuevo empleado") */
+/* ---- Tabla, mismo estilo que Clientes ---- */
+.pagina-horarios .table-responsive {
+  border: 1px solid var(--barber-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
-.table-btn-action.btn-horario:hover {
-    background-color: #354ae6 !important;
+
+.pagina-horarios .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: #e8e8e8;
+  --bs-table-border-color: var(--barber-border);
+  margin-bottom: 0;
+}
+
+/* Todas las celdas: fondo oscuro y separadores finos */
+.pagina-horarios .table > :not(caption) > * > * {
+  background-color: #181818 !important;
+  color: #e8e8e8;
+  box-shadow: none !important;
+  border-width: 0 1px 1px 0;
+  border-style: solid;
+  border-color: var(--barber-border);
+  padding: 1.1rem 1.25rem;
+}
+
+.pagina-horarios .table > :not(caption) > * > *:last-child {
+  border-right-width: 0;
+}
+
+.pagina-horarios .table tbody tr:last-child > * {
+  border-bottom-width: 0;
+}
+
+/* Encabezado: títulos en mayúsculas, grises, con la línea roja debajo */
+.pagina-horarios .table thead > tr > * {
+  background-color: #141414 !important;
+  color: var(--barber-gray) !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid var(--barber-red);
+}
+
+/* Hover de fila */
+.pagina-horarios .table tbody tr:hover > * {
+  background-color: #262626 !important;
+}
+
+.pagina-horarios .text-muted {
+  color: var(--barber-gray) !important;
+}
+
+/* ---- Ventana modal "Asignar Horario" ---- */
+.pagina-horarios .modal-content {
+  background-color: #161616;
+  color: var(--barber-white);
+  border: 1px solid var(--barber-border);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+}
+
+.pagina-horarios .modal-header.bg-danger {
+  background-color: var(--barber-red) !important;
+}
+
+.pagina-horarios .modal-footer {
+  border-top: 1px solid var(--barber-border);
+}
+
+.pagina-horarios .modal .form-label,
+.pagina-horarios .modal .text-secondary {
+  color: #cfcfcf !important;
+}
+
+.pagina-horarios .modal .card.bg-light {
+  background-color: #1c1c1c !important;
+  border: 1px solid var(--barber-border) !important;
+}
+
+.pagina-horarios .modal .form-control,
+.pagina-horarios .modal .form-select {
+  background-color: var(--barber-black);
+  border: 1px solid var(--barber-border);
+  color: var(--barber-white);
+  color-scheme: dark; /* el reloj del campo de hora se ve claro */
+}
+
+.pagina-horarios .modal .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.pagina-horarios .modal .form-control:focus,
+.pagina-horarios .modal .form-select:focus {
+  border-color: var(--barber-red);
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18);
+}
+
+.pagina-horarios .modal .form-control:disabled,
+.pagina-horarios .modal .form-select:disabled {
+  background-color: #161616;
+  color: var(--barber-gray);
+  opacity: 0.7;
+}
+
+/* =====================================================================
+   8. CELDAS DE TABULATOR: textos en negrita (precio) y "sin imagen"
+   Corrige textos verde oscuro que quedaban invisibles sobre el fondo
+   oscuro (por ejemplo el precio en Servicios).
+   ===================================================================== */
+.tabulator-cell strong,
+.tabulator-cell b,
+.tabulator-cell [class*="precio"],
+.tabulator-cell [class*="price"] {
+  color: var(--barber-white) !important;
+}
+
+/* Recuadro que se muestra cuando un servicio no tiene imagen */
+.tabulator-cell [class*="placeholder"],
+.tabulator-cell [class*="sin-img"],
+.tabulator-cell [class*="no-img"] {
+  background-color: #262626 !important;
+  color: var(--barber-gray) !important;
+}
+
+.tabulator-cell [class*="placeholder"] i,
+.tabulator-cell [class*="sin-img"] i,
+.tabulator-cell [class*="no-img"] i {
+  color: var(--barber-red) !important;
+}
+
+/* =====================================================================
+   9. ÍCONOS DE ACCIONES EN LAS TABLAS: lápiz azul, basurero rojo
+   ===================================================================== */
+.tabulator-cell [class*="bi-pencil"] {
+  color: #38a1ff !important;
+}
+
+.tabulator-cell [class*="bi-trash"] {
+  color: #ef4444 !important;
+}
+
+/* Al pasar el mouse, el botón se llena del color de su ícono */
+.tabulator-cell :is(button, [class*="btn"]):has([class*="bi-pencil"]):hover {
+  background-color: #1d6fb8 !important;
+  border-color: #1d6fb8 !important;
+}
+
+.tabulator-cell :is(button, [class*="btn"]):has([class*="bi-trash"]):hover {
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+}
+
+.tabulator-cell :is(button, [class*="btn"]):hover [class*="bi-pencil"],
+.tabulator-cell :is(button, [class*="btn"]):hover [class*="bi-trash"] {
+  color: var(--barber-white) !important;
+}
+
+/* =====================================================================
+   10. FORMULARIOS (registrar / editar): botón de "Elegir archivos" oscuro
+   ===================================================================== */
+.login-input[type="file"]::file-selector-button,
+input[type="file"].form-control::file-selector-button {
+  background-color: #262626;
+  color: var(--barber-white);
+  border: 0;
+  border-radius: 6px;
+  padding: 0.45rem 0.9rem;
+  margin-right: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.login-input[type="file"]::file-selector-button:hover,
+input[type="file"].form-control::file-selector-button:hover {
+  background-color: var(--barber-red);
+}
+
+/* =====================================================================
+   11. SIN DESTELLOS: quita las "burbujas" de color del fondo de los
+   formularios (formas de luz roja y azul de main.css)
+   ===================================================================== */
+.login-bg-shape,
+.login-bg-shape-1,
+.login-bg-shape-2 {
+  display: none !important;
+}
+
+/* =====================================================================
+   12. SIN LÍNEAS DE COLORES: quita la franja roja-azul de arriba de las
+   tarjetas de los formularios (registrar / editar)
+   ===================================================================== */
+.login-card::before,
+.login-card::after,
+.register-card::before,
+.register-card::after {
+  display: none !important;
+  background: none !important;
+}
+
+/* =====================================================================
+   13. PANTALLA "GESTIÓN DE CITAS" (admin)
+   Todo va limitado a <body class="pagina-citas">.
+   ===================================================================== */
+
+body.pagina-citas {
+  --bs-body-bg: var(--barber-black);
+  --bs-body-color: var(--barber-white);
+  --bs-border-color: var(--barber-border);
+}
+
+body.pagina-citas,
+body.pagina-citas .main-wrapper,
+body.pagina-citas .main-wrapper > .container {
+  background: var(--barber-black) !important;
+  background-image: none !important;
+}
+
+/* ---- Pestañas: Agendar cita / Agenda ---- */
+.pagina-citas .panel-tabs .nav-link {
+  background-color: #161616;
+  border: 1px solid var(--barber-border);
+  color: var(--barber-gray);
+  font-weight: 600;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.pagina-citas .panel-tabs .nav-link:hover {
+  color: var(--barber-white);
+  border-color: var(--barber-red);
+}
+
+.pagina-citas .panel-tabs .nav-link.active {
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
+  box-shadow: 0 8px 20px rgba(217, 4, 41, 0.3);
+}
+
+/* ---- Tarjetas de cada paso y resumen ---- */
+.pagina-citas .panel-step,
+.pagina-citas .panel-resumen,
+.pagina-citas .panel-historial {
+  background-color: #161616 !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55) !important;
+  color: var(--barber-white);
+}
+
+.pagina-citas .panel-step-title,
+.pagina-citas .panel-resumen h2 {
+  color: var(--barber-white) !important;
+}
+
+/* Círculo con el número del paso */
+.pagina-citas .step-num {
+  background-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
+}
+
+/* ---- Campos del formulario ---- */
+.pagina-citas .form-control,
+.pagina-citas .form-select {
+  background-color: var(--barber-black);
+  border: 1px solid var(--barber-border);
+  color: var(--barber-white);
+  color-scheme: dark; /* calendario y reloj en claro */
+}
+
+.pagina-citas .form-control::placeholder {
+  color: var(--barber-gray);
+  opacity: .8;
+}
+
+.pagina-citas .form-control:focus,
+.pagina-citas .form-select:focus {
+  background-color: var(--barber-black);
+  color: var(--barber-white);
+  border-color: var(--barber-red);
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18);
+}
+
+.pagina-citas .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.pagina-citas .form-label,
+.pagina-citas label {
+  color: #cfcfcf;
+}
+
+.pagina-citas .text-muted {
+  color: var(--barber-gray) !important;
+}
+
+/* ---- Resultados del buscador de cliente ---- */
+.pagina-citas #resultadosCliente {
+  background-color: #1c1c1c;
+  border: 1px solid var(--barber-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.pagina-citas #resultadosCliente .list-group-item,
+.pagina-citas #resultadosCliente button,
+.pagina-citas #resultadosCliente a {
+  background-color: transparent;
+  color: var(--barber-white);
+  border-color: var(--barber-border);
+}
+
+.pagina-citas #resultadosCliente .list-group-item:hover,
+.pagina-citas #resultadosCliente button:hover,
+.pagina-citas #resultadosCliente a:hover {
+  background-color: rgba(217, 4, 41, 0.12);
+  color: var(--barber-white);
+}
+
+.pagina-citas #clienteElegido {
+  color: var(--barber-white);
+}
+
+.pagina-citas #clienteElegido .bi {
+  color: #38a1ff;
+}
+
+/* ---- Tarjetas de servicios (las crea el JS) ---- */
+.pagina-citas #listaServicios > div > * {
+  background-color: #1c1c1c !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: var(--radius-md);
+  color: var(--barber-white) !important;
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease, transform .2s ease;
+}
+
+.pagina-citas #listaServicios > div > *:hover {
+  border-color: var(--barber-red) !important;
+  transform: translateY(-1px);
+}
+
+.pagina-citas #listaServicios strong,
+.pagina-citas #listaServicios h3,
+.pagina-citas #listaServicios h4,
+.pagina-citas #listaServicios h5,
+.pagina-citas #listaServicios h6 {
+  color: var(--barber-white) !important;
+}
+
+.pagina-citas #listaServicios small,
+.pagina-citas #listaServicios p,
+.pagina-citas #listaServicios span {
+  color: var(--barber-gray);
+}
+
+.pagina-citas #listaServicios .bi {
+  color: var(--barber-gray);
+}
+
+/* ---- Horarios disponibles (botones de hora) ---- */
+.pagina-citas #listaHoras button,
+.pagina-citas #listaHoras .btn {
+  background-color: #1c1c1c;
+  border: 1px solid var(--barber-border);
+  color: #e8e8e8;
+  border-radius: var(--radius-md);
+  transition: background-color .2s ease, border-color .2s ease;
+}
+
+.pagina-citas #listaHoras button:hover,
+.pagina-citas #listaHoras .btn:hover {
+  border-color: var(--barber-red);
+  color: var(--barber-white);
+}
+
+.pagina-citas #listaHoras button.active,
+.pagina-citas #listaHoras .btn.active,
+.pagina-citas #listaHoras .selected {
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
+}
+
+/* ---- Resumen lateral ---- */
+.pagina-citas .resumen-linea {
+  color: #cfcfcf;
+  border-bottom: 1px dashed var(--barber-border);
+}
+
+.pagina-citas .resumen-linea strong {
+  color: var(--barber-white);
+}
+
+.pagina-citas .resumen-linea.total {
+  border-top: 2px solid var(--barber-red);
+  border-bottom: 0;
+}
+
+.pagina-citas .resumen-linea.total span,
+.pagina-citas .resumen-linea.total strong {
+  color: var(--barber-white);
+}
+
+.pagina-citas #resumenServicios li {
+  color: #e8e8e8;
+}
+
+/* Botón confirmar */
+.pagina-citas #btnAgendar {
+  background-color: var(--barber-red);
+  border-color: var(--barber-red);
+  color: var(--barber-white);
+}
+
+.pagina-citas #btnAgendar:hover:not(:disabled) {
+  background-color: var(--barber-red-hover, #ef233c);
+  border-color: var(--barber-red-hover, #ef233c);
+}
+
+.pagina-citas #btnAgendar:disabled {
+  background-color: #3a1a20;
+  border-color: #3a1a20;
+  color: #8a6a70;
+  opacity: 1;
+}
+
+/* ---- Pestaña Agenda: tabla oscura ---- */
+.pagina-citas .panel-historial .table-responsive {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.pagina-citas .panel-historial .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: #e8e8e8;
+  --bs-table-border-color: var(--barber-border);
+  margin-bottom: 0;
+}
+
+.pagina-citas .panel-historial .table > :not(caption) > * > * {
+  background-color: #181818 !important;
+  color: #e8e8e8;
+  box-shadow: none !important;
+  border-color: var(--barber-border);
+  padding: 1rem 1.25rem;
+}
+
+.pagina-citas .panel-historial .table thead > tr > * {
+  background-color: #141414 !important;
+  color: var(--barber-gray) !important;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  border-bottom: 2px solid var(--barber-red);
+}
+
+.pagina-citas .panel-historial .table tbody tr:hover > * {
+  background-color: #262626 !important;
+}
+
+/* Botones de la tabla */
+.pagina-citas .panel-historial .btn {
+  background-color: #262626;
+  border: 1px solid #333;
+  color: #d8d8d8;
+}
+
+.pagina-citas .panel-historial .btn:hover {
+  background-color: var(--barber-red);
+  border-color: var(--barber-red);
+  color: var(--barber-white);
+}
+
+/* ---- Botones secundarios y aviso de edición ---- */
+.pagina-citas .btn-outline-secondary {
+  --bs-btn-color: #d8d8d8;
+  --bs-btn-border-color: var(--barber-border);
+  --bs-btn-hover-bg: #262626;
+  --bs-btn-hover-border-color: var(--barber-gray);
+  --bs-btn-hover-color: var(--barber-white);
+}
+
+.pagina-citas .alert-warning {
+  background-color: #2a2208;
+  border: 1px solid #5c4a0e;
+  color: #ffd866;
+}
+
+.pagina-citas .alert-warning .btn-outline-dark {
+  color: #ffd866;
+  border-color: #5c4a0e;
+}
+
+.pagina-citas .alert-warning .btn-outline-dark:hover {
+  background-color: #5c4a0e;
+  color: var(--barber-white);
+}
+/* =====================================================================
+   14. CITAS: servicio seleccionado = borde azul, sin verde
+   Solo se activa cuando el checkbox del servicio está marcado.
+   ===================================================================== */
+
+/* Contorno de la tarjeta en azul (también si el puntero está encima) */
+.pagina-citas #listaServicios .servicio-opcion:has(input:checked) {
+  border-color: #38a1ff !important;
+}
+
+/* Quita el verde del interior y lo deja oscuro como las demás */
+.pagina-citas #listaServicios .servicio-opcion input:checked + .servicio-opcion-body {
+  background: #1c1c1c !important;
+  background-color: #1c1c1c !important;
+  border-color: #38a1ff !important;
+  box-shadow: none !important;
+}
+
+/* El precio se perdía (oscuro sobre oscuro) */
+.pagina-citas #listaServicios .servicio-opcion input:checked + .servicio-opcion-body .servicio-precio {
+  color: #ffffff !important;
+}
+
+/* Check de seleccionado en azul */
+.pagina-citas #listaServicios .servicio-opcion input:checked + .servicio-opcion-body .servicio-check {
+  color: #38a1ff !important;
+}
+
+/* =====================================================================
+   15. PANTALLA "MÓDULO DE REPORTES Y ESTADÍSTICAS"
+   Pega este bloque AL FINAL de tema-barberbox.css.
+   Requiere: <body class="pagina-reportes"> en la página de reportes.
+   Todo va limitado a esa clase, así no afecta otras pantallas.
+   ===================================================================== */
+
+body.pagina-reportes {
+  --bs-body-bg: var(--barber-black);
+  --bs-body-color: var(--barber-white);
+  --bs-border-color: var(--barber-border);
+}
+
+body.pagina-reportes,
+body.pagina-reportes .main-wrapper,
+body.pagina-reportes .main-wrapper > .container {
+  background: var(--barber-black) !important;
+  background-image: none !important;
+}
+
+/* ---- Título y subtítulo ---- */
+.pagina-reportes .page-title,
+.pagina-reportes h1,
+.pagina-reportes h2,
+.pagina-reportes h3,
+.pagina-reportes h4,
+.pagina-reportes h5 {
+  color: var(--barber-white) !important;
+}
+
+.pagina-reportes .page-subtitle,
+.pagina-reportes .text-muted,
+.pagina-reportes .text-secondary {
+  color: var(--barber-gray) !important;
+}
+
+/* ---- Tarjetas (filtros y resultados) ---- */
+.pagina-reportes .card {
+  background-color: #161616 !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55) !important;
+  color: var(--barber-white);
+}
+
+.pagina-reportes .card::before {
+  display: none !important;
+}
+
+.pagina-reportes .card-header,
+.pagina-reportes .card-footer {
+  background-color: transparent !important;
+  border-color: var(--barber-border) !important;
+}
+
+/* ---- Etiquetas y campos (tipo de reporte, fechas) ---- */
+.pagina-reportes .form-label,
+.pagina-reportes label {
+  color: #cfcfcf;
+  font-weight: 600;
+}
+
+.pagina-reportes .form-control,
+.pagina-reportes .form-select {
+  background-color: var(--barber-black);
+  border: 1px solid var(--barber-border);
+  color: var(--barber-white);
+  color-scheme: dark; /* el calendario se ve claro */
+}
+
+.pagina-reportes .form-control::placeholder {
+  color: var(--barber-gray);
+  opacity: .8;
+}
+
+.pagina-reportes .form-control:focus,
+.pagina-reportes .form-select:focus {
+  background-color: var(--barber-black);
+  color: var(--barber-white);
+  border-color: var(--barber-red);
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18);
+}
+
+.pagina-reportes .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+
+.pagina-reportes .form-select option {
+  background-color: #161616;
+  color: var(--barber-white);
+}
+
+/* ---- Botón Generar (era verde oscuro) ---- */
+.pagina-reportes .btn-dark,
+.pagina-reportes .btn-success,
+.pagina-reportes .btn-primary,
+.pagina-reportes .btn-generar,
+.pagina-reportes #btnGenerar {
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
+  box-shadow: 0 8px 20px rgba(217, 4, 41, 0.3);
+  transition: background-color .2s ease, transform .2s ease;
+}
+
+.pagina-reportes .btn-dark:hover,
+.pagina-reportes .btn-success:hover,
+.pagina-reportes .btn-primary:hover,
+.pagina-reportes .btn-generar:hover,
+.pagina-reportes #btnGenerar:hover {
+  background-color: var(--barber-red-hover, #ef233c) !important;
+  border-color: var(--barber-red-hover, #ef233c) !important;
+  transform: translateY(-1px);
+}
+
+/* ---- Botón Imprimir / PDF ---- */
+.pagina-reportes .btn-outline-secondary,
+.pagina-reportes .btn-outline-dark,
+.pagina-reportes .btn-light {
+  background-color: #1c1c1c;
+  border: 1px solid var(--barber-border);
+  color: #e8e8e8;
+}
+
+.pagina-reportes .btn-outline-secondary:hover,
+.pagina-reportes .btn-outline-dark:hover,
+.pagina-reportes .btn-light:hover {
+  background-color: #262626;
+  border-color: var(--barber-red);
+  color: var(--barber-white);
+}
+
+/* ---- Estado vacío (ícono y mensaje) ---- */
+.pagina-reportes .bi-bar-chart,
+.pagina-reportes .bi-bar-chart-line,
+.pagina-reportes .bi-graph-up {
+  color: #555 !important;
+}
+
+/* ---- Tablas del reporte ---- */
+.pagina-reportes .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: #e8e8e8;
+  --bs-table-border-color: var(--barber-border);
+  margin-bottom: 0;
+}
+
+.pagina-reportes .table > :not(caption) > * > * {
+  background-color: #181818 !important;
+  color: #e8e8e8;
+  box-shadow: none !important;
+  border-color: var(--barber-border);
+}
+
+.pagina-reportes .table thead > tr > * {
+  background-color: #141414 !important;
+  color: var(--barber-gray) !important;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  border-bottom: 2px solid var(--barber-red);
+}
+
+.pagina-reportes .table tbody tr:hover > * {
+  background-color: #262626 !important;
+}
+
+.pagina-reportes .table tfoot > tr > * {
+  background-color: #141414 !important;
+  color: var(--barber-white) !important;
+  font-weight: 700;
+}
+
+/* ---- Gráficos (ApexCharts) ---- */
+.pagina-reportes .apexcharts-text,
+.pagina-reportes .apexcharts-legend-text,
+.pagina-reportes .apexcharts-xaxis-label,
+.pagina-reportes .apexcharts-yaxis-label {
+  fill: #cfcfcf !important;
+  color: #cfcfcf !important;
+}
+
+.pagina-reportes .apexcharts-gridline,
+.pagina-reportes .apexcharts-xaxis-tick,
+.pagina-reportes .apexcharts-grid-borders line {
+  stroke: var(--barber-border) !important;
+}
+
+.pagina-reportes .apexcharts-tooltip {
+  background: #1c1c1c !important;
+  border: 1px solid var(--barber-border) !important;
+  color: var(--barber-white) !important;
+}
+
+/* ---- Al imprimir / guardar PDF: vuelve a blanco para ahorrar tinta ---- */
+@media print {
+  body.pagina-reportes,
+  body.pagina-reportes .main-wrapper,
+  body.pagina-reportes .main-wrapper > .container {
+    background: #fff !important;
+  }
+
+  .pagina-reportes .card,
+  .pagina-reportes .table > :not(caption) > * > *,
+  .pagina-reportes .table thead > tr > * {
+    background: #fff !important;
     color: #000 !important;
-    border-color: #354ae6 !important;
-    transform: translateY(-2px);
+    box-shadow: none !important;
+    border-color: #ccc !important;
+  }
+
+  .pagina-reportes h1,
+  .pagina-reportes h2,
+  .pagina-reportes h3,
+  .pagina-reportes h4,
+  .pagina-reportes h5,
+  .pagina-reportes .page-title,
+  .pagina-reportes .page-subtitle,
+  .pagina-reportes .text-muted {
+    color: #000 !important;
+  }
+
+  .pagina-reportes .apexcharts-text,
+  .pagina-reportes .apexcharts-legend-text {
+    fill: #000 !important;
+    color: #000 !important;
+  }
+}/* =====================================================================
+   16. REPORTES: calendarios oscuros y botón Generar visible
+   ===================================================================== */
+
+/* Campos de fecha (nativos o de flatpickr) */
+.pagina-reportes input[type="date"],
+.pagina-reportes input.flatpickr-input,
+.pagina-reportes input.form-control[readonly] {
+  background-color: var(--barber-black) !important;
+  background-image: none !important;
+  border: 1px solid var(--barber-border) !important;
+  color: var(--barber-white) !important;
+  color-scheme: dark;
+}
+
+.pagina-reportes input[type="date"]:focus,
+.pagina-reportes input.flatpickr-input:focus {
+  border-color: var(--barber-red) !important;
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18) !important;
+}
+
+/* Ícono del calendario en blanco */
+.pagina-reportes input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none;
+  opacity: 1;
+  cursor: pointer;
+}
+
+/* Botón Generar: rojo, para que destaque */
+.pagina-reportes .card:has(input[type="date"]) .btn,
+.pagina-reportes .card:has(input[type="date"]) button[type="button"],
+.pagina-reportes .card:has(input[type="date"]) button[type="submit"] {
+  background-color: var(--barber-red) !important;
+  border: 1px solid var(--barber-red) !important;
+  color: var(--barber-white) !important;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(217, 4, 41, 0.3) !important;
+  transition: background-color .2s ease, transform .2s ease;
+}
+
+.pagina-reportes .card:has(input[type="date"]) .btn:hover,
+.pagina-reportes .card:has(input[type="date"]) button[type="button"]:hover,
+.pagina-reportes .card:has(input[type="date"]) button[type="submit"]:hover {
+  background-color: var(--barber-red-hover, #ef233c) !important;
+  border-color: var(--barber-red-hover, #ef233c) !important;
+  transform: translateY(-1px);
+}
+
+/* Calendario desplegable (flatpickr) en oscuro */
+.flatpickr-calendar {
+  background: #161616 !important;
+  border: 1px solid var(--barber-border) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+.flatpickr-calendar .flatpickr-month,
+.flatpickr-calendar .flatpickr-current-month,
+.flatpickr-calendar .flatpickr-weekday,
+.flatpickr-calendar .flatpickr-day,
+.flatpickr-calendar .flatpickr-monthDropdown-months,
+.flatpickr-calendar .numInput {
+  background: transparent !important;
+  color: #e8e8e8 !important;
+  fill: #e8e8e8 !important;
+}
+
+.flatpickr-calendar .flatpickr-prev-month svg,
+.flatpickr-calendar .flatpickr-next-month svg {
+  fill: #e8e8e8 !important;
+}
+
+.flatpickr-calendar .flatpickr-day:hover {
+  background: #262626 !important;
+  border-color: #262626 !important;
+}
+
+.flatpickr-calendar .flatpickr-day.selected,
+.flatpickr-calendar .flatpickr-day.selected:hover {
+  background: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: #fff !important;
+}
+
+.flatpickr-calendar .flatpickr-day.today {
+  border-color: var(--barber-red) !important;
+}
+
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled,
+.flatpickr-calendar .flatpickr-day.prevMonthDay,
+.flatpickr-calendar .flatpickr-day.nextMonthDay {
+  color: #666 !important;
+}
+/* =====================================================================
+   18. FILTRO "TODOS LOS ESTADOS" EN OSCURO
+   ===================================================================== */
+body.pagina-historial select,
+body.pagina-historial .table-header-control select,
+body.pagina-historial select.form-select,
+body.pagina-historial [class*="select"],
+body.pagina-historial [class*="filter"] select {
+  background-color: var(--barber-black) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.9rem center !important;
+  background-size: 14px !important;
+  border: 1px solid var(--barber-border) !important;
+  color: var(--barber-white) !important;
+  color-scheme: dark;
+}
+
+body.pagina-historial select:focus {
+  border-color: var(--barber-red) !important;
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18) !important;
+  outline: none;
+}
+
+/* Lista desplegable (las opciones) */
+body.pagina-historial select option {
+  background-color: #161616 !important;
+  color: #ffffff !important;
+}
+
+body.pagina-historial select option:checked,
+body.pagina-historial select option:hover {
+  background-color: var(--barber-red) !important;
+  color: #ffffff !important;
+}
+/* =====================================================================
+   19. SELECTS OSCUROS (no dependen de la clase del body)
+   ===================================================================== */
+.main-wrapper select,
+.main-wrapper .form-select {
+  background-color: #0f0f0f !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.9rem center !important;
+  background-size: 14px !important;
+  border: 1px solid var(--barber-border, #2a2a2a) !important;
+  color: #ffffff !important;
+  color-scheme: dark;
+}
+
+.main-wrapper select:focus,
+.main-wrapper .form-select:focus {
+  border-color: var(--barber-red) !important;
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18) !important;
+  outline: none;
+}
+
+.main-wrapper select option {
+  background-color: #161616 !important;
+  color: #ffffff !important;
+}
+/* =====================================================================
+   21. HISTORIAL: íconos con color y hover de fila neutro
+   ===================================================================== */
+
+/* ---- Hover de la fila: gris suave, sin rojo ---- */
+body.pagina-historial #tablaCitas .tabulator-row:hover,
+body.pagina-historial #tablaCitas .tabulator-row.tabulator-row-even:hover,
+body.pagina-historial #tablaCitas .tabulator-row.tabulator-row-odd:hover {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: none !important;
+}
+
+/* ---- Íconos de acciones: ver (azul), completar (verde), cancelar (rojo) ---- */
+body.pagina-historial #tablaCitas .tabulator-cell [class*="bi-eye"] {
+  color: #38a1ff !important;
+}
+
+body.pagina-historial #tablaCitas .tabulator-cell [class*="bi-check"] {
+  color: #22c55e !important;
+}
+
+body.pagina-historial #tablaCitas .tabulator-cell [class*="bi-x"] {
+  color: #ef4444 !important;
+}
+
+/* Al pasar el puntero, el botón se llena del color de su ícono */
+body.pagina-historial #tablaCitas .tabulator-cell :is(button, [class*="btn"]):has([class*="bi-eye"]):hover {
+  background-color: #1d6fb8 !important;
+  border-color: #1d6fb8 !important;
+}
+
+body.pagina-historial #tablaCitas .tabulator-cell :is(button, [class*="btn"]):has([class*="bi-check"]):hover {
+  background-color: #16a34a !important;
+  border-color: #16a34a !important;
+}
+
+body.pagina-historial #tablaCitas .tabulator-cell :is(button, [class*="btn"]):has([class*="bi-x"]):hover {
+  background-color: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+
+body.pagina-historial #tablaCitas .tabulator-cell :is(button, [class*="btn"]):hover [class*="bi-eye"],
+body.pagina-historial #tablaCitas .tabulator-cell :is(button, [class*="btn"]):hover [class*="bi-check"],
+body.pagina-historial #tablaCitas .tabulator-cell :is(button, [class*="btn"]):hover [class*="bi-x"] {
+  color: #ffffff !important;
+}
+
+/* =====================================================================
+   22. PÁGINA DE INICIO: sin barritas ni degradados de colores
+   ===================================================================== */
+
+/* Barritas de colores bajo "Nuestros Servicios" y "Contacto" */
+body.pagina-home .section-title::before,
+body.pagina-home .section-title::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+
+/* Hero: la foto se queda, el degradado rojo/azul pasa a oscuro neutro */
+body.pagina-home .home-hero::before,
+body.pagina-home .home-hero::after {
+  background: rgba(0, 0, 0, 0.65) !important;
+  background-image: none !important;
 }

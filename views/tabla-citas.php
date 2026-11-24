@@ -24,7 +24,7 @@ $subtitulo = $esAdmin ? 'Todas las citas agendadas por los clientes.' : 'Citas q
   <link rel="stylesheet" href="../assets/css/tablas.css">
 </head>
 
-<body>
+<body class="pagina-historial">
   <?php include './menu/menuLateral.php'; ?>
   <?php include './menu/menu-header.php'; ?>
 
@@ -79,6 +79,8 @@ $subtitulo = $esAdmin ? 'Todas las citas agendadas por los clientes.' : 'Citas q
   <script src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../assets/js/JSLista-citas.js"></script>
+  <link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=20">
+
 </body>
 
 </html>

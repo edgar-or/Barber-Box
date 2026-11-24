@@ -64,14 +64,13 @@
 }
 
 /* ===== Home ===== */
+/* Hero: foto con oscurecido negro parejo (sin degradados de color) */
 .home-hero {
   min-height: 78vh;
   display: flex;
   align-items: center;
   background:
-    radial-gradient(circle at 15% 20%, rgba(217, 4, 41, .28), transparent 45%),
-    radial-gradient(circle at 85% 80%, rgba(2, 62, 138, .35), transparent 45%),
-    linear-gradient(rgba(0, 0, 0, .82), rgba(0, 0, 0, .9)),
+    linear-gradient(rgba(0, 0, 0, .75), rgba(0, 0, 0, .85)),
     url('../images/barber1.jpg') center/cover no-repeat;
 }
 .home-hero h1 {
@@ -88,22 +87,12 @@
 }
 .home-stats .stat strong { display: block; font-size: 1.6rem; }
 
+/* Títulos de sección: sin la barrita de colores debajo */
 .section-title {
   font-weight: 800;
   position: relative;
   display: inline-block;
   padding-bottom: .6rem;
-}
-.section-title::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 60px;
-  height: 3px;
-  transform: translateX(-50%);
-  border-radius: 3px;
-  background: linear-gradient(90deg, #d90429, #0077b6);
 }
 
 .service-card {
@@ -141,10 +130,9 @@
 }
 .service-meta { font-size: .82rem; color: #9a9a9a; }
 
+/* Llamado a la acción: fondo negro liso, sin resplandor rojo */
 .cta-section {
-  background:
-    radial-gradient(circle at 50% 0, rgba(217, 4, 41, .25), transparent 60%),
-    #000;
+  background: #000;
 }
 
 @media (max-width: 576px) {

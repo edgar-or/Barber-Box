@@ -31,8 +31,7 @@ if (esCliente()) {
   <link rel="stylesheet" href="assets/css/registro.css">
 </head>
 
-<body class="bg-dark text-white">
-
+<body class="bg-dark text-white pagina-home">
   <!-- ==========================================
        Navegación Pública (Navbar)
        ========================================== -->
@@ -195,7 +194,8 @@ if (esCliente()) {
 
   <!-- Scripts -->
   <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/js/JSHome.js?v=<?php echo filemtime('assets/js/JSHome.js'); ?>"></script>
+  <script src="assets/js/JSHome.js?v=1<?php echo filemtime('assets/js/JSHome.js'); ?>"></script>
+  <link rel="stylesheet" href="assets/css/tema-barberbox.css?v=14">
 </body>
 
 </html>

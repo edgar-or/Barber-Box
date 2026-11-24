@@ -15,13 +15,15 @@ requerirEmpleadoPagina();
     <link rel="stylesheet" href="../assets/libs/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="../assets/css/main.css">
 </head>
-<body>
+<body class="pagina-horarios">
     <?php include './menu/menuLateral.php'; ?>
     <?php include './menu/menu-header.php'; ?> 
 
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="h4 mb-0 text-dark" id="tituloEmpleado">Horarios del Empleado</h2>
+            <!-- ✅ Cambiado text-dark a text-white -->
+            <h2 class="h4 mb-0 text-white" id="tituloEmpleado">Horarios del Empleado</h2>
+            
             <button type="button" class="btn-custom btn-custom-outline-danger" onclick="location.href='tabla-empleados.php'">
                 <i class="bi bi-arrow-left"></i> Volver a Empleados
             </button>
@@ -126,8 +128,7 @@ requerirEmpleadoPagina();
             </div>
         </div>
     </div>
-        <link rel="stylesheet" href="../assets/css/horarios.css"> 
-
+    <link rel="stylesheet" href="../assets/css/tema-barberbox.css">
     <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../assets/js/JSHorariosEmpleado.js?v=18"></script> 

@@ -209,7 +209,7 @@ $currentPage = 'clientes';
 
     <!-- Local dashboard interactions controller -->
     <script src="../assets/js/dashboard.js"></script>
-
+<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=4">
     <!-- Custom Authentication interactions script -->
     <script src="../assets/js/auth.js"></script>
 </body>
