@@ -46,33 +46,37 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
     </div>
     <?php elseif (esEmpleado()): ?>
     <!-- Menú del empleado (administrador / barbero) -->
-    <div class="sidebar-menu-section">
-      <div class="sidebar-menu-title">Menu</div>
-      <ul class="sidebar-menu-list">
 
+    <!-- SECCIÓN 1: PRINCIPAL -->
+    <div class="sidebar-menu-section">
+      <div class="sidebar-menu-title">Principal</div>
+      <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
           <a href="/barberBox/home.php" class="sidebar-menu-link <?= ($currentPage === 'home') ? 'active' : ''; ?>" id="menu-home">
             <i class="bi bi-house"></i>
             <span>Home</span>
           </a>
         </li>
-
-        <li class="sidebar-menu-item">
-          <a href="/barberBox/views/tabla-clientes.php" class="sidebar-menu-link <?= ($currentPage === 'clientes') ? 'active' : ''; ?>" id="menu-clientes" title="Overview">
-            <i class="bi bi-grid-fill"></i>
-            <span>Clientes</span>
-          </a>
-        </li>
-
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/panel-agendar-cita-admin.php" class="sidebar-menu-link <?= ($currentPage === 'agendar-admin') ? 'active' : ''; ?>" id="menu-agendar-admin">
             <i class="bi bi-calendar-plus"></i>
             <span>Agendar cita</span>
           </a>
         </li>
+      </ul>
+    </div>
 
+    <!-- SECCIÓN 2: GESTIÓN -->
+    <div class="sidebar-menu-section">
+      <div class="sidebar-menu-title">Gestión</div>
+      <ul class="sidebar-menu-list">
+        <li class="sidebar-menu-item">
+          <a href="/barberBox/views/tabla-clientes.php" class="sidebar-menu-link <?= ($currentPage === 'clientes') ? 'active' : ''; ?>" id="menu-clientes" title="Overview">
+            <i class="bi bi-grid-fill"></i>
+            <span>Clientes</span>
+          </a>
+        </li>
         <?php if (esAdmin()): ?>
-        <!-- Solo el administrador gestiona empleados -->
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-empleados.php" class="sidebar-menu-link <?= ($currentPage === 'empleados') ? 'active' : ''; ?>" id="menu-empleados" title="Overview">
             <i class="bi bi-grid-fill"></i>
@@ -80,20 +84,42 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
           </a>
         </li>
         <?php endif; ?>
+      </ul>
+    </div>
 
+    <!-- SECCIÓN 3: CONFIGURACIÓN -->
+    <div class="sidebar-menu-section">
+      <div class="sidebar-menu-title">Configuración</div>
+      <ul class="sidebar-menu-list">
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-servicios.php" class="sidebar-menu-link <?= ($currentPage === 'servicios') ? 'active' : ''; ?>" id="menu-servicios" title="Overview">
             <i class="bi bi-grid-fill"></i>
             <span>Servicios</span>
           </a>
         </li>
+        <?php if (esAdmin()): ?>
+        <li class="sidebar-menu-item">
+          <a href="/barberBox/views/comision.php" class="sidebar-menu-link <?= ($currentPage === 'comision') ? 'active' : ''; ?>" id="menu-comision" title="Comisión">
+            <i class="bi bi-percent"></i>
+            <span>Comisión</span>
+          </a>
+        </li>
+        <?php endif; ?>
+      </ul>
+    </div>
 
+    <!-- SECCIÓN 4: REPORTES -->
+    <div class="sidebar-menu-section">
+      <div class="sidebar-menu-title">Reportes</div>
+      <ul class="sidebar-menu-list">
+        <?php if (esAdmin()): ?>
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/reportes-cortes.php" class="sidebar-menu-link <?= ($currentPage === 'reportes') ? 'active' : ''; ?>" id="menu-reportes" title="Reporte de Cortes">
             <i class="bi bi-file-earmark-bar-graph-fill"></i>
             <span>Reporte de Cortes</span>
           </a>
         </li>
+        <?php endif; ?>
 
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/tabla-citas.php" class="sidebar-menu-link <?= ($currentPage === 'citas') ? 'active' : ''; ?>" id="menu-citas">
@@ -101,9 +127,9 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
             <span><?= esAdmin() ? 'Historial de citas' : 'Mis citas'; ?></span>
           </a>
         </li>
-
       </ul>
     </div>
+
     <?php else: ?>
     <!-- Visitante sin sesión: solo Home -->
     <div class="sidebar-menu-section">
