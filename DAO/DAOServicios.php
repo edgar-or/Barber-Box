@@ -75,35 +75,6 @@ if ($opcion == "guardar") {
     }
 }
 
-/*if ($opcion == "modificar") {
-    require_once "../config/conexion.php";
-    $conexion->begin_transaction();
-
-    try {
-        $idservicio = $_POST['idservicio'] ?? 0;
-
-        $sql = "UPDATE servicio SET nombre_servicio=?, descripcion=?, precio=?, duracion_estimada=? WHERE id_servicio=?";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("ssdii", $nombre_servicio, $descripcion, $precio, $duracion_estimada, $idservicio);
-        
-        if (!$stmt->execute()) {
-            throw new Exception("Error al modificar servicio");
-        }
-        $stmt->close();
-
-        // Si se subieron nuevas imágenes al modificar, las añadimos a la galería
-        guardarImagenesGaleria($conexion, $idservicio);
-
-        $conexion->commit();
-        echo json_encode(["estado" => true, "mensaje" => "Servicio modificado correctamente"]);
-    } catch (Throwable $e) {
-        $conexion->rollback();
-        echo json_encode(["estado" => false, "mensaje" => $e->getMessage()]);
-    } finally {
-        $conexion->close();
-    }
-}*/
-
 if ($opcion == "modificar") {
     require_once "../config/conexion.php";
     $conexion->begin_transaction();
