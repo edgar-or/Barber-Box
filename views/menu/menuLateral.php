@@ -87,7 +87,8 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
       </ul>
     </div>
 
-    <!-- SECCIÓN 3: CONFIGURACIÓN -->
+    <!-- SECCIÓN 3: CONFIGURACIÓN (SOLO ADMIN) -->
+    <?php if (esAdmin()): ?>
     <div class="sidebar-menu-section">
       <div class="sidebar-menu-title">Configuración</div>
       <ul class="sidebar-menu-list">
@@ -97,16 +98,15 @@ $rolSidebar = $_SESSION["rol_nombre"] ?? "";
             <span>Servicios</span>
           </a>
         </li>
-        <?php if (esAdmin()): ?>
         <li class="sidebar-menu-item">
           <a href="/barberBox/views/comision.php" class="sidebar-menu-link <?= ($currentPage === 'comision') ? 'active' : ''; ?>" id="menu-comision" title="Comisión">
             <i class="bi bi-percent"></i>
             <span>Comisión</span>
           </a>
         </li>
-        <?php endif; ?>
       </ul>
     </div>
+    <?php endif; ?>
 
     <!-- SECCIÓN 4: REPORTES -->
     <div class="sidebar-menu-section">
