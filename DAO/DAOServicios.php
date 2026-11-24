@@ -91,7 +91,7 @@ if ($opcion == "modificar") {
         }
         $stmt->close();
 
-        // Verificar se enviaron archivos nuevos válidos
+        // Verificar si se enviaron archivos nuevos válidos
         $hayArchivosNuevos = false;
         if (isset($_FILES['imagenes_servicio']) && is_array($_FILES['imagenes_servicio']['name'])) {
             foreach ($_FILES['imagenes_servicio']['error'] as $err) {
@@ -125,9 +125,55 @@ if ($opcion == "modificar") {
     }
 }
 
+if ($opcion == "cambiar_estado") {
+    require_once "../config/conexion.php";
+
+    if ((int)($_SESSION['id_rol'] ?? 0) !== ROL_ADMIN) {
+        echo json_encode(["estado" => false, "mensaje" => "Solo el administrador puede cambiar el estado del servicio."]);
+        $conexion->close();
+        exit;
+    }
+
+    $idservicio = intval($_POST['idservicio'] ?? 0);
+    $nuevoEstado = ($_POST['estado_servicio'] ?? '') === 'I' ? 'I' : 'A';
+
+    if ($idservicio <= 0) {
+        echo json_encode(["estado" => false, "mensaje" => "ID de servicio no válido"]);
+        $conexion->close();
+        exit;
+    }
+
+    try {
+        $sql = "UPDATE servicio SET estado_servicio = ? WHERE id_servicio = ?";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bind_param("si", $nuevoEstado, $idservicio);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Error al cambiar el estado del servicio: " . $stmt->error);
+        }
+        $stmt->close();
+
+        echo json_encode([
+            "estado" => true,
+            "nuevo_estado" => $nuevoEstado,
+            "mensaje" => $nuevoEstado === 'I' ? "Servicio puesto como inactivo" : "Servicio activado correctamente"
+        ]);
+    } catch (Throwable $e) {
+        echo json_encode(["estado" => false, "mensaje" => $e->getMessage()]);
+    } finally {
+        $conexion->close();
+    }
+}
+
 if ($opcion == "eliminar") {
     require_once "../config/conexion.php";
     $idservicio = $_POST['idservicio'] ?? 0;
+
+    if ((int)($_SESSION['id_rol'] ?? 0) !== ROL_ADMIN) {
+        echo json_encode(["estado" => false, "mensaje" => "Solo el administrador puede eliminar servicios."]);
+        $conexion->close();
+        exit;
+    }
 
     if (!is_numeric($idservicio) || $idservicio <= 0) {
         echo json_encode(["estado" => false, "mensaje" => "ID de servicio no válido"]);
@@ -137,6 +183,16 @@ if ($opcion == "eliminar") {
     $conexion->begin_transaction();
 
     try {
+        $sqlImg = "DELETE FROM servicio_imagen WHERE id_servicio=?";
+        $stmtImg = $conexion->prepare($sqlImg);
+        if ($stmtImg) {
+            $stmtImg->bind_param("i", $idservicio);
+            if (!$stmtImg->execute()) {
+                throw new Exception("Error al eliminar galería del servicio: " . $stmtImg->error);
+            }
+            $stmtImg->close();
+        }
+
         $sqlServicio = "DELETE FROM servicio WHERE id_servicio=?";
         $stmtServ = $conexion->prepare($sqlServicio);
         $stmtServ->bind_param("i", $idservicio);

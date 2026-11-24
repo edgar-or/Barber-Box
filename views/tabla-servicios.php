@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../config/auth.php";
 requerirEmpleadoPagina();
 $currentPage = 'servicios';
+$esAdminActual = ((int)($_SESSION['id_rol'] ?? 0) === ROL_ADMIN) ? '1' : '0';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -49,7 +50,7 @@ $currentPage = 'servicios';
       <div class="tabla-total"><i class="bi bi-people"></i> Total: <strong id="total-registros">0</strong></div>
     </div>
 
-    <div id="tablaServicios"></div>
+    <div id="tablaServicios" data-es-admin="<?php echo $esAdminActual; ?>"></div>
   </div>
 
   <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>

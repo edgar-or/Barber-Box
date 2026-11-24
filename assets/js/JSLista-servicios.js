@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!contenedor) return;
 
+    const esAdmin = contenedor.dataset.esAdmin === "1";
+
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
         langs: {
@@ -72,14 +74,38 @@ document.addEventListener("DOMContentLoaded", async () => {
             { 
                 title: "Estado", 
                 field: "estado_servicio", 
-                width: 125,
+                width: 135,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 formatter: function(cell) {
+                    const row = cell.getRow().getData();
                     const estado = cell.getValue();
-                    return estado === 'A' 
+                    const badge = estado === 'A' 
                         ? '<span class="badge-table success">Activo</span>'
                         : '<span class="badge-table failed">Inactivo</span>';
+
+                    if (!esAdmin) return badge;
+
+                    return `
+                        <button type="button"
+                            class="btn btn-link p-0 border-0 text-decoration-none btn-estado"
+                            data-id="${row.id_servicio}"
+                            data-estado="${estado}"
+                            title="Cambiar estado">
+                            ${badge}
+                        </button>
+                    `;
+                },
+                cellClick: function(e, cell) {
+                    if (!esAdmin) return;
+                    const btnEstado = e.target.closest(".btn-estado");
+                    if (!btnEstado) return;
+
+                    cambiarEstadoServicio(
+                        btnEstado.getAttribute("data-id"),
+                        btnEstado.getAttribute("data-estado"),
+                        cell.getRow()
+                    );
                 }
             },
             { 
@@ -109,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (target.classList.contains("btn-editar")) {
                         editarServicio(idServicio);
                     } else if (target.classList.contains("btn-eliminar")) {
-                        eliminarServicio(idServicio, tabla); 
+                        eliminarServicio(idServicio, tabla, contador); 
                     }
                 }
             }
@@ -155,7 +181,70 @@ function editarServicio(id) {
     window.location.href = "form-registrar-servicios.php?id=" + id;
 }
 
-function eliminarServicio(id, tabla) {
+function cambiarEstadoServicio(id, estadoActual, fila) {
+    const nuevoEstado = estadoActual === 'A' ? 'I' : 'A';
+    const accionTexto = nuevoEstado === 'I' ? 'poner como inactivo' : 'activar';
+
+    Swal.fire({
+        title: 'Barber-Box',
+        text: `¿Deseas ${accionTexto} este servicio?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, cambiar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const datos = new FormData();
+                datos.append("opcion", "cambiar_estado");
+                datos.append("idservicio", id);
+                datos.append("estado_servicio", nuevoEstado);
+
+                const respuesta = await fetch("/barberBox/DAO/DAOServicios.php", {
+                    method: "POST",
+                    body: datos
+                });
+
+                const resultado = await respuesta.json();
+
+                if (resultado.estado) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Barber-Box",
+                        text: resultado.mensaje,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    if (fila) {
+                        await fila.update({ estado_servicio: nuevoEstado });
+                    }
+                } else {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "Barber-Box",
+                        text: resultado.mensaje,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Barber-Box",
+                    text: "Error al conectar con el servidor."
+                });
+            }
+        }
+    });
+}
+
+function eliminarServicio(id, tabla, contador) {
     Swal.fire({
         title: '¿Estás seguro?',
         text: "¡El servicio será eliminado permanentemente!",
@@ -192,6 +281,7 @@ function eliminarServicio(id, tabla) {
                     if (tabla) {
                         const fila = tabla.getRows().find(row => row.getData().id_servicio == id);
                         if (fila) fila.delete();
+                        if (contador) contador.textContent = tabla.getDataCount();
                     }
 
                 } else {
