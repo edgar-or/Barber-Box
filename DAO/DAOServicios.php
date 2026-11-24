@@ -180,20 +180,10 @@ if ($opcion == "eliminar") {
         exit;
     }
 
-    $conexion->begin_transaction();
-
     try {
-        $sqlImg = "DELETE FROM servicio_imagen WHERE id_servicio=?";
-        $stmtImg = $conexion->prepare($sqlImg);
-        if ($stmtImg) {
-            $stmtImg->bind_param("i", $idservicio);
-            if (!$stmtImg->execute()) {
-                throw new Exception("Error al eliminar galería del servicio: " . $stmtImg->error);
-            }
-            $stmtImg->close();
-        }
-
-        $sqlServicio = "DELETE FROM servicio WHERE id_servicio=?";
+        // Borrado lógico: se marca como 'n' para que no se muestre en ningún lado,
+        // pero el registro permanece en BD para los reportes y detalle_cita.
+        $sqlServicio = "UPDATE servicio SET estado_servicio = 'N' WHERE id_servicio = ?";
         $stmtServ = $conexion->prepare($sqlServicio);
         $stmtServ->bind_param("i", $idservicio);
         
@@ -202,10 +192,8 @@ if ($opcion == "eliminar") {
         }
         $stmtServ->close();
 
-        $conexion->commit();
         echo json_encode(["estado" => true, "mensaje" => "Servicio eliminado correctamente"]);
     } catch (Throwable $e) {
-        $conexion->rollback();
         echo json_encode(["estado" => false, "mensaje" => $e->getMessage()]);
     } finally {
         $conexion->close();
@@ -218,6 +206,7 @@ if ($opcion == "consultar") {
     try {
         $sql = "SELECT s.id_servicio, s.nombre_servicio, s.descripcion, s.precio, s.duracion_estimada, s.estado_servicio 
                 FROM servicio s 
+                WHERE s.estado_servicio <> 'N'
                 ORDER BY s.nombre_servicio;";
 
         $resultado = $conexion->query($sql);
