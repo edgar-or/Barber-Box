@@ -26,55 +26,48 @@ if ($opcion === "iniciar_sesion") {
         $stmt->bind_param("s", $usuario);
         $stmt->execute();
         $resultado = $stmt->get_result();
+        $row = $resultado->fetch_assoc();
 
-        if ($row = $resultado->fetch_assoc()) {
+        $passwordValida = $row && (
+            password_verify($clave, $row['contrasena_hash']) ||
+            ($clave === $row['contrasena_hash'])
+        );
 
-            if ($row['estado_usuario'] !== 'A') {
-                echo json_encode([
-                    "estado" => false,
-                    "mensaje" => "El usuario se encuentra inactivo."
-                ], JSON_UNESCAPED_UNICODE);
-                exit;
-            }
-
-            // Verificar contraseña (soporta password_hash o texto plano temporal)
-            $passwordValida = password_verify($clave, $row['contrasena_hash']) || ($clave === $row['contrasena_hash']);
-
-            if ($passwordValida) {
-                session_regenerate_id(true);
-                $idRol = (int)$row['id_rol'];
-
-                $_SESSION['idusuario'] = $row['id_usuario'];
-                $_SESSION['usuario'] = $row['usuario'];
-                $_SESSION['id_rol'] = $idRol;
-                $_SESSION['login_time'] = time();
-
-                // Empleados (admin / barbero) -> panel completo. Clientes -> su panel de citas.
-                $esEmpleado = in_array($idRol, [ROL_ADMIN, ROL_BARBERO], true);
-                $_SESSION['rol_nombre'] = $esEmpleado ? ($idRol === ROL_ADMIN ? 'Administrador' : 'Barbero') : 'Cliente';
-
-                echo json_encode([
-                    "estado" => true,
-                    "mensaje" => "¡Bienvenido/a " . $row['usuario'] . "!",
-                    "redirect" => $esEmpleado ? "/barberBox/views/panel-agendar-cita-admin.php" : "/barberBox/views/cliente-panel.php"
-                ], JSON_UNESCAPED_UNICODE);
-            } else {
-                echo json_encode([
-                    "estado" => false,
-                    "mensaje" => "Error en inicio de sesión"
-                ], JSON_UNESCAPED_UNICODE);
-            }
-
-        } else {
+        if (!$passwordValida) {
             echo json_encode([
                 "estado" => false,
                 "mensaje" => "Error en inicio de sesión"
+            ], JSON_UNESCAPED_UNICODE);
+        } elseif ($row['estado_usuario'] !== 'A') {
+            echo json_encode([
+                "estado" => false,
+                "mensaje" => "El usuario se encuentra inactivo."
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            session_regenerate_id(true);
+            $idRol = (int)$row['id_rol'];
+
+            $_SESSION['idusuario'] = $row['id_usuario'];
+            $_SESSION['usuario'] = $row['usuario'];
+            $_SESSION['id_rol'] = $idRol;
+            $_SESSION['login_time'] = time();
+
+            $esEmpleado = in_array($idRol, [ROL_ADMIN, ROL_BARBERO], true);
+            $_SESSION['rol_nombre'] = $esEmpleado ? ($idRol === ROL_ADMIN ? 'Administrador' : 'Barbero') : 'Cliente';
+
+            $rutaDestino = ($idRol === ROL_BARBERO)
+                ? "/barberBox/views/tabla-citas.php"
+                : "/barberBox/home.php";
+
+            echo json_encode([
+                "estado" => true,
+                "mensaje" => "¡Bienvenido/a " . $row['usuario'] . "!",
+                "redirect" => $rutaDestino
             ], JSON_UNESCAPED_UNICODE);
         }
 
         $stmt->close();
         $conexion->close();
-
     } catch (Throwable $e) {
         echo json_encode([
             "estado" => false,

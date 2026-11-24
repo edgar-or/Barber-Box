@@ -20,6 +20,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const txtUsuario = document.getElementById("usuario");
     const txtClave = document.getElementById("clave");
 
+    function limpiarCredenciales() {
+        if (formLogin) {
+            formLogin.reset();
+        }
+        [txtUsuario, txtClave].forEach((campo) => {
+            if (campo) {
+                campo.value = "";
+                campo.classList.remove("is-valid", "is-invalid");
+            }
+        });
+    }
+
     // Mostrar / ocultar contraseña
     const btnTogglePassword = document.getElementById("toggle-password");
     if (btnTogglePassword && txtClave) {
@@ -38,94 +50,98 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    if (formLogin) {
+        // Limpiar credenciales al entrar y al navegar con el historial (botón Atrás)
+        limpiarCredenciales();
+        setTimeout(limpiarCredenciales, 50);
+        window.addEventListener("pageshow", () => {
+            limpiarCredenciales();
+            setTimeout(limpiarCredenciales, 50);
+        });
 
+        // Arreglo de campos
+        const campos = [txtUsuario, txtClave];
 
-    if(formLogin) {
-    // Arreglo de campos
-    const campos = [txtUsuario, txtClave];
+        // 3. Tu lógica de eventos individual (blur/input)
+        campos.forEach((campo) => {
+            if (campo) {
+                // Validar cuando el usuario sale del input (blur)
+                campo.addEventListener("blur", () => validarCampo(campo));
 
-    // 3. Tu lógica de eventos individual (blur/input)
-    campos.forEach((campo) => {
-        if (campo) {
-            // Validar cuando el usuario sale del input (blur)
-            campo.addEventListener("blur", () => validarCampo(campo));
+                // Quitar clase de error mientras escribe (input)
+                campo.addEventListener("input", () => {
+                    if (campo.value.trim() !== "") {
+                        campo.classList.remove("is-invalid");
+                    }
+                });
+            }
+        });
 
-            // Quitar clase de error mientras escribe (input)
-            campo.addEventListener("input", () => {
-                if (campo.value.trim() !== "") {
-                    campo.classList.remove("is-invalid");
-                }
-            });
-        }
-    });
+        formLogin.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
+            const camposValidos = campos.map(validarCampo).every(Boolean);
 
-  
-    formLogin.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const camposValidos = campos.map(validarCampo).every(Boolean);
-
-        if (!camposValidos) {
-            Swal.fire({
-                icon: "warning",
-                title: "Atención",
-                text: "Por favor, complete todos los campos requeridos."
-            });
-            return;
-        }
-
-        try {
-            const datos = new FormData(formLogin);
-            datos.append("opcion", "iniciar_sesion");
-
-            btnLogin.disabled = true;
-            btnLogin.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Validando...`;
-
-            const respuesta = await fetch("/barberBox/DAO/DAOLogin.php", {
-                method: "POST",
-                body: datos
-            });
-
-            if (!respuesta.ok) {
-                throw new Error("Error HTTP: " + respuesta.status);
+            if (!camposValidos) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Atención",
+                    text: "Por favor, complete todos los campos requeridos."
+                });
+                return;
             }
 
-            const resultado = await respuesta.json();
+            try {
+                const datos = new FormData(formLogin);
+                datos.append("opcion", "iniciar_sesion");
 
-            if (resultado.estado) {
-                Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: "Acceso Permitido",
-                    text: resultado.mensaje,
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    window.location.href = resultado.redirect;
+                btnLogin.disabled = true;
+                btnLogin.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Validando...`;
+
+                const respuesta = await fetch("/barberBox/DAO/DAOLogin.php", {
+                    method: "POST",
+                    body: datos
                 });
-            } else {
+
+                if (!respuesta.ok) {
+                    throw new Error("Error HTTP: " + respuesta.status);
+                }
+
+                const resultado = await respuesta.json();
+
+                if (resultado.estado) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Acceso Permitido",
+                        text: resultado.mensaje,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = resultado.redirect;
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error de Autenticación",
+                        text: resultado.mensaje
+                    });
+                    btnLogin.disabled = false;
+                    btnLogin.textContent = "Iniciar Sesión";
+                }
+
+            } catch (error) {
+                console.error("Error en la petición de login:", error);
                 Swal.fire({
                     icon: "error",
-                    title: "Error de Autenticación",
-                    text: resultado.mensaje
+                    title: "Error de Conexión",
+                    text: "No se pudo conectar con el servidor."
                 });
                 btnLogin.disabled = false;
                 btnLogin.textContent = "Iniciar Sesión";
             }
-
-        } catch (error) {
-            console.error("Error en la petición de login:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error de Conexión",
-                text: "No se pudo conectar con el servidor."
-            });
-            btnLogin.disabled = false;
-            btnLogin.textContent = "Iniciar Sesión";
-        }
-    });
-}
+        });
+    }
 
     const btnCerrarSesion = document.getElementById("btn-cerrarSesion");
 
@@ -170,5 +186,4 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
-
 });
