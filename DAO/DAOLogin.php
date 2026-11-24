@@ -49,23 +49,12 @@ if ($opcion === "iniciar_sesion") {
                 $_SESSION['id_rol'] = $idRol;
                 $_SESSION['login_time'] = time();
 
-                /*
+                
                 // Empleados (admin / barbero) -> panel completo. Clientes -> home de entrada.
                 $esEmpleado = in_array($idRol, [ROL_ADMIN, ROL_BARBERO], true);
                 $_SESSION['rol_nombre'] = $esEmpleado ? ($idRol === ROL_ADMIN ? 'Administrador' : 'Barbero') : 'Cliente';
 
-                echo json_encode([
-                    "estado" => true,
-                    "mensaje" => "¡Bienvenido/a " . $row['usuario'] . "!",
-                    "redirect" => $esEmpleado ? "/barberBox/views/panel-agendar-cita-admin.php" : "/barberBox/home.php"
-                ], JSON_UNESCAPED_UNICODE);
-                */
-                $esEmpleado = in_array($idRol, [ROL_ADMIN, ROL_BARBERO], true);
-                $_SESSION['rol_nombre'] = $esEmpleado ? ($idRol === ROL_ADMIN ? 'Administrador' : 'Barbero') : 'Cliente';
-
                 // Definir redirección según el rol:
-                // - Barbero (empleado) -> apartado de "Mis citas"
-                // - Administrador y Cliente -> Home
                 if ($idRol === ROL_BARBERO) {
                     $rutaDestino = "/barberBox/views/tabla-citas.php";
                 } else {
