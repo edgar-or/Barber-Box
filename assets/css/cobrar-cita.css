@@ -1,0 +1,32 @@
+.pos-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.05);
+}
+
+.pos-header {
+    background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+    color: #fff;
+    border-radius: 1rem 1rem 0 0 !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.total-box {
+    background-color: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.change-box {
+    background: linear-gradient(135deg, #f1f3f5 0%, #e9ecef 100%);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid #ced4da;
+}
+
+.pos-input-monto::-webkit-inner-spin-button,
+.pos-input-monto::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

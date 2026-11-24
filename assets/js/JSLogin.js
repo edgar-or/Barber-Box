@@ -77,8 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+<<<<<<< Updated upstream
         formLogin.addEventListener("submit", async (e) => {
             e.preventDefault();
+=======
+            const respuesta = await fetch("/Barber-Box/DAO/DAOLogin.php", {
+                method: "POST",
+                body: datos
+            });
+>>>>>>> Stashed changes
 
             const camposValidos = campos.map(validarCampo).every(Boolean);
 
@@ -164,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         const datos = new FormData();
                         datos.append("opcion", "cerrar_sesion");
 
-                        const respuesta = await fetch("/barberBox/DAO/DAOLogin.php", {
+                        const respuesta = await fetch("/Barber-Box/DAO/DAOLogin.php", {
                             method: "POST",
                             body: datos
                         });
@@ -180,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     } catch (error) {
                         console.error("Error al cerrar sesión:", error);
                         // Redirección forzada de respaldo
-                        window.location.href = "/barberBox/page-login.php";
+                        window.location.href = "/Barber-Box/page-login.php";
                     }
                 }
             });
