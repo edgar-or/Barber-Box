@@ -40,7 +40,7 @@ if (esCliente()) {
     <div class="container-fluid">
       <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-white fs-4" href="index.php">
         <i class="bi bi-scissors text-danger fs-3"></i>
-        <span>BarberShop</span>
+        <span>Barber-Box</span>
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLanding">
