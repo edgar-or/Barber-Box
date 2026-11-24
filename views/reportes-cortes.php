@@ -86,6 +86,7 @@ $currentPage = 'reportes';
   <script src="../assets/js/dashboard.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<<<<<<< Updated upstream
   <!-- Lógica JavaScript Unificada y Optimizada -->
   <script>
     const tipoSelect = document.getElementById("tipoReporteSelect");
@@ -365,5 +366,9 @@ $currentPage = 'reportes';
   </script>
   <link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=5">
 
+=======
+  <!-- Script externo de lógica de reportes -->
+  <script src="../assets/js/JSReportesCortes.js"></script>
+>>>>>>> Stashed changes
 </body>
 </html>

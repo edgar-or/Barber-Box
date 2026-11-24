@@ -1,14 +1,13 @@
 <?php
-// Agenda de citas del cliente (solo clientes con sesión iniciada)
+// Agenda de citas y caja (empleados y clientes)
 require_once __DIR__ . "/../config/auth.php";
-requerirClienteJson();
 require_once __DIR__ . "/../config/conexion.php";
 
 header('Content-Type: application/json; charset=utf-8');
 
 const PASO_MINUTOS = 30;
 
-$opcion        = isset($_REQUEST["opcion"]) ? $_REQUEST["opcion"] : "";
+$opcion        = $_REQUEST["opcion"] ?? $_POST["opcion"] ?? $_GET["opcion"] ?? "";
 $id_empleado   = (int)($_POST['id_empleado'] ?? 0);
 $fecha         = $_POST['fecha'] ?? '';
 $hora          = $_POST['hora'] ?? '';
@@ -16,14 +15,18 @@ $nota          = mb_substr(trim($_POST['nota'] ?? ''), 0, 255);
 $servicios_ids = (array)($_POST['servicios'] ?? []);
 $id_cita       = (int)($_POST['id_cita'] ?? 0);
 
-// id_cliente ligado al usuario en sesión
-$id_usuario = (int)$_SESSION['idusuario'];
-$stmtCli = $conexion->prepare("SELECT id_cliente FROM cliente WHERE id_usuario = ? LIMIT 1");
-$stmtCli->bind_param("i", $id_usuario);
-$stmtCli->execute();
-$filaCli = $stmtCli->get_result()->fetch_assoc();
-$stmtCli->close();
-$id_cliente = (int)($filaCli['id_cliente'] ?? 0);
+// id_cliente ligado al usuario en sesión (si aplica)
+$id_usuario = isset($_SESSION['idusuario']) ? (int)$_SESSION['idusuario'] : 0;
+$id_cliente = 0;
+
+if ($id_usuario > 0) {
+    $stmtCli = $conexion->prepare("SELECT id_cliente FROM cliente WHERE id_usuario = ? LIMIT 1");
+    $stmtCli->bind_param("i", $id_usuario);
+    $stmtCli->execute();
+    $filaCli = $stmtCli->get_result()->fetch_assoc();
+    $stmtCli->close();
+    $id_cliente = (int)($filaCli['id_cliente'] ?? 0);
+}
 
 // Servicios activos seleccionados (precio y duración salen de la BD, nunca del cliente)
 function obtenerServicios($conexion, $ids) {
@@ -100,8 +103,10 @@ if ($opcion == "catalogo") {
         $barberos  = $conexion->query("SELECT id_empleado, CONCAT(nombre, ' ', apellido) AS nombre FROM empleado WHERE atiende_citas = 1 ORDER BY nombre")->fetch_all(MYSQLI_ASSOC);
 
         echo json_encode(["estado" => true, "servicios" => $servicios, "barberos" => $barberos], JSON_UNESCAPED_UNICODE);
+        exit();
     } catch (Throwable $e) {
         echo json_encode(["estado" => false, "mensaje" => "No se pudo obtener el catálogo"], JSON_UNESCAPED_UNICODE);
+        exit();
     }
 }
 
@@ -112,8 +117,10 @@ if ($opcion == "disponibilidad") {
         $horas     = calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $id_cita);
 
         echo json_encode(["estado" => true, "horas" => $horas, "duracion" => $duracion], JSON_UNESCAPED_UNICODE);
+        exit();
     } catch (Throwable $e) {
         echo json_encode(["estado" => false, "mensaje" => "No se pudo consultar la disponibilidad"], JSON_UNESCAPED_UNICODE);
+        exit();
     }
 }
 
@@ -170,9 +177,116 @@ if ($opcion == "agendar") {
 
         $conexion->commit();
         echo json_encode(["estado" => true, "mensaje" => "¡Cita agendada para el " . date('d/m/Y', $inicio) . " a las " . date('H:i', $inicio) . "!"], JSON_UNESCAPED_UNICODE);
+        exit();
     } catch (Throwable $e) {
         $conexion->rollback();
         echo json_encode(["estado" => false, "mensaje" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+}
+
+if ($opcion == "consultar") {
+    try {
+        $esAdmin = (int)($_SESSION['id_rol'] ?? 0) === ROL_ADMIN;
+        $idEmpleadoSesion = (int)($_SESSION['id_empleado'] ?? 0);
+
+        $sql = "SELECT c.id_cita, c.fecha_hora_inicio, c.fecha_hora_fin, c.total_cita, c.estado_cita, c.nota,
+                       CONCAT(cl.nombre, ' ', cl.apellido) AS cliente,
+                       cl.telefono,
+                       CONCAT(e.nombre, ' ', e.apellido) AS barbero,
+                       (SELECT GROUP_CONCAT(s.nombre_servicio SEPARATOR ', ')
+                          FROM detalle_cita d JOIN servicio s ON s.id_servicio = d.id_servicio
+                         WHERE d.id_cita = c.id_cita) AS servicios
+                  FROM cita c
+                  JOIN cliente cl ON c.id_cliente = cl.id_cliente
+                  JOIN empleado e ON c.id_empleado = e.id_empleado";
+
+        if (!$esAdmin && $idEmpleadoSesion > 0) {
+            $sql .= " WHERE c.id_empleado = ?";
+        }
+        $sql .= " ORDER BY c.fecha_hora_inicio DESC";
+
+        $stmt = $conexion->prepare($sql);
+        if (!$esAdmin && $idEmpleadoSesion > 0) {
+            $stmt->bind_param("i", $idEmpleadoSesion);
+        }
+        $stmt->execute();
+        $citas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        echo json_encode(["estado" => true, "citas" => $citas], JSON_UNESCAPED_UNICODE);
+        exit();
+    } catch (Throwable $e) {
+        echo json_encode(["estado" => false, "mensaje" => "No se pudieron obtener las citas"], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+}
+
+if ($opcion == "detalle") {
+    try {
+        $stmt = $conexion->prepare("
+            SELECT c.id_cita, c.fecha_hora_inicio, c.fecha_hora_fin, c.total_cita, c.estado_cita, c.nota,
+                   CONCAT(cl.nombre, ' ', cl.apellido) AS cliente,
+                   cl.telefono, cl.correo,
+                   CONCAT(e.nombre, ' ', e.apellido) AS barbero
+            FROM cita c
+            JOIN cliente cl ON c.id_cliente = cl.id_cliente
+            JOIN empleado e ON c.id_empleado = e.id_empleado
+            WHERE c.id_cita = ?
+        ");
+        $stmt->bind_param("i", $id_cita);
+        $stmt->execute();
+        $cita = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        if (!$cita) {
+            echo json_encode(["estado" => false, "mensaje" => "Cita no encontrada."], JSON_UNESCAPED_UNICODE);
+            exit();
+        }
+
+        $stmtDet = $conexion->prepare("
+            SELECT s.nombre_servicio, s.duracion_estimada, dc.precio_unitario
+            FROM detalle_cita dc
+            JOIN servicio s ON dc.id_servicio = s.id_servicio
+            WHERE dc.id_cita = ?
+        ");
+        $stmtDet->bind_param("i", $id_cita);
+        $stmtDet->execute();
+        $detalle = $stmtDet->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmtDet->close();
+
+        echo json_encode(["estado" => true, "cita" => $cita, "detalle" => $detalle], JSON_UNESCAPED_UNICODE);
+        exit();
+    } catch (Throwable $e) {
+        echo json_encode(["estado" => false, "mensaje" => "Error al obtener el detalle."], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+}
+
+if ($opcion == "cambiarEstado") {
+    $nuevo_estado = $_POST['estado'] ?? '';
+    if (!in_array($nuevo_estado, ['Completada', 'Cancelada'], true) || $id_cita <= 0) {
+        echo json_encode(["estado" => false, "mensaje" => "Datos inválidos."], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
+    try {
+        $stmt = $conexion->prepare("UPDATE cita SET estado_cita = ? WHERE id_cita = ?");
+        $stmt->bind_param("si", $nuevo_estado, $id_cita);
+        $stmt->execute();
+        $afectadas = $stmt->affected_rows;
+        $stmt->close();
+
+        if ($afectadas > 0) {
+            echo json_encode(["estado" => true, "mensaje" => "Estado actualizado con éxito."], JSON_UNESCAPED_UNICODE);
+            exit();
+        } else {
+            echo json_encode(["estado" => false, "mensaje" => "No se pudo actualizar el estado."], JSON_UNESCAPED_UNICODE);
+            exit();
+        }
+    } catch (Throwable $e) {
+        echo json_encode(["estado" => false, "mensaje" => "Error en el servidor."], JSON_UNESCAPED_UNICODE);
+        exit();
     }
 }
 
@@ -196,8 +310,10 @@ if ($opcion == "historial") {
         $stmt->close();
 
         echo json_encode(["estado" => true, "citas" => $citas], JSON_UNESCAPED_UNICODE);
+        exit();
     } catch (Throwable $e) {
         echo json_encode(["estado" => false, "mensaje" => "No se pudo obtener el historial"], JSON_UNESCAPED_UNICODE);
+        exit();
     }
 }
 
@@ -212,11 +328,14 @@ if ($opcion == "cancelar") {
 
         if ($afectadas > 0) {
             echo json_encode(["estado" => true, "mensaje" => "Cita cancelada."], JSON_UNESCAPED_UNICODE);
+            exit();
         } else {
             echo json_encode(["estado" => false, "mensaje" => "No se pudo cancelar la cita."], JSON_UNESCAPED_UNICODE);
+            exit();
         }
     } catch (Throwable $e) {
         echo json_encode(["estado" => false, "mensaje" => "Error al cancelar la cita"], JSON_UNESCAPED_UNICODE);
+        exit();
     }
 }
 
@@ -288,13 +407,51 @@ if ($opcion == "modificar") {
 
         $conexion->commit();
         echo json_encode(["estado" => true, "mensaje" => "¡Cita actualizada para el " . date('d/m/Y', $inicio) . " a las " . date('H:i', $inicio) . "!"], JSON_UNESCAPED_UNICODE);
+        exit();
     } catch (Throwable $e) {
         $conexion->rollback();
         echo json_encode(["estado" => false, "mensaje" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+        exit();
     }
 }
 
-if (!in_array($opcion, ["catalogo", "disponibilidad", "agendar", "modificar", "historial", "cancelar"], true)) {
-    echo json_encode(["estado" => false, "mensaje" => "Opción no válida."], JSON_UNESCAPED_UNICODE);
+if ($opcion == "registrarPagoYCompletar") {
+    $id_cita     = isset($_POST['id_cita']) ? (int)$_POST['id_cita'] : 0;
+    $metodo_pago = isset($_POST['metodo_pago']) ? $_POST['metodo_pago'] : 'Efectivo';
+    $total_cita  = isset($_POST['total_cita']) ? (float)$_POST['total_cita'] : 0;
+
+    if ($id_cita <= 0) {
+        echo json_encode(["estado" => false, "mensaje" => "ID de cita inválido."], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
+    $id_metodo = ($metodo_pago === 'Transferencia') ? 2 : 1;
+
+    $conexion->begin_transaction();
+
+    try {
+        $stmtPago = $conexion->prepare("INSERT INTO pago (total_pagado, id_metodo_pago, id_cita) VALUES (?, ?, ?)");
+        $stmtPago->bind_param("dii", $total_cita, $id_metodo, $id_cita);
+        $stmtPago->execute();
+        $stmtPago->close();
+
+        $stmtCita = $conexion->prepare("UPDATE cita SET estado_cita = 'Completada' WHERE id_cita = ?");
+        $stmtCita->bind_param("i", $id_cita);
+        $stmtCita->execute();
+        $stmtCita->close();
+
+        $conexion->commit();
+
+        echo json_encode(["estado" => true, "mensaje" => "Pago registrado y cita completada con éxito."], JSON_UNESCAPED_UNICODE);
+        exit();
+    } catch (Throwable $e) {
+        $conexion->rollback();
+        echo json_encode(["estado" => false, "mensaje" => "Error al procesar el pago."], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
 }
 
+if (!in_array($opcion, ["catalogo", "disponibilidad", "agendar", "modificar", "historial", "cancelar", "consultar", "detalle", "cambiarEstado", "registrarPagoYCompletar"], true)) {
+    echo json_encode(["estado" => false, "mensaje" => "Opción no válida."], JSON_UNESCAPED_UNICODE);
+    exit();
+}

@@ -27,7 +27,7 @@ if (!isset($conexion) || $conexion->connect_error) {
 
 $hoy = date('Y-m-d');
 
-// 1. REPORTE DE CORTES POR BARBERO
+// 1. REPORTE DE CORTES POR BARBERO (CON COMISIÓN GLOBAL DEL MÓDULO DE COMISIONES)
 if ($opcion == "reporteCortes") {
     try {
         $fechaInicio = $_POST['fechaInicio'] ?? '';
@@ -39,11 +39,19 @@ if ($opcion == "reporteCortes") {
             exit;
         }
 
-        // Validación de seguridad backend (Fechas futuras)
         if ($fechaInicio > $hoy || $fechaFin > $hoy) {
             ob_clean();
             echo json_encode(["estado" => false, "mensaje" => "No se pueden consultar reportes de fechas futuras"]);
             exit;
+        }
+
+        // Consultar el porcentaje de comisión global configurado
+        $sqlComision = "SELECT comision FROM comision ORDER BY id_comision DESC LIMIT 1";
+        $resComision = $conexion->query($sqlComision);
+        $porcentajeGlobal = 0.00;
+        if ($resComision && $resComision->num_rows > 0) {
+            $rowCom = $resComision->fetch_assoc();
+            $porcentajeGlobal = floatval($rowCom['comision']);
         }
 
         $fInicio = $fechaInicio . " 00:00:00";
@@ -76,7 +84,6 @@ if ($opcion == "reporteCortes") {
             $cortesPlana[] = $fila;
         }
         $stmt->close();
-        $conexion->close();
 
         ob_clean();
         if (empty($cortesPlana)) {
@@ -87,10 +94,14 @@ if ($opcion == "reporteCortes") {
         $barberosAgrupados = [];
         foreach ($cortesPlana as $row) {
             $idBarbero = $row['id_empleado'];
+            $precioCorte = floatval($row['precio']);
+            $comisionCorte = $precioCorte * ($porcentajeGlobal / 100);
+
             if (!isset($barberosAgrupados[$idBarbero])) {
                 $barberosAgrupados[$idBarbero] = [
                     "id_barbero" => $idBarbero,
                     "nombre_barbero" => $row['nombre_barbero'],
+                    "porcentaje_comision" => $porcentajeGlobal,
                     "cortes" => []
                 ];
             }
@@ -99,9 +110,12 @@ if ($opcion == "reporteCortes") {
                 "fecha_cita" => date("d/m/Y H:i", strtotime($row['fecha_cita'])),
                 "nombre_cliente" => $row['nombre_cliente'],
                 "nombre_servicio" => $row['nombre_servicio'],
-                "precio" => $row['precio']
+                "precio" => $precioCorte,
+                "comision" => $comisionCorte
             ];
         }
+
+        $conexion->close();
 
         echo json_encode([
             "estado" => true,
@@ -164,7 +178,6 @@ else if ($opcion == "reporteServicios") {
             exit;
         }
 
-        // Validación de seguridad backend (Fechas futuras)
         if ($fechaInicio > $hoy || $fechaFin > $hoy) {
             ob_clean();
             echo json_encode(["estado" => false, "mensaje" => "No se pueden consultar reportes de fechas futuras"]);
