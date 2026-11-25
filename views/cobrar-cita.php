@@ -21,9 +21,9 @@ $esAdmin = (int)$_SESSION['id_rol'] === ROL_ADMIN;
   <link rel="stylesheet" href="../assets/libs/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="../assets/libs/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="../assets/css/main.css">
-  <link rel="stylesheet" href="../assets/css/cobrar-cita.css">
+  <link rel="stylesheet" href="../assets/css/cobrar-cita.css?v=10">
 </head>
-<body class="bg-light">
+<body class="pagina-caja">
   <?php include './menu/menuLateral.php'; ?>
   <?php include './menu/menu-header.php'; ?>
 

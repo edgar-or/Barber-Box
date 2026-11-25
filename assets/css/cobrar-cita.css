@@ -1,32 +1,286 @@
-.pos-card {
-    border: none;
-    border-radius: 1rem;
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.05);
+/* =====================================================================
+   PANTALLA CAJA REGISTRADORA: DISEÑO OSCURO PREMIUM
+   ===================================================================== */
+
+/* 1. Fondo oscuro general y limpieza */
+body.pagina-caja {
+  --bs-body-bg: var(--barber-black);
+  --bs-body-color: var(--barber-white);
+  --bs-border-color: var(--barber-border);
 }
 
-.pos-header {
-    background: linear-gradient(135deg, #212529 0%, #343a40 100%);
-    color: #fff;
-    border-radius: 1rem 1rem 0 0 !important;
-    padding: 1.25rem 1.5rem;
+body.pagina-caja,
+body.pagina-caja .main-wrapper,
+body.pagina-caja .main-wrapper > .container {
+  background-color: var(--barber-black) !important;
+  background-image: none !important;
 }
 
-.total-box {
-    background-color: #f8f9fa;
-    border: 2px dashed #dee2e6;
-    border-radius: 0.75rem;
-    padding: 1.25rem;
+/* ✅ ARREGLO DE LA BARRA SUPERIOR (NAVBAR) */
+body.pagina-caja .navbar-custom {
+  background-color: #121212 !important; /* Fondo oscuro */
+  border-bottom: 1px solid var(--barber-border) !important;
 }
 
-.change-box {
-    background: linear-gradient(135deg, #f1f3f5 0%, #e9ecef 100%);
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    border: 1px solid #ced4da;
+body.pagina-caja .navbar-profile-name,
+body.pagina-caja .navbar-title-dropdown {
+  color: #ffffff !important;
 }
 
-.pos-input-monto::-webkit-inner-spin-button,
-.pos-input-monto::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+body.pagina-caja .navbar-action-btn,
+body.pagina-caja .btn-desktop-toggle,
+body.pagina-caja .sidebar-toggle-btn {
+  background-color: #1c1c1c !important;
+  border-color: var(--barber-border) !important;
+  color: #cfcfcf !important;
+}
+
+body.pagina-caja .navbar-action-btn:hover,
+body.pagina-caja .btn-desktop-toggle:hover {
+  background-color: #262626 !important;
+  color: #ffffff !important;
+}
+
+body.pagina-caja .navbar-profile-caret {
+  color: #94a3b8 !important;
+}
+
+body.pagina-caja .navbar-profile-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 2. Tarjetas de Resumen y Cálculo */
+body.pagina-caja .card {
+  background-color: #161616 !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.pagina-caja .card-header {
+  background-color: #0f0f0f !important;
+  border-bottom: 1px solid var(--barber-border) !important;
+  border-radius: 16px 16px 0 0 !important;
+}
+
+/* 3. Títulos y textos generales (Blanco y Gris, SIN verde) */
+body.pagina-caja .page-title,
+body.pagina-caja h1,
+body.pagina-caja h2,
+body.pagina-caja h3,
+body.pagina-caja h4,
+body.pagina-caja h5,
+body.pagina-caja h6,
+body.pagina-caja strong {
+  color: #ffffff !important;
+}
+
+body.pagina-caja .page-subtitle,
+body.pagina-caja p,
+body.pagina-caja .text-muted,
+body.pagina-caja label,
+body.pagina-caja .form-label {
+  color: #94a3b8 !important; /* Gris claro para etiquetas y subtítulos */
+  font-weight: 500;
+}
+
+/* 4. La caja gris de "CORTE NORMAL" */
+body.pagina-caja .bg-light,
+body.pagina-caja .bg-white,
+body.pagina-caja .card-body .border {
+  background-color: #232731 !important; 
+  border: 1px solid #3b4252 !important;
+  border-radius: 8px !important;
+  padding: 12px 15px !important;
+}
+
+body.pagina-caja .bg-light span,
+body.pagina-caja .bg-light div:not(.text-end) {
+  color: #ffffff !important;
+}
+
+/* 5. El precio del servicio en la lista y el Total a Pagar (ÚNICO LUGAR CON VERDE) */
+body.pagina-caja .bg-light .text-end,
+body.pagina-caja .bg-light strong,
+body.pagina-caja h2.display-4,
+body.pagina-caja .text-success {
+  color: #10b981 !important; /* Verde esmeralda */
+  font-weight: 700;
+}
+
+/* 6. El recuadro del vuelto (Cambio) */
+body.pagina-caja .border-top {
+  border-top: 1px dashed var(--barber-border) !important;
+}
+
+body.pagina-caja h2.display-4 {
+  color: #ffffff !important; /* El vuelto en blanco, para no saturar de verde */
+}
+body.pagina-caja h2.display-4:not(:contains("0.00")) {
+  color: #10b981 !important; /* Si el vuelto es mayor a 0, se pone verde */
+}
+
+/* 7. Inputs y Selects */
+body.pagina-caja .form-control,
+body.pagina-caja .form-select,
+body.pagina-caja .input-group-text {
+  background-color: #0f1115 !important;
+  border: 1px solid #3b4252 !important;
+  color: #ffffff !important;
+  color-scheme: dark;
+}
+
+body.pagina-caja .form-control:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* 8. Botón "Cobrar y Finalizar" (Verde esmeralda) */
+body.pagina-caja .btn-success {
+  background: linear-gradient(135deg, #059669, #10b981) !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+body.pagina-caja .btn-success:hover {
+  background: linear-gradient(135deg, #047857, #059669) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* 9. Botón "Volver" */
+body.pagina-caja .btn-outline-secondary {
+  color: #cfcfcf !important;
+  border-color: #3b4252 !important;
+  background-color: transparent !important;
+}
+
+body.pagina-caja .btn-outline-secondary:hover {
+  background-color: #262626 !important;
+  color: #ffffff !important;
+}
+/* =====================================================================
+   FORZAR VISIBILIDAD EN LA LISTA DE SERVICIOS
+   ===================================================================== */
+
+/* 1. Fondo y borde para la cajita del servicio (le ganamos a cualquier estilo) */
+body.pagina-caja .card-body .bg-light,
+body.pagina-caja .card-body .bg-white,
+body.pagina-caja .card-body [class*="border"],
+body.pagina-caja .card-body .d-flex.p-2,
+body.pagina-caja .card-body .rounded {
+    background-color: #262b36 !important; /* Gris azulado más claro */
+    border: 1px solid #3b4252 !important;
+    border-radius: 6px !important;
+    padding: 10px 15px !important;
+    margin-bottom: 5px;
+}
+
+/* 2. Forzar que el nombre del servicio (CORTE NORMAL) sea blanco */
+body.pagina-caja .card-body span,
+body.pagina-caja .card-body div,
+body.pagina-caja .card-body p,
+body.pagina-caja .card-body .text-dark {
+    color: #ffffff !important; /* Blanco puro */
+}
+
+/* 3. Forzar que el precio ($3.50) resalte en verde o blanco */
+body.pagina-caja .card-body .text-end,
+body.pagina-caja .card-body strong,
+body.pagina-caja .card-body .fw-bold {
+    color: #edefef !important; /* Verde esmeralda */
+    font-weight: 700 !important;
+}
+
+/* 4. El título "SERVICIOS SOLICITADOS" en blanco o gris claro */
+body.pagina-caja h5,
+body.pagina-caja h6,
+body.pagina-caja .card-body h5,
+body.pagina-caja .card-body h6 {
+    color: #e2e8f0 !important; /* Gris muy claro */
+    font-weight: 600 !important;
+
+}
+
+/* =====================================================================
+   ARREGLO DEFINITIVO: TEXTO BLANCO Y BOTÓN AZUL EN CAJA REGISTRADORA
+   ===================================================================== */
+
+/* 1. Fuerza a que CUALQUIER texto dentro de la tarjeta sea blanco puro */
+body.pagina-caja .card-body,
+body.pagina-caja .card-body div,
+body.pagina-caja .card-body span,
+body.pagina-caja .card-body p,
+body.pagina-caja .card-body h1,
+body.pagina-caja .card-body h2,
+body.pagina-caja .card-body h3,
+body.pagina-caja .card-body h4,
+body.pagina-caja .card-body h5,
+body.pagina-caja .card-body h6,
+body.pagina-caja .card-body strong,
+body.pagina-caja .card-body .text-dark,
+body.pagina-caja .card-body .text-muted {
+    color: #ffffff !important;
+}
+
+/* 2. El nombre del servicio (CORTE NORMAL) en blanco y con un poquito de negrita */
+body.pagina-caja .card-body .servicio-nombre,
+body.pagina-caja .card-body .nombre-servicio,
+body.pagina-caja .card-body div:not(.text-end):not(.d-flex) {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+/* 3. El precio ($3.50) también en blanco o un gris muy claro */
+body.pagina-caja .card-body .text-end,
+body.pagina-caja .card-body .precio {
+    color: #e2e8f0 !important; /* Blanco un poco grisáceo */
+    font-weight: 700 !important;
+}
+
+/* =====================================================================
+   CAMBIO DE BOTÓN A AZUL (Como pediste)
+   ===================================================================== */
+
+/* Botón "Cobrar y Finalizar" (Azul elegante) */
+body.pagina-caja .btn-success {
+    background: linear-gradient(135deg, #0077b6, #00b4d8) !important; /* Azul barbería */
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0, 119, 182, 0.4) !important;
+    transition: all 0.2s ease;
+}
+
+body.pagina-caja .btn-success:hover {
+    background: linear-gradient(135deg, #023e8a, #0077b6) !important; /* Azul más oscuro al pasar mouse */
+    box-shadow: 0 6px 20px rgba(0, 119, 182, 0.6) !important;
+    transform: translateY(-2px);
+}
+/* =====================================================================
+   FUERZA BRUTA: TEXTO BLANCO EN SERVICIOS SOLICITADOS
+   ===================================================================== */
+
+/* Forzamos a que cualquier etiqueta que contenga el texto sea blanca */
+body.pagina-caja .card-body span,
+body.pagina-caja .card-body div,
+body.pagina-caja .card-body p,
+body.pagina-caja .card-body label,
+body.pagina-caja .card-body strong,
+body.pagina-caja .card-body * {
+    color: #ffffff !important; /* Blanco puro */
+}
+
+/* Si el texto "CORTE NORMAL" está dentro de un div o span, lo forzamos */
+body.pagina-caja .bg-light,
+body.pagina-caja .bg-light * {
+    color: #ffffff !important;
+}
+
+/* Opcional: Si la caja gris no resalta, se la ponemos un poco más clara */
+body.pagina-caja .bg-light {
+    background-color: #2a2f3a !important;
+    border: 1px solid #4b5563 !important;
 }
