@@ -16,6 +16,9 @@ $currentPage = 'agendar-admin';
   <link rel="stylesheet" href="../assets/libs/bootstrap-icons/bootstrap-icons.css">
   <link rel="stylesheet" href="../assets/css/main.css">
   <link rel="stylesheet" href="../assets/css/panel.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=8"> 
+
 </head>
 
 <body class="pagina-citas">
@@ -148,7 +151,7 @@ $currentPage = 'agendar-admin';
       </div>
     </div>
   </div>
-  <link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=8">
+  <link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=12">
   <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
   <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>

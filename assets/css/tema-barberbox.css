@@ -7,11 +7,6 @@
 
 /* ---------------------------------------------------------------------
    0. COLORES DE LA PLANTILLA
-   main.css pinta todo lo "verde" con estas variables. Al cambiarlas aquí,
-   cualquier pantalla que las use pasa a la paleta de la barbería:
-   - verde lima  -> azul
-   - verde oscuro -> negro / carbón
-   Para volver al verde original, borra este bloque.
 --------------------------------------------------------------------- */
 :root {
   --barber-blue-hover: #0096c7;
@@ -26,9 +21,7 @@
 }
 
 /* ---------------------------------------------------------------------
-   1. Fondo: negro con destello rojo arriba a la izquierda y azul abajo a
-   la derecha (igual que las formas de luz de la pantalla de registro).
-   Queda fijo mientras haces scroll.
+   1. Fondo: negro
 --------------------------------------------------------------------- */
 .main-wrapper {
   background-color: var(--barber-black);
@@ -124,8 +117,7 @@
 }
 
 /* ---------------------------------------------------------------------
-   4. Tarjeta de la tabla: oscura, con la franja rojo → azul arriba
-   (igual que las tarjetas de "Registrar empleado")
+   4. Tarjeta de la tabla
 --------------------------------------------------------------------- */
 .table-card-custom {
   position: relative;
@@ -221,16 +213,17 @@
   border-right: none !important;
 }
 
+/* ✅ CORREGIDO: Hover gris sutil, sin fondo rojo ni borde */
 .tabulator .tabulator-row:hover {
-  background-color: rgba(217, 4, 41, 0.08) !important;
-  box-shadow: inset 3px 0 0 var(--barber-red);
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: none !important;
 }
 
 .tabulator .tabulator-placeholder .tabulator-placeholder-contents {
   color: var(--barber-gray) !important;
 }
 
-/* Textos dentro de las celdas (nombre, subtítulo, correo) */
+/* Textos dentro de las celdas */
 .table-user-name {
   color: var(--barber-white) !important;
 }
@@ -317,12 +310,7 @@
 
 /* =====================================================================
    7. PANTALLA "HORARIOS DEL EMPLEADO"
-   Todo va limitado a <body class="pagina-horarios">, así no afecta a
-   otras pantallas. La tabla replica el aspecto de la tabla de Clientes.
    ===================================================================== */
-
-/* Negro liso en toda la pantalla (se fuerza para ganarle a cualquier otro
-   estilo que esté tiñendo el fondo de azul) */
 body.pagina-horarios {
   --bs-body-bg: var(--barber-black);
   --bs-body-color: var(--barber-white);
@@ -352,7 +340,7 @@ body.pagina-horarios .main-wrapper > .container {
   color: var(--barber-white);
 }
 
-/* Línea superior de la tarjeta: roja sólida, como el subrayado del logo */
+/* Línea superior de la tarjeta */
 .pagina-horarios .card::before {
   content: "";
   display: block !important;
@@ -369,7 +357,7 @@ body.pagina-horarios .main-wrapper > .container {
   display: none !important;
 }
 
-/* Botón "Asignar Horario" en el rojo del menú */
+/* Botón "Asignar Horario" */
 .pagina-horarios .btn-danger {
   --bs-btn-bg: var(--barber-red);
   --bs-btn-border-color: var(--barber-red);
@@ -379,7 +367,7 @@ body.pagina-horarios .main-wrapper > .container {
   --bs-btn-active-border-color: var(--barber-red-hover, #ef233c);
 }
 
-/* ---- Tabla, mismo estilo que Clientes ---- */
+/* ---- Tabla ---- */
 .pagina-horarios .table-responsive {
   border: 1px solid var(--barber-border);
   border-radius: var(--radius-md);
@@ -393,7 +381,6 @@ body.pagina-horarios .main-wrapper > .container {
   margin-bottom: 0;
 }
 
-/* Todas las celdas: fondo oscuro y separadores finos */
 .pagina-horarios .table > :not(caption) > * > * {
   background-color: #181818 !important;
   color: #e8e8e8;
@@ -412,7 +399,6 @@ body.pagina-horarios .main-wrapper > .container {
   border-bottom-width: 0;
 }
 
-/* Encabezado: títulos en mayúsculas, grises, con la línea roja debajo */
 .pagina-horarios .table thead > tr > * {
   background-color: #141414 !important;
   color: var(--barber-gray) !important;
@@ -423,7 +409,6 @@ body.pagina-horarios .main-wrapper > .container {
   border-bottom: 2px solid var(--barber-red);
 }
 
-/* Hover de fila */
 .pagina-horarios .table tbody tr:hover > * {
   background-color: #262626 !important;
 }
@@ -432,7 +417,7 @@ body.pagina-horarios .main-wrapper > .container {
   color: var(--barber-gray) !important;
 }
 
-/* ---- Ventana modal "Asignar Horario" ---- */
+/* ---- Ventana modal ---- */
 .pagina-horarios .modal-content {
   background-color: #161616;
   color: var(--barber-white);
@@ -463,7 +448,7 @@ body.pagina-horarios .main-wrapper > .container {
   background-color: var(--barber-black);
   border: 1px solid var(--barber-border);
   color: var(--barber-white);
-  color-scheme: dark; /* el reloj del campo de hora se ve claro */
+  color-scheme: dark;
 }
 
 .pagina-horarios .modal .form-select {
@@ -484,9 +469,7 @@ body.pagina-horarios .main-wrapper > .container {
 }
 
 /* =====================================================================
-   8. CELDAS DE TABULATOR: textos en negrita (precio) y "sin imagen"
-   Corrige textos verde oscuro que quedaban invisibles sobre el fondo
-   oscuro (por ejemplo el precio en Servicios).
+   8. CELDAS DE TABULATOR
    ===================================================================== */
 .tabulator-cell strong,
 .tabulator-cell b,
@@ -495,7 +478,6 @@ body.pagina-horarios .main-wrapper > .container {
   color: var(--barber-white) !important;
 }
 
-/* Recuadro que se muestra cuando un servicio no tiene imagen */
 .tabulator-cell [class*="placeholder"],
 .tabulator-cell [class*="sin-img"],
 .tabulator-cell [class*="no-img"] {
@@ -510,7 +492,7 @@ body.pagina-horarios .main-wrapper > .container {
 }
 
 /* =====================================================================
-   9. ÍCONOS DE ACCIONES EN LAS TABLAS: lápiz azul, basurero rojo
+   9. ÍCONOS DE ACCIONES
    ===================================================================== */
 .tabulator-cell [class*="bi-pencil"] {
   color: #38a1ff !important;
@@ -520,7 +502,6 @@ body.pagina-horarios .main-wrapper > .container {
   color: #ef4444 !important;
 }
 
-/* Al pasar el mouse, el botón se llena del color de su ícono */
 .tabulator-cell :is(button, [class*="btn"]):has([class*="bi-pencil"]):hover {
   background-color: #1d6fb8 !important;
   border-color: #1d6fb8 !important;
@@ -537,7 +518,7 @@ body.pagina-horarios .main-wrapper > .container {
 }
 
 /* =====================================================================
-   10. FORMULARIOS (registrar / editar): botón de "Elegir archivos" oscuro
+   10. FORMULARIOS
    ===================================================================== */
 .login-input[type="file"]::file-selector-button,
 input[type="file"].form-control::file-selector-button {
@@ -557,8 +538,7 @@ input[type="file"].form-control::file-selector-button:hover {
 }
 
 /* =====================================================================
-   11. SIN DESTELLOS: quita las "burbujas" de color del fondo de los
-   formularios (formas de luz roja y azul de main.css)
+   11. SIN DESTELLOS
    ===================================================================== */
 .login-bg-shape,
 .login-bg-shape-1,
@@ -567,8 +547,7 @@ input[type="file"].form-control::file-selector-button:hover {
 }
 
 /* =====================================================================
-   12. SIN LÍNEAS DE COLORES: quita la franja roja-azul de arriba de las
-   tarjetas de los formularios (registrar / editar)
+   12. SIN LÍNEAS DE COLORES
    ===================================================================== */
 .login-card::before,
 .login-card::after,
@@ -579,10 +558,8 @@ input[type="file"].form-control::file-selector-button:hover {
 }
 
 /* =====================================================================
-   13. PANTALLA "GESTIÓN DE CITAS" (admin)
-   Todo va limitado a <body class="pagina-citas">.
+   13. PANTALLA "GESTIÓN DE CITAS"
    ===================================================================== */
-
 body.pagina-citas {
   --bs-body-bg: var(--barber-black);
   --bs-body-color: var(--barber-white);
@@ -596,7 +573,6 @@ body.pagina-citas .main-wrapper > .container {
   background-image: none !important;
 }
 
-/* ---- Pestañas: Agendar cita / Agenda ---- */
 .pagina-citas .panel-tabs .nav-link {
   background-color: #161616;
   border: 1px solid var(--barber-border);
@@ -617,7 +593,6 @@ body.pagina-citas .main-wrapper > .container {
   box-shadow: 0 8px 20px rgba(217, 4, 41, 0.3);
 }
 
-/* ---- Tarjetas de cada paso y resumen ---- */
 .pagina-citas .panel-step,
 .pagina-citas .panel-resumen,
 .pagina-citas .panel-historial {
@@ -633,19 +608,17 @@ body.pagina-citas .main-wrapper > .container {
   color: var(--barber-white) !important;
 }
 
-/* Círculo con el número del paso */
 .pagina-citas .step-num {
   background-color: var(--barber-red) !important;
   color: var(--barber-white) !important;
 }
 
-/* ---- Campos del formulario ---- */
 .pagina-citas .form-control,
 .pagina-citas .form-select {
   background-color: var(--barber-black);
   border: 1px solid var(--barber-border);
   color: var(--barber-white);
-  color-scheme: dark; /* calendario y reloj en claro */
+  color-scheme: dark;
 }
 
 .pagina-citas .form-control::placeholder {
@@ -674,7 +647,6 @@ body.pagina-citas .main-wrapper > .container {
   color: var(--barber-gray) !important;
 }
 
-/* ---- Resultados del buscador de cliente ---- */
 .pagina-citas #resultadosCliente {
   background-color: #1c1c1c;
   border: 1px solid var(--barber-border);
@@ -705,7 +677,6 @@ body.pagina-citas .main-wrapper > .container {
   color: #38a1ff;
 }
 
-/* ---- Tarjetas de servicios (las crea el JS) ---- */
 .pagina-citas #listaServicios > div > * {
   background-color: #1c1c1c !important;
   border: 1px solid var(--barber-border) !important;
@@ -738,7 +709,6 @@ body.pagina-citas .main-wrapper > .container {
   color: var(--barber-gray);
 }
 
-/* ---- Horarios disponibles (botones de hora) ---- */
 .pagina-citas #listaHoras button,
 .pagina-citas #listaHoras .btn {
   background-color: #1c1c1c;
@@ -762,7 +732,6 @@ body.pagina-citas .main-wrapper > .container {
   color: var(--barber-white) !important;
 }
 
-/* ---- Resumen lateral ---- */
 .pagina-citas .resumen-linea {
   color: #cfcfcf;
   border-bottom: 1px dashed var(--barber-border);
@@ -786,7 +755,6 @@ body.pagina-citas .main-wrapper > .container {
   color: #e8e8e8;
 }
 
-/* Botón confirmar */
 .pagina-citas #btnAgendar {
   background-color: var(--barber-red);
   border-color: var(--barber-red);
@@ -805,7 +773,6 @@ body.pagina-citas .main-wrapper > .container {
   opacity: 1;
 }
 
-/* ---- Pestaña Agenda: tabla oscura ---- */
 .pagina-citas .panel-historial .table-responsive {
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -840,7 +807,6 @@ body.pagina-citas .main-wrapper > .container {
   background-color: #262626 !important;
 }
 
-/* Botones de la tabla */
 .pagina-citas .panel-historial .btn {
   background-color: #262626;
   border: 1px solid #333;
@@ -853,7 +819,6 @@ body.pagina-citas .main-wrapper > .container {
   color: var(--barber-white);
 }
 
-/* ---- Botones secundarios y aviso de edición ---- */
 .pagina-citas .btn-outline-secondary {
   --bs-btn-color: #d8d8d8;
   --bs-btn-border-color: var(--barber-border);
@@ -877,17 +842,14 @@ body.pagina-citas .main-wrapper > .container {
   background-color: #5c4a0e;
   color: var(--barber-white);
 }
-/* =====================================================================
-   14. CITAS: servicio seleccionado = borde azul, sin verde
-   Solo se activa cuando el checkbox del servicio está marcado.
-   ===================================================================== */
 
-/* Contorno de la tarjeta en azul (también si el puntero está encima) */
+/* =====================================================================
+   14. CITAS: servicio seleccionado
+   ===================================================================== */
 .pagina-citas #listaServicios .servicio-opcion:has(input:checked) {
   border-color: #38a1ff !important;
 }
 
-/* Quita el verde del interior y lo deja oscuro como las demás */
 .pagina-citas #listaServicios .servicio-opcion input:checked + .servicio-opcion-body {
   background: #1c1c1c !important;
   background-color: #1c1c1c !important;
@@ -895,23 +857,17 @@ body.pagina-citas .main-wrapper > .container {
   box-shadow: none !important;
 }
 
-/* El precio se perdía (oscuro sobre oscuro) */
 .pagina-citas #listaServicios .servicio-opcion input:checked + .servicio-opcion-body .servicio-precio {
   color: #ffffff !important;
 }
 
-/* Check de seleccionado en azul */
 .pagina-citas #listaServicios .servicio-opcion input:checked + .servicio-opcion-body .servicio-check {
   color: #38a1ff !important;
 }
 
 /* =====================================================================
    15. PANTALLA "MÓDULO DE REPORTES Y ESTADÍSTICAS"
-   Pega este bloque AL FINAL de tema-barberbox.css.
-   Requiere: <body class="pagina-reportes"> en la página de reportes.
-   Todo va limitado a esa clase, así no afecta otras pantallas.
    ===================================================================== */
-
 body.pagina-reportes {
   --bs-body-bg: var(--barber-black);
   --bs-body-color: var(--barber-white);
@@ -925,7 +881,6 @@ body.pagina-reportes .main-wrapper > .container {
   background-image: none !important;
 }
 
-/* ---- Título y subtítulo ---- */
 .pagina-reportes .page-title,
 .pagina-reportes h1,
 .pagina-reportes h2,
@@ -941,7 +896,6 @@ body.pagina-reportes .main-wrapper > .container {
   color: var(--barber-gray) !important;
 }
 
-/* ---- Tarjetas (filtros y resultados) ---- */
 .pagina-reportes .card {
   background-color: #161616 !important;
   border: 1px solid var(--barber-border) !important;
@@ -960,7 +914,6 @@ body.pagina-reportes .main-wrapper > .container {
   border-color: var(--barber-border) !important;
 }
 
-/* ---- Etiquetas y campos (tipo de reporte, fechas) ---- */
 .pagina-reportes .form-label,
 .pagina-reportes label {
   color: #cfcfcf;
@@ -972,7 +925,7 @@ body.pagina-reportes .main-wrapper > .container {
   background-color: var(--barber-black);
   border: 1px solid var(--barber-border);
   color: var(--barber-white);
-  color-scheme: dark; /* el calendario se ve claro */
+  color-scheme: dark;
 }
 
 .pagina-reportes .form-control::placeholder {
@@ -997,7 +950,6 @@ body.pagina-reportes .main-wrapper > .container {
   color: var(--barber-white);
 }
 
-/* ---- Botón Generar (era verde oscuro) ---- */
 .pagina-reportes .btn-dark,
 .pagina-reportes .btn-success,
 .pagina-reportes .btn-primary,
@@ -1020,7 +972,6 @@ body.pagina-reportes .main-wrapper > .container {
   transform: translateY(-1px);
 }
 
-/* ---- Botón Imprimir / PDF ---- */
 .pagina-reportes .btn-outline-secondary,
 .pagina-reportes .btn-outline-dark,
 .pagina-reportes .btn-light {
@@ -1037,14 +988,12 @@ body.pagina-reportes .main-wrapper > .container {
   color: var(--barber-white);
 }
 
-/* ---- Estado vacío (ícono y mensaje) ---- */
 .pagina-reportes .bi-bar-chart,
 .pagina-reportes .bi-bar-chart-line,
 .pagina-reportes .bi-graph-up {
   color: #555 !important;
 }
 
-/* ---- Tablas del reporte ---- */
 .pagina-reportes .table {
   --bs-table-bg: transparent;
   --bs-table-color: #e8e8e8;
@@ -1079,7 +1028,6 @@ body.pagina-reportes .main-wrapper > .container {
   font-weight: 700;
 }
 
-/* ---- Gráficos (ApexCharts) ---- */
 .pagina-reportes .apexcharts-text,
 .pagina-reportes .apexcharts-legend-text,
 .pagina-reportes .apexcharts-xaxis-label,
@@ -1100,7 +1048,6 @@ body.pagina-reportes .main-wrapper > .container {
   color: var(--barber-white) !important;
 }
 
-/* ---- Al imprimir / guardar PDF: vuelve a blanco para ahorrar tinta ---- */
 @media print {
   body.pagina-reportes,
   body.pagina-reportes .main-wrapper,
@@ -1133,11 +1080,11 @@ body.pagina-reportes .main-wrapper > .container {
     fill: #000 !important;
     color: #000 !important;
   }
-}/* =====================================================================
+}
+
+/* =====================================================================
    16. REPORTES: calendarios oscuros y botón Generar visible
    ===================================================================== */
-
-/* Campos de fecha (nativos o de flatpickr) */
 .pagina-reportes input[type="date"],
 .pagina-reportes input.flatpickr-input,
 .pagina-reportes input.form-control[readonly] {
@@ -1154,14 +1101,12 @@ body.pagina-reportes .main-wrapper > .container {
   box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18) !important;
 }
 
-/* Ícono del calendario en blanco */
 .pagina-reportes input[type="date"]::-webkit-calendar-picker-indicator {
   filter: none;
   opacity: 1;
   cursor: pointer;
 }
 
-/* Botón Generar: rojo, para que destaque */
 .pagina-reportes .card:has(input[type="date"]) .btn,
 .pagina-reportes .card:has(input[type="date"]) button[type="button"],
 .pagina-reportes .card:has(input[type="date"]) button[type="submit"] {
@@ -1181,7 +1126,6 @@ body.pagina-reportes .main-wrapper > .container {
   transform: translateY(-1px);
 }
 
-/* Calendario desplegable (flatpickr) en oscuro */
 .flatpickr-calendar {
   background: #161616 !important;
   border: 1px solid var(--barber-border) !important;
@@ -1225,6 +1169,7 @@ body.pagina-reportes .main-wrapper > .container {
 .flatpickr-calendar .flatpickr-day.nextMonthDay {
   color: #666 !important;
 }
+
 /* =====================================================================
    18. FILTRO "TODOS LOS ESTADOS" EN OSCURO
    ===================================================================== */
@@ -1249,7 +1194,6 @@ body.pagina-historial select:focus {
   outline: none;
 }
 
-/* Lista desplegable (las opciones) */
 body.pagina-historial select option {
   background-color: #161616 !important;
   color: #ffffff !important;
@@ -1260,8 +1204,9 @@ body.pagina-historial select option:hover {
   background-color: var(--barber-red) !important;
   color: #ffffff !important;
 }
+
 /* =====================================================================
-   19. SELECTS OSCUROS (no dependen de la clase del body)
+   19. SELECTS OSCUROS
    ===================================================================== */
 .main-wrapper select,
 .main-wrapper .form-select {
@@ -1286,11 +1231,10 @@ body.pagina-historial select option:hover {
   background-color: #161616 !important;
   color: #ffffff !important;
 }
+
 /* =====================================================================
    21. HISTORIAL: íconos con color y hover de fila neutro
    ===================================================================== */
-
-/* ---- Hover de la fila: gris suave, sin rojo ---- */
 body.pagina-historial #tablaCitas .tabulator-row:hover,
 body.pagina-historial #tablaCitas .tabulator-row.tabulator-row-even:hover,
 body.pagina-historial #tablaCitas .tabulator-row.tabulator-row-odd:hover {
@@ -1298,7 +1242,6 @@ body.pagina-historial #tablaCitas .tabulator-row.tabulator-row-odd:hover {
   box-shadow: none !important;
 }
 
-/* ---- Íconos de acciones: ver (azul), completar (verde), cancelar (rojo) ---- */
 body.pagina-historial #tablaCitas .tabulator-cell [class*="bi-eye"] {
   color: #38a1ff !important;
 }
@@ -1311,7 +1254,6 @@ body.pagina-historial #tablaCitas .tabulator-cell [class*="bi-x"] {
   color: #ef4444 !important;
 }
 
-/* Al pasar el puntero, el botón se llena del color de su ícono */
 body.pagina-historial #tablaCitas .tabulator-cell :is(button, [class*="btn"]):has([class*="bi-eye"]):hover {
   background-color: #1d6fb8 !important;
   border-color: #1d6fb8 !important;
@@ -1336,8 +1278,6 @@ body.pagina-historial #tablaCitas .tabulator-cell :is(button, [class*="btn"]):ho
 /* =====================================================================
    22. PÁGINA DE INICIO: sin barritas ni degradados de colores
    ===================================================================== */
-
-/* Barritas de colores bajo "Nuestros Servicios" y "Contacto" */
 body.pagina-home .section-title::before,
 body.pagina-home .section-title::after {
   display: none !important;
@@ -1345,9 +1285,361 @@ body.pagina-home .section-title::after {
   background: none !important;
 }
 
-/* Hero: la foto se queda, el degradado rojo/azul pasa a oscuro neutro */
 body.pagina-home .home-hero::before,
 body.pagina-home .home-hero::after {
   background: rgba(0, 0, 0, 0.65) !important;
   background-image: none !important;
+}
+
+/* =====================================================================
+   23. PANTALLA "COMISIÓN"
+   ===================================================================== */
+body.pagina-comision {
+  --bs-body-bg: var(--barber-black);
+  --bs-body-color: var(--barber-white);
+  --bs-border-color: var(--barber-border);
+}
+
+body.pagina-comision,
+body.pagina-comision .main-wrapper,
+body.pagina-comision .main-wrapper > .container {
+  background: var(--barber-black) !important;
+  background-image: none !important;
+}
+
+.pagina-comision .page-title,
+.pagina-comision h1,
+.pagina-comision h2,
+.pagina-comision h3,
+.pagina-comision h4,
+.pagina-comision h5,
+.pagina-comision .card-title {
+  color: var(--barber-white) !important;
+}
+
+.pagina-comision .page-subtitle,
+.pagina-comision .text-muted,
+.pagina-comision .form-text,
+.pagina-comision small {
+  color: var(--barber-gray) !important;
+}
+
+.pagina-comision label,
+.pagina-comision .form-label {
+  color: #cfcfcf;
+  font-weight: 600;
+}
+
+.pagina-comision .card {
+  background-color: #161616 !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55) !important;
+  color: var(--barber-white);
+}
+
+.pagina-comision .card::before {
+  display: none !important;
+}
+
+.pagina-comision .form-control,
+.pagina-comision .input-group-text {
+  background-color: var(--barber-black) !important;
+  border: 1px solid var(--barber-border) !important;
+  color: var(--barber-white) !important;
+  color-scheme: dark;
+}
+
+.pagina-comision .input-group-text {
+  color: var(--barber-gray) !important;
+}
+
+.pagina-comision .form-control:focus {
+  border-color: var(--barber-red) !important;
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.18) !important;
+}
+
+.pagina-comision .btn-danger,
+.pagina-comision .btn-primary,
+.pagina-comision button[type="submit"] {
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(217, 4, 41, 0.3);
+}
+
+.pagina-comision .btn-danger:hover,
+.pagina-comision .btn-primary:hover,
+.pagina-comision button[type="submit"]:hover {
+  background-color: var(--barber-red-hover, #ef233c) !important;
+  border-color: var(--barber-red-hover, #ef233c) !important;
+}
+
+/* =====================================================================
+   24. COMISIÓN: ícono del título y texto del campo
+   ===================================================================== */
+body.pagina-comision .page-header .page-icon {
+  width: 56px;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.5rem;
+  border-radius: var(--radius-lg);
+  background-color: #1c1c1c !important;
+  border: 1px solid var(--barber-border);
+  color: var(--barber-blue) !important;
+  box-shadow: none !important;
+}
+
+.pagina-comision .form-control,
+.pagina-comision .form-control:disabled,
+.pagina-comision .form-control[readonly] {
+  color: var(--barber-white) !important;
+  -webkit-text-fill-color: var(--barber-white);
+  opacity: 1;
+}
+
+.pagina-comision .form-control::placeholder {
+  color: #9a9a9a !important;
+  -webkit-text-fill-color: #9a9a9a;
+  opacity: 1;
+}
+
+/* =====================================================================
+   25. TABLAS: correo y enlaces legibles
+   ===================================================================== */
+.tabulator-cell a:not([class*="btn"]) {
+  color: #e8e8e8 !important; /* ✅ Un gris claro/blanco para que se lea */
+  text-decoration: none;
+}
+
+.tabulator-cell a:not([class*="btn"]):hover {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+/* ✅ CORREGIDO: Hacemos que los correos se vean claros */
+.tabulator-cell [class*="correo"],
+.tabulator-cell [class*="email"],
+.tabulator-cell [class*="mail"],
+.tabulator-cell .text-secondary,
+.tabulator-cell small {
+  color: #cfcfcf !important; /* Gris claro legible */
+}
+
+.tabulator-cell .text-dark {
+  color: #e8e8e8 !important;
+}
+
+.table-user-sub {
+  color: #cfcfcf !important;
+}
+/* =====================================================================
+   QUITAR EL FONDO ROJO Y LA LÍNEA AL PASAR EL MOUSE EN TABULATOR
+   ===================================================================== */
+
+/* 1. Quita el fondo rojo y la línea de la izquierda */
+.tabulator-row:hover, 
+.tabulator-row.tabulator-row-even:hover, 
+.tabulator-row.tabulator-row-odd:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important; /* Gris muy sutil */
+    box-shadow: none !important; /* Elimina la línea roja */
+}
+
+/* 2. Hace que los textos de las filas (DUI, correo, etc.) se lean bien */
+.tabulator-cell {
+    color: #e8e8e8 !important;
+}
+
+.tabulator-cell .text-muted,
+.tabulator-cell .table-user-sub,
+.tabulator-cell [class*="correo"],
+.tabulator-cell [class*="email"] {
+    color: #cfcfcf !important; /* Gris claro para los subtítulos */
+}
+/* Quitar el hover rojo de la tabla de empleados */
+#tablaEmpleados .tabulator-row:hover,
+#tablaEmpleados .tabulator-row.tabulator-row-even:hover,
+#tablaEmpleados .tabulator-row.tabulator-row-odd:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    box-shadow: none !important;
+}
+
+#tablaEmpleados .tabulator-cell {
+    color: #ffffff !important;
+}
+
+#tablaEmpleados .tabulator-cell .text-muted,
+#tablaEmpleados .tabulator-cell .table-user-sub {
+    color: #cfcfcf !important;
+}
+/* =====================================================================
+   13. PANTALLA "GESTIÓN DE CITAS"
+   ===================================================================== */
+
+body.pagina-citas {
+  --bs-body-bg: var(--barber-black);
+  --bs-body-color: var(--barber-white);
+  --bs-border-color: var(--barber-border);
+}
+
+body.pagina-citas,
+body.pagina-citas .main-wrapper,
+body.pagina-citas .main-wrapper > .container {
+  background: var(--barber-black) !important;
+  background-image: none !important;
+}
+
+/* ✅ FORZAR EL FONDO OSCURO EN LAS TARJETAS */
+.pagina-citas .panel-tabs .nav-link {
+  background-color: #161616 !important;
+  border: 1px solid var(--barber-border) !important;
+  color: var(--barber-gray) !important;
+  font-weight: 600;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.pagina-citas .panel-tabs .nav-link:hover {
+  color: var(--barber-white) !important;
+  border-color: var(--barber-red) !important;
+}
+
+.pagina-citas .panel-tabs .nav-link.active {
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
+  box-shadow: 0 8px 20px rgba(217, 4, 41, 0.3) !important;
+}
+
+/* ✅ FORZAR EL FONDO OSCURO EN LOS PANELES (PASOS Y RESUMEN) */
+.pagina-citas .panel-step,
+.pagina-citas .panel-resumen,
+.pagina-citas .panel-historial {
+  background-color: #161616 !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55) !important;
+  color: var(--barber-white) !important;
+}
+
+/* Títulos de los paneles */
+.pagina-citas .panel-step-title,
+.pagina-citas .panel-resumen h2,
+.pagina-citas .panel-step h2,
+.pagina-citas .panel-step h3 {
+  color: var(--barber-white) !important;
+}
+
+/* Círculo con el número del paso */
+.pagina-citas .step-num {
+  background-color: var(--barber-blue-light) !important; /* Azul para que resalte */
+  color: var(--barber-white) !important;
+}
+
+/* ✅ TEXTOS DE LOS PANELES */
+.pagina-citas .text-muted,
+.pagina-citas .panel-step p,
+.pagina-citas .panel-resumen p,
+.pagina-citas .panel-step small {
+  color: var(--barber-gray) !important;
+}
+
+/* ✅ TARJETAS DE SERVICIOS */
+.pagina-citas #listaServicios > div > * {
+  background-color: #1c1c1c !important;
+  border: 1px solid var(--barber-border) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--barber-white) !important;
+}
+
+.pagina-citas #listaServicios strong,
+.pagina-citas #listaServicios h3,
+.pagina-citas #listaServicios h4,
+.pagina-citas #listaServicios h5,
+.pagina-citas #listaServicios h6 {
+  color: var(--barber-white) !important;
+}
+
+.pagina-citas #listaServicios small,
+.pagina-citas #listaServicios p,
+.pagina-citas #listaServicios span {
+  color: var(--barber-gray) !important;
+}
+
+/* ✅ TABLA DEL HISTORIAL Y RESUMEN */
+.pagina-citas .panel-historial .table-responsive {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--barber-border) !important;
+}
+
+.pagina-citas .panel-historial .table {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: #e8e8e8 !important;
+  --bs-table-border-color: var(--barber-border) !important;
+  margin-bottom: 0;
+}
+
+.pagina-citas .panel-historial .table > :not(caption) > * > * {
+  background-color: #181818 !important;
+  color: #e8e8e8 !important;
+  border-color: var(--barber-border) !important;
+  padding: 1rem 1.25rem;
+}
+
+.pagina-citas .panel-historial .table thead > tr > * {
+  background-color: #141414 !important;
+  color: var(--barber-gray) !important;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  border-bottom: 2px solid var(--barber-red) !important;
+}
+
+.pagina-citas .panel-historial .table tbody tr:hover > * {
+  background-color: #262626 !important;
+}
+
+/* ✅ RESUMEN LATERAL (Líneas y textos) */
+.pagina-citas .resumen-linea {
+  color: #cfcfcf !important;
+  border-bottom: 1px dashed var(--barber-border) !important;
+}
+
+.pagina-citas .resumen-linea strong {
+  color: var(--barber-white) !important;
+}
+
+.pagina-citas .resumen-linea.total {
+  border-top: 2px solid var(--barber-red) !important;
+  border-bottom: 0;
+}
+
+.pagina-citas .resumen-linea.total span,
+.pagina-citas .resumen-linea.total strong {
+  color: var(--barber-white) !important;
+}
+
+/* ✅ BOTÓN CONFIRMAR CITA */
+.pagina-citas #btnAgendar {
+  background-color: var(--barber-red) !important;
+  border-color: var(--barber-red) !important;
+  color: var(--barber-white) !important;
+  font-weight: 700;
+}
+
+.pagina-citas #btnAgendar:hover:not(:disabled) {
+  background-color: var(--barber-red-hover, #ef233c) !important;
+  border-color: var(--barber-red-hover, #ef233c) !important;
+}
+
+.pagina-citas #btnAgendar:disabled {
+  background-color: #3a1a20 !important;
+  border-color: #3a1a20 !important;
+  color: #8a6a70 !important;
+  opacity: 1;
 }

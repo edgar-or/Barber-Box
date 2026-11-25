@@ -22,7 +22,7 @@ $currentPage = 'comision';
   <link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=6">
 </head>
 
-<body>
+<body class="pagina-comision">
   <?php include './menu/menuLateral.php'; ?>
   <?php include './menu/menu-header.php'; ?>
 
@@ -66,6 +66,8 @@ $currentPage = 'comision';
   <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>
   <script src="../assets/js/dashboard.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="assets/css/tema-barberbox.css?v=11">
+
   <script src="../assets/js/JSComision.js?v=<?php echo filemtime('../assets/js/JSComision.js'); ?>"></script>
 </body>
 
