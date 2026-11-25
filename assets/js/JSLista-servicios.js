@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         paginationSizeSelector: [10, 25, 50, 100],
         movableColumns: true,
         columns: [
-            { title: "ID", field: "id_servicio", width: 90, headerHozAlign: "center", hozAlign: "center" },
             { 
                 title: "Imagen", 
                 field: "imagenes", 

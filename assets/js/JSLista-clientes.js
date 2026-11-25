@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         movableColumns: true,
         columns: [
             { title: "Corr", field: "correlativo", width: 80, headerHozAlign: "center", hozAlign: "center" },
-            { title: "ID", field: "id_cliente", width: 90, headerHozAlign: "center", hozAlign: "center" },
             {
                 title: "Cliente",
                 field: "nombreCompleto",

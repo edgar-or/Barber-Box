@@ -5,7 +5,7 @@ requerirEmpleadoJson();
 
 header('Content-Type: application/json; charset=utf-8');
 
-const PASO_MINUTOS = 30;
+const PASO_MINUTOS = 15;
 
 $opcion        = isset($_REQUEST["opcion"]) ? $_REQUEST["opcion"] : "";
 $id_cita       = intval($_POST['id_cita'] ?? 0);
