@@ -34,7 +34,7 @@ if ($opcion == "consultarServicios") {
         }
         $resultado->free();
 
-        // Todas las imágenes de cada servicio (la tabla puede no existir aún)
+        // Todas las imágenes de cada servicio
         try {
             $sqlImagen = "SELECT id_servicio, ruta_imagen FROM servicio_imagen ORDER BY id_servicio ASC";
             $resultadoImagen = $conexion->query($sqlImagen);

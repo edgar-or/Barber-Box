@@ -458,7 +458,7 @@ if (!in_array($opcion, ["consultarServicios", "consultarBarberos", "consultarCli
 
 // ================== FUNCIONES ==================
 
-// Servicios activos seleccionados (precio y duración salen de la BD, nunca del navegador)
+// Servicios activos seleccionados (precio y duración)
 function obtenerServicios($conexion, $ids)
 {
     $servicios = [];
@@ -521,7 +521,6 @@ function clienteExiste($conexion, $id_cliente)
 }
 
 // Horas de inicio disponibles ("HH:MM") para un barbero, fecha y duración
-// Horas de inicio disponibles ("HH:MM") para un barbero, fecha y duración
 function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $excluir_cita)
 {
     $partes = explode('-', $fecha);
@@ -577,7 +576,7 @@ function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $exc
     $horas  = [];
     $ahora  = time();
 
-    // 2. Recorremos CADA turno (mañana y tarde)
+    // Recorremos CADA turno (mañana y tarde)
     foreach ($turnosDelDia as $horario) {
         $cursor = strtotime($fecha . " " . $horario['hora_entrada']);
         $salida = strtotime($fecha . " " . $horario['hora_salida']);

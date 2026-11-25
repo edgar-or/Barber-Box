@@ -55,7 +55,7 @@ try {
             $idServ = (int)$fila['id_servicio'];
             $imagenes = [];
 
-            // Obtener todas las imágenes asociadas al servicio (si existe la tabla servicio_imagen)
+            // Obtener todas las imágenes asociadas al servicio
             try {
                 $stmtImg = $conexion->prepare("SELECT ruta_imagen FROM servicio_imagen WHERE id_servicio = ? ORDER BY id_servicio ASC");
                 $stmtImg->bind_param("i", $idServ);
@@ -187,8 +187,6 @@ try {
     }
 
     // Modificar los servicios de una cita pendiente de hoy en adelante (solo barberos, y solo las suyas).
-    // Se permite aunque la cita ya haya empezado: el cliente puede pedir un servicio adicional en plena atención.
-    // El barbero, la fecha y la hora no cambian: se toman de la propia cita.
     if ($opcion === "modificar") {
         $idCita       = (int)($_POST['id_cita'] ?? 0);
         $serviciosIds = $_POST['servicios'] ?? [];
@@ -280,7 +278,7 @@ try {
 
 // ================== FUNCIONES ==================
 
-// Servicios activos seleccionados (precio y duración salen de la BD, nunca del navegador)
+// Servicios activos seleccionados (precio y duración salen de la BD)
 function obtenerServicios($conexion, $ids)
 {
     $servicios = [];

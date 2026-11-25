@@ -82,7 +82,7 @@ if ($opcion == "guardar_uno") {
             echo json_encode(["estado" => false, "mensaje" => "Error: " . $stmt->error]);
             exit;
         }
-    } // <-- aquí se cierra el foreach (era la llave que faltaba)
+    } 
 
     $conexion->commit();
     $stmt->close();

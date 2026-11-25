@@ -138,11 +138,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     );
 
-<<<<<<< HEAD
-    // 2. Inicializar la tabla PRIMERO (con arreglo vacío)
-    //fitDataStretch permite que las columnas respeten minWidth y usen scroll horizontal en móvil
-=======
->>>>>>> 212cba2ab1299b978631ec5898b37682da913085
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
         langs: {
@@ -182,15 +177,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         columns: columnas
     });
 
-<<<<<<< HEAD
-    // Recalcula anchos al cambiar el tamaño o girar la pantalla
-    window.addEventListener("resize", () => {
-        tabla.redraw(true);
-    });
-
-    // 3. Hacer la petición FETCH a DAOCitas.php y cargar con setData()
-=======
->>>>>>> 212cba2ab1299b978631ec5898b37682da913085
     async function cargarCitas() {
         try {
             const formData = new FormData();
@@ -367,10 +353,7 @@ function cambiarEstado(id, estado, recargar) {
     });
 }
 
-<<<<<<< HEAD
-=======
 // ================== MODIFICAR SERVICIOS DE UNA CITA ==================
->>>>>>> 212cba2ab1299b978631ec5898b37682da913085
 let catalogoServicios = [];
 let citaModificando = null;
 let recargarAlGuardar = null;

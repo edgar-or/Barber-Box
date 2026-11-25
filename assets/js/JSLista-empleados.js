@@ -111,14 +111,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         ]
     });
 
-<<<<<<< HEAD
-    window.addEventListener("resize", () => {
-        tabla.redraw(true);
-    });
-
-    // 2. Hacer la petición FETCH
-=======
->>>>>>> 212cba2ab1299b978631ec5898b37682da913085
     try {
         const formData = new FormData();
         formData.append("opcion", "consultar");
@@ -221,9 +213,6 @@ function eliminarEmpleado(id, tabla) {
             }
         }
     });
-<<<<<<< HEAD
-}
-=======
 
 }
     const tabla = new Tabulator(contenedor, {
@@ -243,4 +232,3 @@ function eliminarEmpleado(id, tabla) {
         columns: [
         ]
     });
->>>>>>> 212cba2ab1299b978631ec5898b37682da913085

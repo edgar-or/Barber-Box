@@ -111,15 +111,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         ]
     });
 
-<<<<<<< HEAD
-    // [MODIFICADO] Recalcula anchos al cambiar el tamaño o girar la pantalla
     window.addEventListener("resize", () => {
         tabla.redraw(true);
     });
 
-    // 2. Cargar registros con Swal de carga (patrón POSEIDÓN)
-=======
->>>>>>> 212cba2ab1299b978631ec5898b37682da913085
     function actualizarContador() {
         const total = tabla.getDataCount("active");
         if (contador) contador.textContent = total;
