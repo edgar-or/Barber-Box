@@ -123,7 +123,6 @@
 
     
     <!-- Custom Authentication interactions script -->
-    <script src="/barberBox/assets/js/JSLogin.js"></script>
-
+<script src="assets/js/JSLogin.js"></script>
 </body>
 </html>

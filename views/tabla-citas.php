@@ -71,6 +71,59 @@ $subtitulo = $esAdmin ? 'Todas las citas agendadas por los clientes.' : 'Citas q
     </div>
   </div>
 
+  <!-- START: Modal de Cobro y Cierre de Cita -->
+  <div class="modal fade" id="modalCobroBarber" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-black text-white">
+          <h5 class="modal-title fw-bold"><i class="bi bi-cash-coin me-2"></i>Completar y Cobrar Cita</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formCobroBarber">
+            <input type="hidden" id="modalIdCita" name="id_cita">
+            
+            <div class="mb-3">
+              <label class="form-label fw-bold">Detalle de la Cita:</label>
+              <div id="modalInfoClienteServicios" class="p-2 bg-light rounded border text-muted">
+                Cargando...
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="modalTotalCita" class="form-label fw-bold">Total a Pagar ($):</label>
+              <input type="text" class="form-control fw-bold text-success fs-5" id="modalTotalCita" readonly>
+            </div>
+
+            <div class="mb-3">
+              <label for="modalMetodoPago" class="form-label fw-bold">Método de Pago</label>
+              <select class="form-select" id="modalMetodoPago" name="metodo_pago" required>
+                <option value="Efectivo">Efectivo (Contado)</option>
+                <option value="Transferencia">Transferencia</option>
+              </select>
+            </div>
+
+            <div id="contenedorEfectivo">
+              <div class="mb-3">
+                <label for="modalMontoRecibido" class="form-label fw-bold">Dinero Recibido ($):</label>
+                <input type="number" step="0.01" class="form-control" id="modalMontoRecibido" name="monto_recibido" placeholder="Ej. 20.00">
+              </div>
+              <div class="mb-3">
+                <label for="modalVuelto" class="form-label fw-bold">Vuelto / Cambio ($):</label>
+                <input type="text" class="form-control fw-bold text-danger fs-5" id="modalVuelto" readonly value="0.00">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="btnConfirmarCobroFinal" class="btn btn-success"><i class="bi bi-check-circle me-1"></i> Confirmar y Completar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END: Modal de Cobro -->
+
   <script>window.CITAS_ES_ADMIN = <?= $esAdmin ? 'true' : 'false'; ?>;</script>
   <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>

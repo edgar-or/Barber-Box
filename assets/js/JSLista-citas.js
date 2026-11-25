@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 1. Columnas (el barbero solo se muestra al administrador)
     const columnas = [
-        { title: "ID", field: "id_cita", width: 80, headerHozAlign: "center", hozAlign: "center" },
         {
             title: "Fecha",
             field: "fecha_hora_inicio",
@@ -92,8 +91,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <i class="bi bi-eye"></i>
                         </button>
                         ${pendiente ? `
-                        <button class="table-btn-action btn-completar" data-id="${row.id_cita}" title="Marcar como completada">
-                            <i class="bi bi-check2-circle"></i>
+                        <button class="table-btn-action btn-completar" data-id="${row.id_cita}" title="Procesar cobro y completar">
+                            <i class="bi bi-cash-coin"></i>
                         </button>
                         <button class="table-btn-action delete btn-cancelar" data-id="${row.id_cita}" title="Cancelar cita">
                             <i class="bi bi-x-circle"></i>
@@ -110,7 +109,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (target.classList.contains("btn-detalle")) {
                     verDetalle(idCita);
                 } else if (target.classList.contains("btn-completar")) {
-                    cambiarEstado(idCita, "Completada", recargarTabla);
+                    // Redirige directamente a la vista dedicada de pago
+                    window.location.href = `cobrar-cita.php?id=${idCita}`;
                 } else if (target.classList.contains("btn-cancelar")) {
                     cambiarEstado(idCita, "Cancelada", recargarTabla);
                 }
@@ -172,7 +172,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!respuesta.ok) throw new Error("Error en la respuesta del servidor");
 
             const datosCitas = await respuesta.json();
-            console.log("Respuesta obtenida del DAO:", datosCitas);
 
             if (datosCitas.estado && Array.isArray(datosCitas.citas)) {
                 await tabla.setData(datosCitas.citas);
@@ -290,15 +289,15 @@ async function verDetalle(id) {
 }
 
 function cambiarEstado(id, estado, recargar) {
-    const completar = estado === "Completada";
+    const cancelar = estado === "Cancelada";
 
     Swal.fire({
-        title: completar ? "¿Marcar como completada?" : "¿Cancelar la cita?",
+        title: "¿Cancelar la cita?",
         icon: "question",
         showCancelButton: true,
-        confirmButtonColor: completar ? "#198754" : "#d33",
+        confirmButtonColor: "#d33",
         cancelButtonColor: "#3085d6",
-        confirmButtonText: "Sí",
+        confirmButtonText: "Sí, cancelar",
         cancelButtonText: "Volver"
     }).then(async (result) => {
         if (result.isConfirmed) {

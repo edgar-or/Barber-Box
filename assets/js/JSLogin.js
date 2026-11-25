@@ -1,12 +1,14 @@
 function validarCampo(campo) {
+    if (!campo) return false;
+
     let vacio = false;
     if (campo.tagName === "SELECT") {
         vacio = campo.value === "" || campo.value === "0";
     } else {
         vacio = campo.value.trim() === "";
     }
-    
-    const valido = !vacio && campo.checkValidity(); 
+
+    const valido = !vacio && campo.checkValidity();
     campo.classList.toggle("is-invalid", !valido);
     campo.classList.toggle("is-valid", valido);
 
@@ -14,11 +16,17 @@ function validarCampo(campo) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 2. Obtención de elementos DENTRO de la carga de la página
     const formLogin = document.getElementById("form-login");
     const btnLogin = document.getElementById("btn-login");
     const txtUsuario = document.getElementById("usuario");
     const txtClave = document.getElementById("clave");
+
+    function restaurarBotonLogin() {
+        if (btnLogin) {
+            btnLogin.disabled = false;
+            btnLogin.textContent = "Iniciar Sesión";
+        }
+    }
 
     function limpiarCredenciales() {
         if (formLogin) {
@@ -35,23 +43,25 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mostrar / ocultar contraseña
     const btnTogglePassword = document.getElementById("toggle-password");
     if (btnTogglePassword && txtClave) {
-        btnTogglePassword.addEventListener("click", function (e) {
+        btnTogglePassword.addEventListener("click", (e) => {
             e.preventDefault();
             const mostrar = txtClave.type === "password";
             txtClave.type = mostrar ? "text" : "password";
 
-            const icono = this.querySelector("i");
+            const icono = btnTogglePassword.querySelector("i");
             if (icono) {
                 icono.classList.toggle("bi-eye", !mostrar);
                 icono.classList.toggle("bi-eye-slash", mostrar);
             }
-            this.setAttribute("aria-label", mostrar ? "Ocultar contraseña" : "Mostrar contraseña");
+            btnTogglePassword.setAttribute(
+                "aria-label",
+                mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
+            );
             txtClave.focus();
         });
     }
 
     if (formLogin) {
-        // Limpiar credenciales al entrar y al navegar con el historial (botón Atrás)
         limpiarCredenciales();
         setTimeout(limpiarCredenciales, 50);
         window.addEventListener("pageshow", () => {
@@ -59,16 +69,11 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(limpiarCredenciales, 50);
         });
 
-        // Arreglo de campos
         const campos = [txtUsuario, txtClave];
 
-        // 3. Tu lógica de eventos individual (blur/input)
         campos.forEach((campo) => {
             if (campo) {
-                // Validar cuando el usuario sale del input (blur)
                 campo.addEventListener("blur", () => validarCampo(campo));
-
-                // Quitar clase de error mientras escribe (input)
                 campo.addEventListener("input", () => {
                     if (campo.value.trim() !== "") {
                         campo.classList.remove("is-invalid");
@@ -81,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
 
             const camposValidos = campos.map(validarCampo).every(Boolean);
-
             if (!camposValidos) {
                 Swal.fire({
                     icon: "warning",
@@ -95,8 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const datos = new FormData(formLogin);
                 datos.append("opcion", "iniciar_sesion");
 
-                btnLogin.disabled = true;
-                btnLogin.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Validando...`;
+                if (btnLogin) {
+                    btnLogin.disabled = true;
+                    btnLogin.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Validando...`;
+                }
 
                 const respuesta = await fetch("/barberBox/DAO/DAOLogin.php", {
                     method: "POST",
@@ -126,10 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         title: "Error de Autenticación",
                         text: resultado.mensaje
                     });
-                    btnLogin.disabled = false;
-                    btnLogin.textContent = "Iniciar Sesión";
+                    restaurarBotonLogin();
                 }
-
             } catch (error) {
                 console.error("Error en la petición de login:", error);
                 Swal.fire({
@@ -137,8 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     title: "Error de Conexión",
                     text: "No se pudo conectar con el servidor."
                 });
-                btnLogin.disabled = false;
-                btnLogin.textContent = "Iniciar Sesión";
+                restaurarBotonLogin();
             }
         });
     }
@@ -147,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (btnCerrarSesion) {
         btnCerrarSesion.addEventListener("click", (e) => {
-            e.preventDefault(); // Evitar navegación predeterminada
+            e.preventDefault();
 
             Swal.fire({
                 title: "¿Desea cerrar sesión?",
@@ -172,14 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         const resultado = await respuesta.json();
 
                         if (resultado.estado) {
-                            // Redireccionar al login tras destruir la sesión
                             window.location.href = resultado.redirect;
                         } else {
                             Swal.fire("Error", "No se pudo cerrar la sesión.", "error");
                         }
                     } catch (error) {
                         console.error("Error al cerrar sesión:", error);
-                        // Redirección forzada de respaldo
                         window.location.href = "/barberBox/page-login.php";
                     }
                 }
