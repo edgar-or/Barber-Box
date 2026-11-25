@@ -1643,3 +1643,163 @@ body.pagina-citas .main-wrapper > .container {
   color: #8a6a70 !important;
   opacity: 1;
 }
+/* =====================================================================
+   ARREGLO VISUAL DE TABULATOR: PAGINACIÓN Y BUSCADOR
+   ===================================================================== */
+
+/* 1. Color del texto "Registros por página" y botones de paginación */
+.tabulator .tabulator-footer,
+.tabulator .tabulator-footer .tabulator-page,
+.tabulator .tabulator-footer .tabulator-page-size,
+.tabulator .tabulator-footer .tabulator-page-counter {
+    color: #cfcfcf !important; /* Gris claro legible */
+}
+
+/* 2. El select de "10" (cantidad de registros) */
+.tabulator .tabulator-footer .tabulator-page-size {
+    background-color: #1c1c1c !important;
+    border: 1px solid var(--barber-border) !important;
+    color: #ffffff !important;
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+/* 3. Los botones de paginación (Primera, Anterior, 1, Siguiente, Última) */
+.tabulator .tabulator-footer .tabulator-page {
+    background-color: #1c1c1c !important;
+    border: 1px solid var(--barber-border) !important;
+    color: #cfcfcf !important;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+/* Hover (cuando pasas el mouse por los botones) */
+.tabulator .tabulator-footer .tabulator-page:not(.disabled):hover {
+    background-color: #262626 !important;
+    border-color: var(--barber-red) !important;
+    color: #ffffff !important;
+}
+
+/* El botón de la página actual (Activa) */
+.tabulator .tabulator-footer .tabulator-page.active {
+    background-color: var(--barber-red) !important;
+    border-color: var(--barber-red) !important;
+    color: #ffffff !important;
+}
+
+/* Los botones deshabilitados (cuando no hay más páginas) */
+.tabulator .tabulator-footer .tabulator-page.disabled {
+    opacity: 0.4 !important;
+    color: #666 !important;
+}
+
+/* =====================================================================
+   ARREGLO VISUAL: BUSCADOR (TABLA DE EMPLEADOS)
+   ===================================================================== */
+
+/* Quitar el fondo gris raro del contenedor del buscador */
+#tablaEmpleados .table-search-box,
+.table-search-box {
+    background-color: transparent !important;
+    padding: 0 !important; /* Quitamos el padding forzado que lo hacía ver raro */
+}
+
+/* Estilo unificado para el input del buscador */
+.table-search-input {
+    background-color: #0f0f0f !important; /* Fondo oscuro */
+    border: 1px solid var(--barber-border) !important; /* Borde sutil */
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    padding: 8px 15px 8px 40px !important; /* Espacio para el ícono de la lupa */
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+/* Cuando haces clic en el buscador */
+.table-search-input:focus {
+    border-color: var(--barber-red) !important;
+    box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.2) !important;
+    outline: none;
+}
+
+/* El texto del placeholder (Buscar empleados...) */
+.table-search-input::placeholder {
+    color: #888 !important;
+}
+
+/* El ícono de la lupa */
+.table-search-icon {
+    color: #888 !important;
+    left: 15px !important; /* Lo movemos un poquito a la derecha */
+    top: 50%;
+    transform: translateY(-50%);
+}
+/* =====================================================================
+   FUERZA BRUTA TOTAL: PAGINACIÓN DE TABULATOR OSCURA
+   ===================================================================== */
+
+/* 1. El contenedor del pie de página */
+.tabulator .tabulator-footer {
+    background-color: transparent !important;
+    border-top: 1px solid #2d323e !important;
+    padding: 10px !important;
+}
+
+/* 2. Textos "Registros por página" */
+.tabulator .tabulator-footer .tabulator-page-counter,
+.tabulator .tabulator-footer .tabulator-page-size,
+.tabulator .tabulator-footer .tabulator-page {
+    color: #cfcfcf !important; /* Gris muy claro */
+    text-shadow: none !important;
+}
+
+/* 3. El input/select de "10" */
+.tabulator .tabulator-footer select,
+.tabulator .tabulator-footer .tabulator-page-size {
+    background-color: #1c1c1c !important;
+    color: #ffffff !important;
+    border: 1px solid #2d323e !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+}
+
+.tabulator .tabulator-footer select option {
+    background-color: #1c1c1c !important;
+    color: #ffffff !important;
+}
+
+/* 4. Los botones de paginación (Primera, Anterior, etc.) */
+.tabulator .tabulator-footer .tabulator-paginator button,
+.tabulator .tabulator-footer .tabulator-paginator .tabulator-page {
+    background-color: #1c1c1c !important;
+    color: #cfcfcf !important;
+    border: 1px solid #2d323e !important;
+    border-radius: 4px !important;
+    margin: 0 2px !important;
+    padding: 4px 8px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+}
+
+/* 5. Hover de los botones */
+.tabulator .tabulator-footer .tabulator-paginator button:hover,
+.tabulator .tabulator-footer .tabulator-paginator .tabulator-page:hover {
+    background-color: #d90429 !important;
+    color: #ffffff !important;
+    border-color: #d90429 !important;
+}
+
+/* 6. Botón activo */
+.tabulator .tabulator-footer .tabulator-paginator .tabulator-page.active {
+    background-color: #d90429 !important;
+    color: #ffffff !important;
+    border-color: #d90429 !important;
+}
+
+/* 7. Botón deshabilitado */
+.tabulator .tabulator-footer .tabulator-paginator .tabulator-page.disabled {
+    background-color: #121212 !important;
+    color: #555 !important;
+    border-color: #222 !important;
+}

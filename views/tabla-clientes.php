@@ -54,7 +54,7 @@ $currentPage = 'clientes';
   </div>
 
     <link rel="stylesheet" href="../assets/css/tablas.css">
-<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=7">
+<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=">
   <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
   <script src="../assets/libs/flatpickr/flatpickr.min.js"></script>
