@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!contenedor) return;
 
-    // 1. Inicializar la tabla PRIMERO (con arreglo vacío)
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
         langs: {
@@ -112,11 +111,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         ]
     });
 
+<<<<<<< HEAD
     window.addEventListener("resize", () => {
         tabla.redraw(true);
     });
 
     // 2. Hacer la petición FETCH
+=======
+>>>>>>> 212cba2ab1299b978631ec5898b37682da913085
     try {
         const formData = new FormData();
         formData.append("opcion", "consultar");
@@ -144,7 +146,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error al cargar empleados:", error);
     }
 
-    // 3. Filtro en tiempo real si existe el input
     if (filtro) {
         filtro.addEventListener("keyup", function () {
             tabla.setFilter([
@@ -157,7 +158,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Declaración de funciones fuera del DOMContentLoaded para evitar ReferenceError
 function editarEmpleado(id) {
     window.location.href = "/barberBox/views/form-registrar-empleados.php?id=" + id;
 }
@@ -221,4 +221,26 @@ function eliminarEmpleado(id, tabla) {
             }
         }
     });
+<<<<<<< HEAD
 }
+=======
+
+}
+    const tabla = new Tabulator(contenedor, {
+        locale: "es-es",
+        langs: {},
+        data: [], 
+        layout: "fitColumns",
+        responsiveLayout: "hide",
+        pagination: true,
+        paginationElement: paginacion,
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50, 100],
+        movableColumns: true,
+        
+        theme: "midnight", 
+
+        columns: [
+        ]
+    });
+>>>>>>> 212cba2ab1299b978631ec5898b37682da913085

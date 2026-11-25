@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!contenedor) return;
 
-    // 1. Inicializar la tabla PRIMERO (con arreglo vacío)
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
         langs: {
@@ -112,12 +111,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         ]
     });
 
+<<<<<<< HEAD
     // [MODIFICADO] Recalcula anchos al cambiar el tamaño o girar la pantalla
     window.addEventListener("resize", () => {
         tabla.redraw(true);
     });
 
     // 2. Cargar registros con Swal de carga (patrón POSEIDÓN)
+=======
+>>>>>>> 212cba2ab1299b978631ec5898b37682da913085
     function actualizarContador() {
         const total = tabla.getDataCount("active");
         if (contador) contador.textContent = total;
@@ -163,7 +165,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         contenedor.textContent = "No se pudieron cargar los registros.";
     }
 
-    // 3. Filtro en tiempo real (input, como POSEIDÓN)
     if (filtro) {
         filtro.addEventListener("input", () => {
             const valor = filtro.value.trim();
@@ -184,7 +185,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Declaración de funciones fuera del DOMContentLoaded para evitar ReferenceError
 function editarCliente(id) {
     window.location.href = "form-registrar-cliente.php?id=" + id;
 }
@@ -227,7 +227,6 @@ function eliminarCliente(id, tabla, contador) {
                         timer: 1500
                     });
 
-                    // Eliminar la fila de la tabla sin recargar (patrón Barber-Box)
                     if (tabla) {
                         const fila = tabla.getRows().find(row => row.getData().id_cliente == id);
                         if (fila) fila.delete();
