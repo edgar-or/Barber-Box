@@ -13,7 +13,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     document.getElementById("id_empleado").value = idEmpleado;
-    document.getElementById("tituloEmpleado").innerText = `Horarios del Empleado #${idEmpleado}`;
+
+    // ✅ NUEVO: Consultar el nombre del empleado para el título
+    try {
+        const infoEmpleado = new FormData();
+        infoEmpleado.append("opcion", "consultarIndividual");
+        infoEmpleado.append("idempleado", idEmpleado);
+
+        const resEmpleado = await fetch("../DAO/DAOEmpleado.php", { method: "POST", body: infoEmpleado });
+        const datosEmpleado = await resEmpleado.json();
+
+        if (datosEmpleado.estado) {
+            document.getElementById("tituloEmpleado").innerText = `Horarios de ${datosEmpleado.datos.nombre} ${datosEmpleado.datos.apellido}`;
+        } else {
+            document.getElementById("tituloEmpleado").innerText = `Horarios del Empleado #${idEmpleado}`;
+        }
+    } catch (error) {
+        console.error("Error al obtener nombre:", error);
+        document.getElementById("tituloEmpleado").innerText = `Horarios del Empleado #${idEmpleado}`;
+    }
 
     // --- CARGAR LA TABLA ---
     async function cargarHorarios() {
@@ -121,28 +139,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                 resultado = JSON.parse(texto);
             } catch (e) {
                 console.error("El servidor no devolvió un JSON válido:", texto);
-
                 Swal.fire("Error del Servidor", "Revisa la consola (F12) para ver qué falló en el PHP.", "error");
                 return;
-
-                Swal.fire("Error del Servidor", "Ocurrio un error", "error");
-                return; 
             }
 
             if (resultado.estado) {
+                // ✅ MENSAJE CORREGIDO: Ventana en el centro, botón OK azul
                 Swal.fire({
-                    position: "top-end",
                     icon: "success",
-                    title: "Éxito",
-                    text: resultado.mensaje,
-                    showConfirmButton: false,
-                    timer: 1500
+                    title: "Barber-Box",
+                    text: resultado.mensaje
+                }).then(() => {
+                    limpiarCampos();
+                    bootstrap.Modal.getInstance(modalElement).hide();
+                    cargarHorarios();
                 });
-
-                // Se limpian los campos para que el turno ya guardado no vuelva a enviarse
-                limpiarCampos();
-                bootstrap.Modal.getInstance(modalElement).hide();
-                cargarHorarios();
             } else {
                 Swal.fire("Error", resultado.mensaje, "error");
             }
@@ -160,7 +171,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("comboDia").value = dia;
         document.getElementById("comboDia").disabled = true;
 
-        
         ["entrada1", "salida1", "entrada2", "salida2"].forEach(id => {
             const el = document.getElementById(id);
             el.value = "";

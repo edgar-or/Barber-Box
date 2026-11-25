@@ -1,171 +1,162 @@
 /* ==========================================
-   DISEÑO PREMIUM OSCURO - BARBERÍA
+   ESTILOS DEL MODAL (Mejorados para resaltar)
    ========================================== */
 
-/* 1. El fondo de la página: Un gris muy oscuro (no negro puro) */
-body, .main-wrapper {
-    background-color: #0f1115 !important; /* Azul/Gris muy oscuro */
-}
-
-/* Título principal */
-#tituloEmpleado {
-    color: #f8f9fa !important;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-}
-
-/* 2. El contenedor de la tabla (Un gris un poco más claro para que resalte) */
-.card {
-    background-color: #1a1d24 !important;
-    border: 1px solid #2d323e !important;
-    border-radius: 16px !important;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important;
-}
-
-/* 3. La tabla */
-.table {
-    --bs-table-bg: #1a1d24 !important;
-    --bs-table-color: #e2e8f0 !important;
-    --bs-table-border-color: #2d323e !important;
-    margin-bottom: 0;
-}
-
-/* Cabecera de la tabla */
-.table thead.table-light th {
-    background-color: #14171e !important;
-    color: #94a3b8 !important;
-    border-bottom: 2px solid #d90429 !important; /* Tu línea roja */
-    border-top: none !important;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-}
-
-/* Filas de la tabla */
-.table tbody tr td {
-    background-color: #1a1d24 !important;
-    color: #f8f9fa !important;
-    border-color: #2d323e !important;
-    padding: 1rem;
-}
-
-.table tbody tr:hover td {
-    background-color: #232731 !important; /* Color más claro al pasar el mouse */
-}
-
-/* 4. Botón "Volver a Empleados" */
-.btn-custom-outline-danger {
-    border: 1px solid #d90429 !important;
-    color: #d90429 !important;
-    background-color: transparent !important;
-    border-radius: 8px;
-}
-.btn-custom-outline-danger:hover {
-    background-color: #d90429 !important;
-    color: #ffffff !important;
-}
-
-/* 5. Botones de acción (Lápiz y Basura) */
-.table .btn-outline-primary {
-    color: #38bdf8 !important;
-    border-color: #38bdf8 !important;
-}
-.table .btn-outline-primary:hover {
-    background-color: #38bdf8 !important;
-    color: #0f1115 !important;
-}
-.table .btn-outline-danger {
-    color: #ef4444 !important;
-    border-color: #ef4444 !important;
-}
-.table .btn-outline-danger:hover {
-    background-color: #ef4444 !important;
-    color: #ffffff !important;
-}
-
-/* ==========================================
-   ESTILOS DEL MODAL (Asignar Horario)
-   ========================================== */
-
-/* Fondo oscuro con un sutil borde y sombra */
+/* Fondo del modal */
 .modal-content {
-    background-color: #1a1d24 !important;
+    background-color: #161a22 !important; /* Un tono más claro que el fondo de la página */
     border: 1px solid #2d323e !important;
     border-radius: 16px !important;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6) !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8) !important;
 }
 
-/* Cabecera del modal (Rojo barbería) */
+/* Las tarjetas internas (Turno Mañana / Tarde) */
+.modal-body .bg-light {
+    background-color: #1e232d !important; /* Fondo más claro para que resalte */
+    border: 1px solid #3b4252 !important; /* Borde más visible */
+    border-radius: 12px !important;
+}
+
+/* Inputs (Hora de entrada/salida) - Que resalten más */
+.modal-body select, 
+.modal-body input[type="time"] {
+    background-color: #0f1115 !important; /* Fondo oscuro para adentro del input */
+    color: #ffffff !important; /* Letras totalmente blancas */
+    border: 2px solid #3b4252 !important; /* Borde más grueso y claro */
+    border-radius: 8px !important;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+}
+
+/* Cuando haces clic en el input */
+.modal-body select:focus, 
+.modal-body input[type="time"]:focus {
+    border-color: #d90429 !important;
+    box-shadow: 0 0 0 0.25rem rgba(217, 4, 41, 0.3) !important;
+    outline: none;
+}
+/* ==========================================
+   MODAL DE HORARIOS - DISEÑO CON ELEVACIÓN
+   ========================================== */
+
+/* Fondo general del modal */
+.modal-content {
+    background-color: #161a22 !important;
+    border: 1px solid #2d323e !important;
+    border-radius: 16px !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8) !important;
+}
+
 .modal-header {
-    background-color: #d90429 !important;
+    background: linear-gradient(135deg, #d90429, #ef233c) !important;
     color: #ffffff !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
     border-bottom: none !important;
 }
 
-.modal-header .btn-close {
-    filter: invert(1) brightness(200%); /* Hace blanca la X de cerrar */
+/* Las tarjetas de los turnos (Elevación) */
+.turno-card {
+    background-color: #1e232d !important;
+    border: 1px solid #3b4252 !important;
+    border-radius: 12px !important;
+    transition: transform 0.2s ease;
+}
+.turno-manana:hover {
+    border-color: #fbbf24 !important;
+}
+.turno-tarde:hover {
+    border-color: #38bdf8 !important;
 }
 
-/* Cuerpo del Modal */
-.modal-body {
-    padding: 1.5rem !important;
+/* Inputs (Relojes y Select) */
+.modal-content .form-control, 
+.modal-content .form-select {
+    background-color: #0f1115 !important;
+    color: #ffffff !important;
+    border: 2px solid #3b4252 !important;
+    border-radius: 8px !important;
+    font-weight: 600;
+    font-size: 1.1rem;
 }
 
-.modal-body label {
+.modal-content .form-control:focus, 
+.modal-content .form-select:focus {
+    border-color: #d90429 !important;
+    box-shadow: 0 0 0 4px rgba(217, 4, 41, 0.25) !important;
+}
+
+/* El sufijo AM/PM al lado de la hora */
+.modal-content .input-group-text {
+    background-color: #232731 !important;
+    color: #e2e8f0 !important;
+    border: 2px solid #3b4252 !important;
+    border-left: none !important;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* Etiquetas de los inputs */
+.modal-content label {
     color: #94a3b8 !important;
     font-weight: 600;
-    font-size: 0.85rem;
-    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
 }
 
-/* Selects e Inputs (Fondo más oscuro que el modal para crear contraste) */
-.modal-body select, 
-.modal-body input[type="time"] {
-    background-color: #14171e !important;
-    color: #f8f9fa !important;
-    border: 1px solid #2d323e !important;
-    border-radius: 8px !important;
-    padding: 0.6rem 1rem;
-}
-
-.modal-body select:focus, 
-.modal-body input[type="time"]:focus {
-    border-color: #d90429 !important;
-    box-shadow: 0 0 0 0.25rem rgba(217, 4, 41, 0.25) !important;
-    outline: none;
-}
-
-/* Las tarjetas internas del modal (Turno Mañana / Tarde) */
-.modal-body .bg-light {
-    background-color: #14171e !important; /* Quitamos el fondo claro por defecto */
-    border: 1px solid #2d323e !important;
-    border-radius: 12px !important;
-}
-
-/* El botón de AM/PM al lado de los relojes */
-.input-group-text {
-    background-color: #232731 !important;
-    color: #f8f9fa !important;
-    border: 1px solid #2d323e !important;
-    font-weight: 600;
-}
-
-/* Footer del modal (Botones) */
+/* Footer del modal */
 .modal-footer {
-    background-color: #14171e !important;
+    background-color: #0f1115 !important;
     border-top: 1px solid #2d323e !important;
     border-bottom-left-radius: 16px !important;
     border-bottom-right-radius: 16px !important;
 }
 
-/* El botón de "Guardar" en rojo */
+/* Botón guardar */
 .modal-footer .btn-danger {
-    background-color: #d90429 !important;
-    border-color: #d90429 !important;
+    background: linear-gradient(135deg, #d90429, #ef233c) !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(217, 4, 41, 0.4) !important;
+    font-weight: 700;
+    padding: 0.5rem 1.5rem;
 }
-.modal-footer .btn-danger:hover {
-    background-color: #ef233c !important;
-    border-color: #ef233c !important;
+/* Cabecera del modal (Azul elegante) */
+.modal-header {
+    /* Degradado de azul oscuro a un azul un poco más claro */
+    background: linear-gradient(135deg, #023e8a, #0077b6) !important;
+    color: #ffffff !important; /* Letras blancas */
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    border-bottom: none !important;
+}
+
+/* La X de cerrar en blanco para que resalte en el azul */
+.modal-header .btn-close {
+    filter: invert(1) brightness(200%);
+}
+/* ==========================================
+   FORZAR TEXTO BLANCO EN LA CABECERA DEL MODAL
+   ========================================== */
+
+/* 1. El título "Asignar Horario" en blanco puro y con buena letra */
+.modal-header .modal-title {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Sombra sutil para que resalte más */
+}
+
+/* 2. La "X" de cerrar en blanco (quitando cualquier filtro previo) */
+.modal-header .btn-close {
+    filter: invert(1) brightness(200%) !important; /* Vuelve la X blanca */
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1; /* Se ilumina un poco al pasar el mouse */
+}
+
+/* 3. Asegurarnos de que cualquier texto dentro del header sea blanco */
+.modal-header * {
+    color: #ffffff !important;
 }

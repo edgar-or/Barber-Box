@@ -131,6 +131,8 @@ requerirEmpleadoPagina();
     <link rel="stylesheet" href="../assets/css/tema-barberbox.css">
     <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../assets/js/JSHorariosEmpleado.js?v=18"></script> 
+    <script src="../assets/js/JSHorariosEmpleado.js?v=20"></script> 
+        <link rel="stylesheet" href="../assets/css/horarios.css?v=99">
+
 </body>
 </html>
