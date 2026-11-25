@@ -15,36 +15,37 @@ $currentPage = 'servicios';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Servicios</title>
 
-    <!-- SEO Optimization -->
     <meta name="description" content="Login Screen - Spark Admin Premium Bootstrap 5 Admin Dashboard Template">
     <meta name="author" content="Spark Admin Team">
 
     <link rel="icon" type="image/png" href="/barberBox/assets/images/favicon.ico">
 
-    <!-- Local Third-Party Libraries (100% Offline Compatible) -->
+    <!-- Local Third-Party Libraries -->
     <link rel="stylesheet" href="/barberBox/assets/libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/barberBox/assets/libs/bootstrap-icons/bootstrap-icons.css">
 
     <!-- Main Design System & Custom Stylesheet -->
     <link rel="stylesheet" href="/barberBox/assets/css/main.css">
+    
+    <!-- ✅ Tema Barbería (Solo una vez y con ruta corregida) -->
+    <link rel="stylesheet" href="/barberBox/assets/css/tema-barberbox.css?v=41"> 
+
 </head>
 
-<body>
+<body class="pagina-servicios">
     <?php include './menu/menuLateral.php'; ?>
     <?php include './menu/menu-header.php'; ?>
 
     <div class="login-wrapper">
 
-        <!-- Glowing background shapes for modern visual appearance -->
+        <!-- Glowing background shapes -->
         <div class="login-bg-shape login-bg-shape-1"></div>
         <div class="login-bg-shape login-bg-shape-2"></div>
 
-        <!-- Contenedor Bootstrap: centra y limita el ancho. position-relative lo deja sobre las formas de fondo -->
         <div class="container w-100 position-relative py-4">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-7 col-xl-6">
 
-                    <!-- Brand Identity -->
                     <div class="text-center mb-3">
                         <a href="../index.php" class="login-brand text-decoration-none">
                             <i class="bi bi-asterisk"></i>
@@ -54,12 +55,11 @@ $currentPage = 'servicios';
 
                     <p class="login-subtitle text-center mb-4">Por favor, complete los datos</p>
 
-                    <!-- IMPORTANTE: enctype añadido para permitir subida de archivos múltiples -->
                     <form action="" method="POST" id="formRegistrarServicio" name="formRegistrarServicio" enctype="multipart/form-data">
 
                         <div class="login-card w-100 mw-100 m-0">
 
-                            <h2 class="h5 mb-4 text-white"><i class="bi bi-person me-2"></i>Datos De Servicio</h2>
+                            <h2 class="h5 mb-4 text-white"><i class="bi bi-scissors me-2"></i>Datos Del Servicio</h2>
 
                             <div class="login-form-group">
                                 <label for="nombre" class="login-form-label">Nombre</label>
@@ -96,7 +96,6 @@ $currentPage = 'servicios';
                                 </div>
                             </div>
 
-                            <!-- MÚLTIPLES IMÁGENES -->
                             <div class="login-form-group">
                                 <label for="imagenes_servicio" class="login-form-label">Galería de Imágenes del Servicio</label>
                                 <div class="login-input-group">
@@ -106,11 +105,12 @@ $currentPage = 'servicios';
                                 <div class="form-text text-muted mt-1" style="font-size: 0.8rem;">Puedes seleccionar varias imágenes a la vez.</div>
                             </div>
 
-                            <!-- Contenedor para vista previa múltiple -->
                             <div id="preview-galeria" class="d-flex flex-wrap gap-2 mb-3 justify-content-center"></div>
 
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary" id="btnRegistrar" name="btnRegistrar">Registrar Servicio</button>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-danger" id="btnRegistrar" name="btnRegistrar">
+                                    <i class="bi bi-save me-1"></i> Registrar Servicio
+                                </button>
                             </div>
 
                         </div>
@@ -123,23 +123,14 @@ $currentPage = 'servicios';
 
     </div>
 
-    <!-- Local Bootstrap bundle -->
+    <!-- Scripts -->
     <script src="/barberBox/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/barberBox/assets/js/JSRegistrarServicios.js"></script>
-
-    <!-- Local Third-Party Libraries Script dependencies -->
     <script src="/barberBox/assets/libs/apexcharts/apexcharts.min.js"></script>
     <script src="/barberBox/assets/libs/flatpickr/flatpickr.min.js"></script>
-
-    <!-- Local dashboard interactions controller -->
     <script src="/barberBox/assets/js/dashboard.js"></script>
-
-    <!-- Custom Authentication interactions script -->
     <script src="/barberBox/assets/js/auth.js"></script>
-<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=4">
-    <!-- Script para vista previa de múltiples imágenes -->
-  
-</body>
 
+</body>
 </html>

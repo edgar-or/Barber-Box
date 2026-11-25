@@ -18,7 +18,7 @@ $currentPage = 'cliente-panel';
   <link rel="stylesheet" href="../assets/css/panel.css">
 </head>
 
-<body>
+<body class="pagina-citas">
   <?php include './menu/menuLateral.php'; ?>
   <?php include './menu/menu-header.php'; ?>
 
@@ -128,6 +128,7 @@ $currentPage = 'cliente-panel';
       </div>
     </div>
   </div>
+<link rel="stylesheet" href="../assets/css/tema-barberbox.css?v=44">
 
   <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>

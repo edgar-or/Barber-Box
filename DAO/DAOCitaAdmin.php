@@ -521,6 +521,7 @@ function clienteExiste($conexion, $id_cliente)
 }
 
 // Horas de inicio disponibles ("HH:MM") para un barbero, fecha y duración
+// Horas de inicio disponibles ("HH:MM") para un barbero, fecha y duración
 function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $excluir_cita)
 {
     $partes = explode('-', $fecha);
@@ -532,26 +533,25 @@ function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $exc
     $dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
     $dia_buscado = $dias[date('N', strtotime($fecha)) - 1];
 
-    // Horario del barbero para ese día de la semana
+    // 1. Traemos TODOS los horarios del barbero
     $sql = "SELECT dia_semana, hora_entrada, hora_salida FROM horario_empleado WHERE id_empleado = ?";
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $id_empleado);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
-    $horario = null;
+    $turnosDelDia = [];
 
     while ($fila = $resultado->fetch_assoc()) {
         $dia = strtolower(strtr(trim($fila['dia_semana']), ['á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u']));
 
         if ($dia == $dia_buscado) {
-            $horario = $fila;
-            break;
+            $turnosDelDia[] = $fila; // Guardamos TODOS los turnos (mañana y tarde)
         }
     }
     $stmt->close();
 
-    if (!$horario) {
+    if (empty($turnosDelDia)) {
         return [];
     }
 
@@ -574,32 +574,38 @@ function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $exc
     }
     $stmt->close();
 
-    // Se recorre el horario de 30 en 30 minutos descartando horas pasadas u ocupadas
     $horas  = [];
     $ahora  = time();
-    $cursor = strtotime($fecha . " " . $horario['hora_entrada']);
-    $salida = strtotime($fecha . " " . $horario['hora_salida']);
 
-    while ($cursor + $duracion * 60 <= $salida) {
-        $fin = $cursor + $duracion * 60;
+    // 2. Recorremos CADA turno (mañana y tarde)
+    foreach ($turnosDelDia as $horario) {
+        $cursor = strtotime($fecha . " " . $horario['hora_entrada']);
+        $salida = strtotime($fecha . " " . $horario['hora_salida']);
 
-        if ($cursor > $ahora) {
-            $libre = true;
+        while ($cursor + $duracion * 60 <= $salida) {
+            $fin = $cursor + $duracion * 60;
 
-            foreach ($ocupadas as $o) {
-                if (strtotime($o['fecha_hora_inicio']) < $fin && strtotime($o['fecha_hora_fin']) > $cursor) {
-                    $libre = false;
-                    break;
+            if ($cursor > $ahora) {
+                $libre = true;
+
+                foreach ($ocupadas as $o) {
+                    if (strtotime($o['fecha_hora_inicio']) < $fin && strtotime($o['fecha_hora_fin']) > $cursor) {
+                        $libre = false;
+                        break;
+                    }
+                }
+
+                if ($libre) {
+                    $horas[] = date('H:i', $cursor);
                 }
             }
 
-            if ($libre) {
-                $horas[] = date('H:i', $cursor);
-            }
+            $cursor += PASO_MINUTOS * 60; 
         }
-
-        $cursor += PASO_MINUTOS * 60;
     }
 
-    return $horas;
+    $horas = array_unique($horas);
+    sort($horas);
+
+    return array_values($horas);
 }

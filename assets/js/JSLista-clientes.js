@@ -184,7 +184,7 @@ function editarCliente(id) {
 
 function eliminarCliente(id, tabla, contador) {
     Swal.fire({
-        title: "Poseidón",
+        title: "Barber-Box",
         text: "¿Confirmar eliminación de este cliente?",
         icon: "warning",
         showCancelButton: true,
@@ -214,7 +214,7 @@ function eliminarCliente(id, tabla, contador) {
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
-                        title: "Poseidón",
+                        title: "Barber-Box",
                         text: resultado.mensaje,
                         showConfirmButton: false,
                         timer: 1500
@@ -234,7 +234,7 @@ function eliminarCliente(id, tabla, contador) {
                     Swal.fire({
                         position: "top-end",
                         icon: "error",
-                        title: "Poseidón",
+                        title: "Barber-Box",
                         text: resultado.mensaje,
                         showConfirmButton: false,
                         timer: 1500
@@ -244,7 +244,7 @@ function eliminarCliente(id, tabla, contador) {
                 console.error(error);
                 Swal.fire({
                     icon: "error",
-                    title: "Poseidón",
+                    title: "Barber-Box",
                     text: "Error al conectar con el servidor."
                 });
             }
