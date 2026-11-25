@@ -27,7 +27,6 @@ $currentPage = 'servicios';
     <!-- Main Design System & Custom Stylesheet -->
     <link rel="stylesheet" href="/barberBox/assets/css/main.css">
     
-    <!-- ✅ Tema Barbería (Solo una vez y con ruta corregida) -->
     <link rel="stylesheet" href="/barberBox/assets/css/tema-barberbox.css?v=41"> 
 
 </head>
