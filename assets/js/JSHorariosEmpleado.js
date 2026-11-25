@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById("id_empleado").value = idEmpleado;
 
-    // ✅ NUEVO: Consultar el nombre del empleado para el título
     try {
         const infoEmpleado = new FormData();
         infoEmpleado.append("opcion", "consultarIndividual");
@@ -144,7 +143,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             if (resultado.estado) {
-                // ✅ MENSAJE CORREGIDO: Ventana en el centro, botón OK azul
                 Swal.fire({
                     icon: "success",
                     title: "Barber-Box",

@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!contenedor) return;
 
-    // 1. Columnas (el barbero solo se muestra al administrador)
     const columnas = [
         {
             title: "Fecha",
@@ -90,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
                 const deHoyEnAdelante = row.fecha_hora_inicio.split(" ")[0] >= hoyStr;
 
-                // Solo el barbero modifica servicios, y solo en citas pendientes de hoy en adelante
+                
                 const puedeModificar = pendiente && deHoyEnAdelante && !esAdmin;
 
                 return `
@@ -133,7 +132,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     );
 
-    // 2. Inicializar la tabla PRIMERO (con arreglo vacío)
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
         langs: {
@@ -173,7 +171,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         columns: columnas
     });
 
-    // 3. Hacer la petición FETCH a DAOCitas.php y cargar con setData()
     async function cargarCitas() {
         try {
             const formData = new FormData();
@@ -201,13 +198,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Recarga los datos y vuelve a aplicar los filtros activos
     async function recargarTabla() {
         await cargarCitas();
         aplicarFiltros();
     }
 
-    // 4. Filtros en tiempo real (texto + estado)
     function aplicarFiltros() {
         const texto = filtro ? filtro.value.trim().toLowerCase() : "";
         const estado = filtroEstado ? filtroEstado.value : "";
@@ -231,7 +226,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await cargarCitas();
 });
 
-// Declaración de funciones fuera del DOMContentLoaded para evitar ReferenceError
 const claseEstado = { Pendiente: "pending", Completada: "success", Cancelada: "failed" };
 
 function esc(texto) {
@@ -353,13 +347,12 @@ function cambiarEstado(id, estado, recargar) {
     });
 }
 
-// ================== MODIFICAR SERVICIOS DE UNA CITA (solo barbero) ==================
+// ================== MODIFICAR SERVICIOS DE UNA CITA ==================
 let catalogoServicios = [];
 let citaModificando = null;
 let recargarAlGuardar = null;
 let tokenVerificacion = 0;
 
-// Crea el modal una sola vez (no hace falta tocar tabla-citas.php)
 function asegurarModalModificar() {
     if (document.getElementById("modalModificar")) return;
 
@@ -387,7 +380,6 @@ function asegurarModalModificar() {
 
     document.body.insertAdjacentHTML("beforeend", html);
 
-    // Cada vez que se marca o desmarca un servicio se vuelve a verificar la disponibilidad
     document.getElementById("modificarServicios").addEventListener("change", verificarServicios);
     document.getElementById("btnGuardarModificar").addEventListener("click", guardarModificar);
 }
@@ -467,7 +459,6 @@ async function abrirModificar(cita, recargar) {
     }
 }
 
-// Muestra duración, total y hora de fin, y comprueba que la misma hora de inicio siga libre
 async function verificarServicios() {
     const btnGuardar = document.getElementById("btnGuardarModificar");
     const aviso = document.getElementById("modificarAviso");
@@ -518,7 +509,6 @@ async function verificarServicios() {
 
         const resultado = await respuesta.json();
 
-        // Si el usuario marcó otro servicio mientras tanto, se descarta esta respuesta
         if (token !== tokenVerificacion) return;
 
         const cabe = resultado.estado && Array.isArray(resultado.horas) && resultado.horas.includes(horaActual);

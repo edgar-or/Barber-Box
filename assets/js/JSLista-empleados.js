@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!contenedor) return;
 
-    // 1. Inicializar la tabla PRIMERO (con arreglo vacío)
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
         langs: {
@@ -110,7 +109,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         ]
     });
 
-    // 2. Hacer la petición FETCH
     try {
         const formData = new FormData();
         formData.append("opcion", "consultar");
@@ -138,7 +136,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error al cargar empleados:", error);
     }
 
-    // 3. Filtro en tiempo real si existe el input
     if (filtro) {
         filtro.addEventListener("keyup", function () {
             tabla.setFilter([
@@ -151,7 +148,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Declaración de funciones fuera del DOMContentLoaded para evitar ReferenceError
 function editarEmpleado(id) {
     window.location.href = "/barberBox/views/form-registrar-empleados.php?id=" + id;
 }
@@ -219,7 +215,7 @@ function eliminarEmpleado(id, tabla) {
 }
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
-        langs: { /* ... tu configuración de idioma ... */ },
+        langs: {},
         data: [], 
         layout: "fitColumns",
         responsiveLayout: "hide",
@@ -229,11 +225,8 @@ function eliminarEmpleado(id, tabla) {
         paginationSizeSelector: [10, 25, 50, 100],
         movableColumns: true,
         
-        // ✅ AGREGAR ESTAS DOS LÍNEAS PARA EL MODO OSCURO EN TABULATOR
-        theme: "midnight", // o "dark" si tienes la versión más nueva
-        // ------------------------------------------------
+        theme: "midnight", 
 
         columns: [
-            // ... tus columnas
         ]
     });

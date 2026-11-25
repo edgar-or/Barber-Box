@@ -23,7 +23,6 @@ function esAdmin(): bool {
     return sesionActiva() && (int)($_SESSION['id_rol'] ?? 0) === ROL_ADMIN;
 }
 
-/** Páginas del panel administrativo: solo empleados. Los clientes van a su panel. */
 function requerirEmpleadoPagina(): void {
     if (!sesionActiva()) {
         header("Location: /barberBox/page-login.php");
@@ -58,7 +57,6 @@ function requerirAdminPagina(): void {
     }
 }
 
-/** Endpoints JSON (DAO): corta con 403 si no es empleado. */
 function requerirEmpleadoJson(): void {
     if (!esEmpleado()) {
         http_response_code(403);
@@ -68,7 +66,6 @@ function requerirEmpleadoJson(): void {
     }
 }
 
-/** Endpoints JSON del cliente: corta con 403 si no es cliente. */
 function requerirClienteJson(): void {
     if (!esCliente()) {
         http_response_code(403);
@@ -78,7 +75,6 @@ function requerirClienteJson(): void {
     }
 }
 
-/** Endpoints JSON solo para el administrador. */
 function requerirAdminJson(): void {
     if (!esAdmin()) {
         http_response_code(403);

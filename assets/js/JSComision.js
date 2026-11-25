@@ -63,7 +63,7 @@ btnGuardarComision.addEventListener("click", async function () {
         Swal.fire({ icon: "error", title: "Barber-Box", text: "Error al conectar con el servidor." });
     } finally {
         btnGuardarComision.disabled = false;
-        await cargarComision(); // vuelve a poner "Guardar" o "Modificar" según corresponda
+        await cargarComision(); 
     }
 });
 

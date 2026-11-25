@@ -73,7 +73,7 @@ if (formulario) {
                 return;
             }
 
-            // Validar todo el formulario campo por campo
+        
             const nombreValido      = validarCampo(nombre);
             const apellidoValido    = validarCampo(apellido);
             const telefonoValido    = validarCampo(telefono);

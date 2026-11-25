@@ -15,7 +15,6 @@ $nota          = mb_substr(trim($_POST['nota'] ?? ''), 0, 255);
 $servicios_ids = (array)($_POST['servicios'] ?? []);
 $id_cita       = (int)($_POST['id_cita'] ?? 0);
 
-// id_cliente ligado al usuario en sesión (si aplica)
 $id_usuario = isset($_SESSION['idusuario']) ? (int)$_SESSION['idusuario'] : 0;
 $id_cliente = 0;
 
@@ -28,7 +27,7 @@ if ($id_usuario > 0) {
     $id_cliente = (int)($filaCli['id_cliente'] ?? 0);
 }
 
-// Servicios activos seleccionados (precio y duración salen de la BD, nunca del cliente)
+// Servicios activos seleccionados (precio y duración salen de la BD)
 function obtenerServicios($conexion, $ids) {
     $servicios = [];
     $stmt = $conexion->prepare("SELECT id_servicio, precio, duracion_estimada FROM servicio WHERE id_servicio = ? AND estado_servicio = 'A'");
