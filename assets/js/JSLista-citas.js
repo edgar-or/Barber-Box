@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             title: "Fecha",
             field: "fecha_hora_inicio",
             width: 140,
+            minWidth: 135,
             formatter: function (cell) {
                 const d = fmtFecha(cell.getValue());
                 return `
@@ -29,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         {
             title: "Cliente",
             field: "cliente",
+            minWidth: 165,
             formatter: function (cell) {
                 const row = cell.getRow().getData();
                 return `
@@ -44,13 +46,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     ];
 
     if (esAdmin) {
-        columnas.push({ title: "Barbero", field: "barbero" });
+        columnas.push({ title: "Barbero", field: "barbero", minWidth: 130 });
     }
 
     columnas.push(
         {
             title: "Servicios",
             field: "servicios",
+            minWidth: 170,
             formatter: function (cell) {
                 return `<span title="${esc(cell.getValue())}">${esc(cell.getValue() || "—")}</span>`;
             }
@@ -59,6 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             title: "Total",
             field: "total_cita",
             width: 100,
+            minWidth: 90,
             headerHozAlign: "right",
             hozAlign: "right",
             formatter: function (cell) {
@@ -69,6 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             title: "Estado",
             field: "estado_cita",
             width: 150,
+            minWidth: 120,
             headerHozAlign: "center",
             hozAlign: "center",
             formatter: function (cell) {
@@ -79,6 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         {
             title: "Acciones",
             width: esAdmin ? 150 : 195,
+            minWidth: esAdmin ? 135 : 175,
             headerSort: false,
             headerHozAlign: "center",
             hozAlign: "center",
@@ -134,6 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
 
     // 2. Inicializar la tabla PRIMERO (con arreglo vacío)
+    //fitDataStretch permite que las columnas respeten minWidth y usen scroll horizontal en móvil
     const tabla = new Tabulator(contenedor, {
         locale: "es-es",
         langs: {
@@ -163,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         },
         data: [],
-        layout: "fitColumns",
+        layout: "fitDataStretch",
         placeholder: "No hay citas para mostrar",
         pagination: true,
         paginationElement: paginacion,
@@ -171,6 +178,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         paginationSizeSelector: [10, 25, 50, 100],
         initialSort: [{ column: "fecha_hora_inicio", dir: "desc" }],
         columns: columnas
+    });
+
+    // Recalcula anchos al cambiar el tamaño o girar la pantalla
+    window.addEventListener("resize", () => {
+        tabla.redraw(true);
     });
 
     // 3. Hacer la petición FETCH a DAOCitas.php y cargar con setData()
@@ -353,7 +365,6 @@ function cambiarEstado(id, estado, recargar) {
     });
 }
 
-// ================== MODIFICAR SERVICIOS DE UNA CITA (solo barbero) ==================
 let catalogoServicios = [];
 let citaModificando = null;
 let recargarAlGuardar = null;

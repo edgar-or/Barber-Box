@@ -36,8 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         },
         data: [],
-        layout: "fitColumns",
-        responsiveLayout: "hide",
+        layout: "fitDataStretch",
         pagination: true,
         paginationElement: paginacion,
         paginationSize: 10,
@@ -47,6 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             {
                 title: "Empleado",
                 field: "nombreCompleto",
+                minWidth: 195,
                 formatter: function (cell) {
                     const row = cell.getRow().getData();
                     return `
@@ -62,11 +62,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
             { title: "Nombre", field: "nombre", visible: false },
             { title: "Apellido", field: "apellido", visible: false },
-            { title: "Teléfono", field: "telefono" },
-            { title: "DUI", field: "dui", width: 120 },
+            { title: "Teléfono", field: "telefono", minWidth: 125 },
+            { title: "DUI", field: "dui", width: 120, minWidth: 115 },
             {
                 title: "Correo",
                 field: "correo",
+                minWidth: 185,
                 formatter: function (cell) {
                     const v = cell.getValue();
                     return v ? `<span class="celda-correo"><i class="bi bi-envelope"></i>${v}</span>` : '<span class="text-muted">—</span>';
@@ -74,6 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
             {
                 title: "Acciones",
+                minWidth: 135,
                 headerHozAlign: "center",
                 hozAlign: "center",
                 formatter: function (cell) {
@@ -108,6 +110,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             }
         ]
+    });
+
+    window.addEventListener("resize", () => {
+        tabla.redraw(true);
     });
 
     // 2. Hacer la petición FETCH
@@ -215,25 +221,4 @@ function eliminarEmpleado(id, tabla) {
             }
         }
     });
-
 }
-    const tabla = new Tabulator(contenedor, {
-        locale: "es-es",
-        langs: { /* ... tu configuración de idioma ... */ },
-        data: [], 
-        layout: "fitColumns",
-        responsiveLayout: "hide",
-        pagination: true,
-        paginationElement: paginacion,
-        paginationSize: 10,
-        paginationSizeSelector: [10, 25, 50, 100],
-        movableColumns: true,
-        
-        // ✅ AGREGAR ESTAS DOS LÍNEAS PARA EL MODO OSCURO EN TABULATOR
-        theme: "midnight", // o "dark" si tienes la versión más nueva
-        // ------------------------------------------------
-
-        columns: [
-            // ... tus columnas
-        ]
-    });

@@ -25,8 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         },
         data: [], 
-        layout: "fitColumns",
-        responsiveLayout: "hide",
+        layout: "fitDataStretch",
         pagination: true,
         paginationElement: paginacion, 
         paginationSize: 10,
@@ -37,6 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 title: "Imagen", 
                 field: "imagenes", 
                 width: 125,
+                minWidth: 95,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 formatter: function(cell) {
@@ -47,12 +47,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return `<span class="table-user-avatar sin-foto"><i class="bi bi-image"></i></span>`;
                 }
             },
-            { title: "Servicio", field: "nombre_servicio", width: 180 },
-            { title: "Descripción", field: "descripcion" },
+            { title: "Servicio", field: "nombre_servicio", width: 180, minWidth: 150 },
+            { title: "Descripción", field: "descripcion", minWidth: 200 },
             { 
                 title: "Precio", 
                 field: "precio", 
                 width: 125,
+                minWidth: 95,
                 hozAlign: "right",
                 headerHozAlign: "right",
                 formatter: function(cell) {
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 title: "Duración", 
                 field: "duracion_estimada", 
                 width: 125,
+                minWidth: 100,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 formatter: function(cell) {
@@ -74,6 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 title: "Estado", 
                 field: "estado_servicio", 
                 width: 135,
+                minWidth: 110,
                 hozAlign: "center",
                 headerHozAlign: "center",
                 formatter: function(cell) {
@@ -110,6 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             { 
                 title: "Acciones", 
                 width: 130,
+                minWidth: 110,
                 headerHozAlign: "center", 
                 hozAlign: "center",
                 formatter: function(cell) {
@@ -139,6 +143,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             }
         ]
+    });
+
+    // [MODIFICADO] Recalcula anchos al cambiar el tamaño o girar la pantalla
+    window.addEventListener("resize", () => {
+        tabla.redraw(true);
     });
 
     try {

@@ -39,18 +39,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         },
         data: [],
-        layout: "fitColumns",
-        responsiveLayout: "hide",
+        layout: "fitDataStretch",
         pagination: true,
         paginationElement: paginacion,
         paginationSize: 10,
         paginationSizeSelector: [10, 25, 50, 100],
         movableColumns: true,
         columns: [
-            { title: "Corr", field: "correlativo", width: 80, headerHozAlign: "center", hozAlign: "center" },
+            { title: "Corr", field: "correlativo", width: 80, minWidth: 70, headerHozAlign: "center", hozAlign: "center" },
             {
                 title: "Cliente",
                 field: "nombreCompleto",
+                minWidth: 190,
                 formatter: function (cell) {
                     const row = cell.getRow().getData();
                     return `
@@ -66,10 +66,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
             { title: "Nombre", field: "nombre", visible: false },
             { title: "Apellido", field: "apellido", visible: false },
-            { title: "Teléfono", field: "telefono" },
+            { title: "Teléfono", field: "telefono", minWidth: 125 },
             {
                 title: "Correo",
                 field: "correo",
+                minWidth: 180,
                 formatter: function (cell) {
                     const v = cell.getValue();
                     return v
@@ -79,6 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
             {
                 title: "Acciones",
+                minWidth: 110,
                 headerHozAlign: "center",
                 hozAlign: "center",
                 formatter: function (cell) {
@@ -108,6 +110,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             }
         ]
+    });
+
+    // [MODIFICADO] Recalcula anchos al cambiar el tamaño o girar la pantalla
+    window.addEventListener("resize", () => {
+        tabla.redraw(true);
     });
 
     // 2. Cargar registros con Swal de carga (patrón POSEIDÓN)
@@ -235,13 +242,13 @@ function eliminarCliente(id, tabla, contador) {
                         position: "top-end",
                         icon: "error",
                         title: "Barber-Box",
-                        text: resultado.mensaje,
+                        text: resultado.mensaje || "No se pudo eliminar el cliente.",
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 2000
                     });
                 }
             } catch (error) {
-                console.error(error);
+                console.error("Error al eliminar cliente:", error);
                 Swal.fire({
                     icon: "error",
                     title: "Barber-Box",
