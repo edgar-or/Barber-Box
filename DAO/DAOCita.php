@@ -5,7 +5,7 @@ require_once __DIR__ . "/../config/conexion.php";
 
 header('Content-Type: application/json; charset=utf-8');
 
-const PASO_MINUTOS = 30;
+const PASO_MINUTOS = 15;
 
 $opcion        = $_REQUEST["opcion"] ?? $_POST["opcion"] ?? $_GET["opcion"] ?? "";
 $id_empleado   = (int)($_POST['id_empleado'] ?? 0);
@@ -45,6 +45,7 @@ function obtenerServicios($conexion, $ids) {
 }
 
 // Horas de inicio disponibles ("HH:MM") para un barbero, fecha y duración
+// Horas de inicio disponibles ("HH:MM") para un barbero, fecha y duración
 function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $excluir_cita = 0) {
     $d = DateTime::createFromFormat('Y-m-d', $fecha);
     if (!$d || $d->format('Y-m-d') !== $fecha || $duracion <= 0) return [];
@@ -52,49 +53,84 @@ function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $exc
     $dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
     $dia_buscado = $dias[(int)$d->format('N') - 1];
 
-    // Horario del barbero para ese día de la semana
-    $stmt = $conexion->prepare("SELECT dia_semana, hora_entrada, hora_salida FROM horario_empleado WHERE id_empleado = ?");
+    // 1. Traemos TODOS los horarios del barbero
+    $stmt = $conexion->prepare("SELECT hora_entrada, hora_salida, dia_semana FROM horario_empleado WHERE id_empleado = ?");
+    if (!$stmt) {
+        throw new Exception("Error en la consulta de horarios: " . $conexion->error);
+    }
     $stmt->bind_param("i", $id_empleado);
     $stmt->execute();
-    $horarios = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $resultado = $stmt->get_result();
+    
+    $turnosDelDia = [];
+    while ($h = $resultado->fetch_assoc()) {
+        // Normalizar el texto del día (quitar acentos y mayúsculas)
+        $dia = strtolower(strtr(trim($h['dia_semana']), ['á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u']));
+        
+        if ($dia === $dia_buscado) {
+            $turnosDelDia[] = $h;
+        }
+    }
     $stmt->close();
 
-    $horario = null;
-    foreach ($horarios as $h) {
-        $dia = strtolower(strtr(trim($h['dia_semana']), ['á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u']));
-        if ($dia === $dia_buscado) { $horario = $h; break; }
-    }
-    if (!$horario) return [];
+    if (empty($turnosDelDia)) return [];
 
-    // Citas pendientes del barbero ese día (se ignora la cita que se está modificando)
+    // 2. Citas pendientes del barbero ese día
     $inicio_dia = $fecha . ' 00:00:00';
     $fin_dia    = $fecha . ' 23:59:59';
     $stmt = $conexion->prepare("SELECT fecha_hora_inicio, fecha_hora_fin FROM cita WHERE id_empleado = ? AND estado_cita = 'Pendiente' AND id_cita <> ? AND fecha_hora_inicio BETWEEN ? AND ?");
+    if (!$stmt) {
+        throw new Exception("Error en la consulta de citas: " . $conexion->error);
+    }
     $stmt->bind_param("iiss", $id_empleado, $excluir_cita, $inicio_dia, $fin_dia);
     $stmt->execute();
-    $ocupadas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $resultadoCitas = $stmt->get_result();
+    
+    $ocupadas = [];
+    while ($o = $resultadoCitas->fetch_assoc()) {
+        $ocupadas[] = $o;
+    }
     $stmt->close();
 
-    // Se recorre el horario de 30 en 30 minutos descartando horas pasadas u ocupadas
     $horas  = [];
     $ahora  = time();
-    $cursor = strtotime("$fecha {$horario['hora_entrada']}");
-    $salida = strtotime("$fecha {$horario['hora_salida']}");
 
-    for (; $cursor + $duracion * 60 <= $salida; $cursor += PASO_MINUTOS * 60) {
-        $fin = $cursor + $duracion * 60;
-        if ($cursor <= $ahora) continue;
+    // 3. Recorremos CADA turno (mañana y tarde)
+    foreach ($turnosDelDia as $horario) {
+        $cursor = strtotime($fecha . " " . $horario['hora_entrada']);
+        $salida = strtotime($fecha . " " . $horario['hora_salida']);
 
-        $libre = true;
-        foreach ($ocupadas as $o) {
-            if (strtotime($o['fecha_hora_inicio']) < $fin && strtotime($o['fecha_hora_fin']) > $cursor) {
-                $libre = false;
-                break;
+        // Si el turno termina antes de empezar (error en BD), lo saltamos
+        if ($salida <= $cursor) continue;
+
+        for (; $cursor + $duracion * 60 <= $salida; $cursor += PASO_MINUTOS * 60) {
+            $fin = $cursor + $duracion * 60;
+            
+            // Si la hora ya pasó, saltar
+            if ($cursor <= $ahora) continue;
+
+            $libre = true;
+            foreach ($ocupadas as $o) {
+                $o_inicio = strtotime($o['fecha_hora_inicio']);
+                $o_fin    = strtotime($o['fecha_hora_fin']);
+                
+                // Si choca con una cita existente
+                if ($o_inicio < $fin && $o_fin > $cursor) {
+                    $libre = false;
+                    break;
+                }
+            }
+            if ($libre) {
+                $horas[] = date('H:i', $cursor);
             }
         }
-        if ($libre) $horas[] = date('H:i', $cursor);
     }
-    return $horas;
+    
+    // 4. Quitamos duplicados y ordenamos
+    $horas = array_unique($horas);
+    sort($horas);
+    
+    return array_values($horas); // array_values para asegurar que sea un array indexado para el JSON
 }
 
 if ($opcion == "catalogo") {

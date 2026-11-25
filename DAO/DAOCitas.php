@@ -5,6 +5,8 @@ require_once __DIR__ . "/../config/conexion.php";
 
 header('Content-Type: application/json; charset=utf-8');
 
+const PASO_MINUTOS = 15;
+
 function responder(array $datos): void {
     echo json_encode($datos, JSON_UNESCAPED_UNICODE);
     exit;
@@ -92,11 +94,15 @@ try {
 
     if ($opcion === "consultar") {
         $sql = "SELECT c.id_cita, c.fecha_hora_inicio, c.fecha_hora_fin, c.total_cita, c.estado_cita,
+                       c.nota, c.id_empleado,
                        CONCAT(cl.nombre, ' ', cl.apellido) AS cliente, cl.telefono,
                        CONCAT(e.nombre, ' ', e.apellido) AS barbero,
                        (SELECT GROUP_CONCAT(s.nombre_servicio SEPARATOR ', ')
                           FROM detalle_cita d JOIN servicio s ON s.id_servicio = d.id_servicio
-                         WHERE d.id_cita = c.id_cita) AS servicios
+                         WHERE d.id_cita = c.id_cita) AS servicios,
+                       (SELECT GROUP_CONCAT(d.id_servicio)
+                          FROM detalle_cita d
+                         WHERE d.id_cita = c.id_cita) AS servicios_ids
                   FROM cita c
                   JOIN cliente cl ON cl.id_cliente = c.id_cliente
                   JOIN empleado e ON e.id_empleado = c.id_empleado";
@@ -134,7 +140,8 @@ try {
         }
 
         if ($opcion === "detalle") {
-            $stmt = $conexion->prepare("SELECT s.nombre_servicio, s.duracion_estimada, d.precio_unitario
+            // Se incluye id_servicio para poder precargar el formulario de modificación
+            $stmt = $conexion->prepare("SELECT d.id_servicio, s.nombre_servicio, s.duracion_estimada, d.precio_unitario
                                           FROM detalle_cita d JOIN servicio s ON s.id_servicio = d.id_servicio
                                          WHERE d.id_cita = ?");
             $stmt->bind_param("i", $idCita);
@@ -159,7 +166,245 @@ try {
         responder(["estado" => true, "mensaje" => "Cita marcada como " . strtolower($nuevo) . "."]);
     }
 
+    // Horas libres para modificar una cita (se ignora la propia cita)
+    if ($opcion === "disponibilidad") {
+        $idCita       = (int)($_POST['id_cita'] ?? 0);
+        $idEmpleado   = (int)($_POST['id_empleado'] ?? 0);
+        $fecha        = $_POST['fecha'] ?? '';
+        $serviciosIds = $_POST['servicios'] ?? [];
+
+        // Solo los barberos modifican citas, y solo en su propia agenda
+        if ($esAdmin) {
+            responder(["estado" => false, "mensaje" => "Solo los barberos pueden modificar citas."]);
+        }
+        $idEmpleado = $idEmpleadoSesion;
+
+        $servicios = obtenerServicios($conexion, $serviciosIds);
+        $totales   = sumarServicios($servicios);
+        $horas     = calcularDisponibilidad($conexion, $idEmpleado, $fecha, $totales['duracion'], $idCita, true);
+
+        responder(["estado" => true, "horas" => $horas, "duracion" => $totales['duracion']]);
+    }
+
+    // Modificar los servicios de una cita pendiente de hoy en adelante (solo barberos, y solo las suyas).
+    // Se permite aunque la cita ya haya empezado: el cliente puede pedir un servicio adicional en plena atención.
+    // El barbero, la fecha y la hora no cambian: se toman de la propia cita.
+    if ($opcion === "modificar") {
+        $idCita       = (int)($_POST['id_cita'] ?? 0);
+        $serviciosIds = $_POST['servicios'] ?? [];
+
+        if ($esAdmin) {
+            responder(["estado" => false, "mensaje" => "Solo los barberos pueden modificar citas."]);
+        }
+
+        $conexion->begin_transaction();
+
+        try {
+            // La cita debe ser suya, pendiente y de hoy en adelante (se bloquea la fila)
+            $sql = "SELECT id_cita, fecha_hora_inicio FROM cita
+                    WHERE id_cita = ? AND id_empleado = ? AND estado_cita = 'Pendiente' AND fecha_hora_inicio >= CURDATE() FOR UPDATE";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bind_param("ii", $idCita, $idEmpleadoSesion);
+            $stmt->execute();
+            $citaActual = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
+            if (!$citaActual) {
+                throw new Exception("Esta cita ya no se puede modificar.");
+            }
+
+            $servicios = obtenerServicios($conexion, $serviciosIds);
+            if (count($servicios) === 0) {
+                throw new Exception("La cita debe tener al menos un servicio.");
+            }
+
+            $totales  = sumarServicios($servicios);
+            $duracion = $totales['duracion'];
+            $total    = $totales['total'];
+
+            // Bloquea la fila del barbero para evitar choques con otras reservas simultáneas
+            $stmt = $conexion->prepare("SELECT id_empleado FROM empleado WHERE id_empleado = ? FOR UPDATE");
+            $stmt->bind_param("i", $idEmpleadoSesion);
+            $stmt->execute();
+            $stmt->get_result();
+            $stmt->close();
+
+            // La hora de inicio no cambia: debe seguir libre con la nueva duración
+            $inicio = strtotime($citaActual['fecha_hora_inicio']);
+            $fecha  = date('Y-m-d', $inicio);
+            $hora   = date('H:i', $inicio);
+
+            // Se incluyen horas pasadas: la cita puede estar en curso
+            $disponibles = calcularDisponibilidad($conexion, $idEmpleadoSesion, $fecha, $duracion, $idCita, true);
+            if (!in_array($hora, $disponibles, true)) {
+                throw new Exception("Con esos servicios la cita choca con otra cita o se pasa del horario del barbero.");
+            }
+
+            $finSql = date('Y-m-d H:i:s', $inicio + $duracion * 60);
+
+            $stmt = $conexion->prepare("UPDATE cita SET fecha_hora_fin = ?, total_cita = ? WHERE id_cita = ?");
+            $stmt->bind_param("sdi", $finSql, $total, $idCita);
+            if (!$stmt->execute()) {
+                throw new Exception("Error al modificar la cita: " . $stmt->error);
+            }
+            $stmt->close();
+
+            // Se reemplazan los servicios de la cita
+            $stmt = $conexion->prepare("DELETE FROM detalle_cita WHERE id_cita = ?");
+            $stmt->bind_param("i", $idCita);
+            $stmt->execute();
+            $stmt->close();
+
+            $stmt = $conexion->prepare("INSERT INTO detalle_cita (id_cita, id_servicio, precio_unitario) VALUES (?, ?, ?)");
+            foreach ($servicios as $s) {
+                $idServicio = (int)$s['id_servicio'];
+                $precio     = (float)$s['precio'];
+                $stmt->bind_param("iid", $idCita, $idServicio, $precio);
+                $stmt->execute();
+            }
+            $stmt->close();
+
+            $conexion->commit();
+            responder(["estado" => true, "mensaje" => "Servicios de la cita actualizados. Ahora termina a las " . date('H:i', $inicio + $duracion * 60)]);
+        } catch (Throwable $e) {
+            $conexion->rollback();
+            responder(["estado" => false, "mensaje" => $e->getMessage()]);
+        }
+    }
+
     responder(["estado" => false, "mensaje" => "Opción no válida."]);
 } catch (Throwable $e) {
     responder(["estado" => false, "mensaje" => "Error en el servidor: " . $e->getMessage()]);
+}
+
+
+// ================== FUNCIONES ==================
+
+// Servicios activos seleccionados (precio y duración salen de la BD, nunca del navegador)
+function obtenerServicios($conexion, $ids)
+{
+    $servicios = [];
+    $vistos = [];
+
+    if (!is_array($ids)) {
+        return $servicios;
+    }
+
+    $stmt = $conexion->prepare("SELECT id_servicio, precio, duracion_estimada FROM servicio WHERE id_servicio = ? AND estado_servicio = 'A'");
+
+    foreach ($ids as $valor) {
+        $id = intval($valor);
+
+        if ($id <= 0 || in_array($id, $vistos)) {
+            continue;
+        }
+        $vistos[] = $id;
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if ($fila = $resultado->fetch_assoc()) {
+            $servicios[] = $fila;
+        }
+    }
+    $stmt->close();
+
+    return $servicios;
+}
+
+// Suma la duración y el precio de los servicios elegidos
+function sumarServicios($servicios)
+{
+    $duracion = 0;
+    $total = 0;
+
+    foreach ($servicios as $s) {
+        $duracion += intval($s['duracion_estimada']);
+        $total += floatval($s['precio']);
+    }
+
+    return ["duracion" => $duracion, "total" => $total];
+}
+
+// Horas de inicio disponibles ("HH:MM") para un barbero, fecha y duración
+function calcularDisponibilidad($conexion, $id_empleado, $fecha, $duracion, $excluir_cita, $incluirPasadas = false)
+{
+    $partes = explode('-', $fecha);
+
+    if (strlen($fecha) != 10 || count($partes) != 3 || !checkdate(intval($partes[1]), intval($partes[2]), intval($partes[0])) || $duracion <= 0) {
+        return [];
+    }
+
+    $dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+    $dia_buscado = $dias[date('N', strtotime($fecha)) - 1];
+
+    // Horario del barbero para ese día de la semana
+    $stmt = $conexion->prepare("SELECT dia_semana, hora_entrada, hora_salida FROM horario_empleado WHERE id_empleado = ?");
+    $stmt->bind_param("i", $id_empleado);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    $horario = null;
+
+    while ($fila = $resultado->fetch_assoc()) {
+        $dia = strtolower(strtr(trim($fila['dia_semana']), ['á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u']));
+
+        if ($dia == $dia_buscado) {
+            $horario = $fila;
+            break;
+        }
+    }
+    $stmt->close();
+
+    if (!$horario) {
+        return [];
+    }
+
+    // Citas pendientes del barbero ese día (se ignora la cita que se está modificando)
+    $inicio_dia = $fecha . ' 00:00:00';
+    $fin_dia    = $fecha . ' 23:59:59';
+
+    $stmt = $conexion->prepare("SELECT fecha_hora_inicio, fecha_hora_fin FROM cita
+                                WHERE id_empleado = ? AND estado_cita = 'Pendiente' AND id_cita <> ?
+                                AND fecha_hora_inicio BETWEEN ? AND ?");
+    $stmt->bind_param("iiss", $id_empleado, $excluir_cita, $inicio_dia, $fin_dia);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    $ocupadas = [];
+
+    while ($fila = $resultado->fetch_assoc()) {
+        $ocupadas[] = $fila;
+    }
+    $stmt->close();
+
+    // Se recorre el horario de 30 en 30 minutos descartando horas pasadas u ocupadas
+    $horas  = [];
+    $ahora  = time();
+    $cursor = strtotime($fecha . " " . $horario['hora_entrada']);
+    $salida = strtotime($fecha . " " . $horario['hora_salida']);
+
+    while ($cursor + $duracion * 60 <= $salida) {
+        $fin = $cursor + $duracion * 60;
+
+        if ($incluirPasadas || $cursor > $ahora) {
+            $libre = true;
+
+            foreach ($ocupadas as $o) {
+                if (strtotime($o['fecha_hora_inicio']) < $fin && strtotime($o['fecha_hora_fin']) > $cursor) {
+                    $libre = false;
+                    break;
+                }
+            }
+
+            if ($libre) {
+                $horas[] = date('H:i', $cursor);
+            }
+        }
+
+        $cursor += PASO_MINUTOS * 60;
+    }
+
+    return $horas;
 }

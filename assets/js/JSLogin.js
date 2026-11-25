@@ -181,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     } catch (error) {
                         console.error("Error al cerrar sesión:", error);
+                        // Redirección forzada de respaldo
                         window.location.href = "/barberBox/page-login.php";
                     }
                 }
